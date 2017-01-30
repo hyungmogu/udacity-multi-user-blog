@@ -1,33 +1,30 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Blog Site</title>
-</head>
-<body>
+{%extends "base.html"%}
+
+{%block title%}{{blog.title}} | Multi User Blog Site{%endblock%}
+
+{%block navigation%}
+	{%if signed_in%}
+		<a href="/blog/logout">Logout</a>
+	{%else%}
+		<a href="/blog/login">Login / Sign-up</a>
+	{%endif%}
+{%endblock%}
+{%block content_header%}
 	<header>
-		<h1 id="blog-title"><a href="/blog">Blog Title Goes Here</a></h1>
-		{%if signed_in%}
-			<a href="/blog/logout">Logout</a>
-		{%else%}
-			<a href="/blog/login">Login</a>
-		{%endif%}
+		<h2 class="title">{{blog.title}}</h2>
+		<div class="date">
+			{{blog.dateCreated}}
+		</div>
+		<div class="options">
+			<a href="/blog/{{blog.key().id()}}/edit">Edit</a>
+			<a href="/blog/{{blog.key().id()}}/delete">Delete</a>
+		</div>
 	</header>
-	<main>
-		{%if blog%}
-		<article class="blog">
-			<header class="header">
-				<h2 class="title">{{blog.title}}</h2>
-				<div class="date">
-					{{blog.dateCreated}}
-				</div>
-				<div class="options">
-					<a href="/blog/{{blog.key()}}/edit">Edit</a>
-					<a href="/blog/{{blog.key()}}/delete">Delete</a>
-				</div>
-			</header>
-			<p class="content">{{blog.content}}</p>
-		</article>
-		{%endif%}
-	</main> 
-</body>
-</html>
+{%endblock%}
+
+{%block content%}
+	<article class="blog">
+		{{blog.content}}
+	</article>
+{%endblock%}
+

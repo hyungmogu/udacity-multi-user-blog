@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{%block title%}{%endblock%}</title>
+	<link rel="stylesheet" type="text/css" href="/static/style.css">
+</head>
+<body>
+	<header>
+		<div class="contents">
+			{%block navigation%}{%endblock%}
+			<h1 class="title"><a href="/blog">Blog Title Goes Here</a></h1>
+		</div>
+	</header>
+	<main>
+		<div class="contents">
+			{%block content_header%}{%endblock%}
+			{%block content%}{%endblock%}
+		</div>
+	</main>
+</body>
+</html>

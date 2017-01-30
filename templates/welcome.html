@@ -1,16 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Sign-Up | Multi-user Blog Site</title>
-	<link type="text/css" rel="stylesheet" href="/static/style.css">
-</head>
-<body>
+{%extends "base.html"%}
+
+{%block title%}Welcome | Multi User Blog Site{%endblock%}
+
+{%block navigation%}
+	<a href="/blog/logout">Logout</a>
+{%endblock%}
+
+{%block content_header%}
 	<header>
-		<h1 id="blog-title"><a href="/blog">Blog Title Goes Here</a></h1>
-		<a href="/blog/logout">Logout</a>
-	</header>
-	<main>
 		<h2 class="title">Welcome {{user.username}}!</h2>
-	</main>
-</body>
-</html>
+	</header>
+{%endblock%}
+
