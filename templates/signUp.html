@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sign-Up | Multi-user Blog Site</title>
+	<link type="text/css" rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+	<header>
+		<h1 id="blog-title"><a href="/blog">Blog Title Goes Here</a></h1>
+	</header>
+	<main>
+		<h2 class="title">Sign-Up</h2>
+		<form id="sign-up" action="/blog/signup" method="POST" enctype="multipart/form-data">
+			<div class="form-group" id="sign-up-username">
+				<label>Username:</label>
+				<input type="text" name="username" value="{{username}}">
+				{%if errors%}
+					{%if errors['username_empty']%}
+					<span class="error">Username field is empty</span>
+					{%elif errors['username_exists']%}
+					<span class="error">Username already exists</span>
+					{%endif%}
+				{%endif%}
+			</div>
+			<div class="form-group" id="sign-up-password">
+				<label>Password:</label>
+				<input type="password" name="password" value="{{password}}">
+				{%if errors%}
+					{%if errors['password_empty']%}
+					<span class="error">Password field is empty</span>
+					{%elif errors['password_mismatch']%}
+					<span class="error">Password and verify password mismatch</span>
+					{%endif%}
+				{%endif%}
+			</div>
+			<div class="form-group" id="sign-up-verify-pw">
+				<label>Verify:</label>
+				<input type="password" name="verify" value="{{verify_pw}}">
+				{%if errors%}
+					{%if errors['verify_pw_empty']%}
+					<span class="error">Verify password field is empty</span>
+					{%endif%}
+				{%endif%}
+			</div>
+			<div class="form-group" id="sign-up-email">
+				<label>Email:</label>
+				<input type="email" name="email" value="{{email}}">
+				{%if errors%}
+					{%if errors['email_empty']%}
+					<span class="error">Email field is empty</span>
+					{%endif%}
+				{%endif%}
+			</div>
+			<div class="form-group" id="sign-up-submit">
+				<input type="submit" value="Submit">
+			</div>
+		</form>
+		<a href="/blog/login">Already have an account? Log in here</a>
+	</main>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title> Create New Post | Blog Site</title>
+	</head>
+	<body>
+		<header>
+			<h1 id="blog-title"><a href="/">Blog Title Goes Here</a></h1>
+			<a href="/blog/logout">Logout</a>
+		</header>
+		<main>
+			<h2 class="title">Delete Post ({{blog.title}})</h2>
+			<p>Are you Sure?</p>
+			<form method="POST" actions="/blog/{{blog.key().id()}}/delete" enctype="multipart/form-data">
+				<input type="submit" value="Delete">
+			</form>
+		</main> 
+	</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Blog Site</title>
+</head>
+<body>
+	<header>
+		<h1 id="blog-title"><a href="/blog">Blog Title Goes Here</a></h1>
+		{%if signed_in%}
+			<a href="/blog/logout">Logout</a>
+		{%else%}
+			<a href="/blog/login">Login</a>
+		{%endif%}
+	</header>
+	<main>
+		<section id="blogs">
+			<a href="/blog/newpost">New Blog</a>
+			{%if blogs%}
+			{%for blog in blogs%}
+			<article class="blog">
+				<header class="header">
+					<h2 class="title">{{blog.title}}</h2>
+					<div class="date">
+						{{blog.dateCreated}}
+					</div>
+				</header>
+				<p class="content">{{blog.content}}</p>
+				<div class="options">
+						<a href="/blog/{{blog.key().id()}}/edit">Edit</a>
+						<a href="/blog/{{blog.key().id()}}/delete">Delete</a>
+				</div>
+			</article>
+			{%endfor%}
+			{%endif%}
+		</section>
+	</main> 
+</body>
+</html>
