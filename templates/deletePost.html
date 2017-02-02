@@ -3,18 +3,22 @@
 {%block title%}Delete Post | Multi User Blog Site{%endblock%}
 
 {%block navigation%}
-	<a href="/blog/logout">Logout</a>
+	<nav>
+		<a href="/blog/logout">Logout</a>
+	</nav>
 {%endblock%}
 
 {%block content_header%}
-	<header>
+	<section id="content-header" class="header">
 		<h2 class="title">Delete Post ({{blog.title}})</h2>
-	</header>
+	</section>
 {%endblock%}
 
 {%block content%}
-	<p>Are you Sure?</p>
-	<form method="POST" actions="/blog/{{blog.key().id()}}/delete" enctype="multipart/form-data">
-		<input type="submit" value="Delete">
-	</form>
+	<section id="delete-post-area">
+		<p>Are you Sure?</p>
+		<form method="POST" actions="/blog/{{blog.key().id()}}/delete" enctype="multipart/form-data">
+			<input type="submit" value="Delete">
+		</form>
+	</section>
 {%endblock%}

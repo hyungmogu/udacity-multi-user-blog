@@ -3,27 +3,27 @@
 {%block title%}Login | Multi User Blog Site{%endblock%}
 
 {%block content_header%}
-	<header>
+	<section id="content-header" class="header">
 		<h2 class="title">Login</h2>
-	</header>
+	</section>
 {%endblock%}
 
 {%block content%}
-	<form id="sign-in" action="/blog/login" method="POST" enctype="multipart/form-data">
-		<div class="form-group" id="sign-up-username">
-			<label>Username:</label>
-			<input type="text" name="username" value="{{username}}">
-		</div>
-		<div class="form-group" id="sign-up-password">
-			<label>Password:</label>
-			<input type="password" name="password" value="{{password}}">
-		</div>
-		<div class="form-group" id="sign-up-submit">
-			<input type="submit" value="Submit">
-		</div>
-		{%if error%}
-		<span class="error">{{error}}</span>
-		{%endif%}
-	</form>
-	<a href="/blog/signup">Don't have an account? Sign up here</a>
+	<section id="sign-in-area">
+		<form action="/blog/login" method="POST" enctype="multipart/form-data">
+			<div class="form-group" id="sign-up-username">
+				<input type="text" name="username" value="{{username}}" placeholder="Username">
+			</div>
+			<div class="form-group" id="sign-up-password">
+				<input type="password" name="password" value="{{password}}" placeholder="Password">
+			</div>
+			<div class="form-group" id="sign-up-submit">
+				<input type="submit" value="Submit">
+			</div>
+			{%if error%}
+			<span class="error">{{error}}</span>
+			{%endif%}
+		</form>
+		<a href="/blog/signup">Don't have an account? Sign up here</a>
+	</section>
 {%endblock%}

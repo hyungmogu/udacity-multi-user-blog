@@ -3,14 +3,16 @@
 {%block title%}{{blog.title}} | Multi User Blog Site{%endblock%}
 
 {%block navigation%}
+	<nav>
 	{%if signed_in%}
 		<a href="/blog/logout">Logout</a>
 	{%else%}
 		<a href="/blog/login">Login / Sign-up</a>
 	{%endif%}
+	</nav>
 {%endblock%}
 {%block content_header%}
-	<header>
+	<section id="content-header" class="header">
 		<h2 class="title">{{blog.title}}</h2>
 		<div class="date">
 			{{blog.dateCreated}}
@@ -19,12 +21,12 @@
 			<a href="/blog/{{blog.key().id()}}/edit">Edit</a>
 			<a href="/blog/{{blog.key().id()}}/delete">Delete</a>
 		</div>
-	</header>
+	</section>
 {%endblock%}
 
 {%block content%}
 	<article class="blog">
-		{{blog.content}}
+		<p>{{blog.content}}</p>
 	</article>
 {%endblock%}
 

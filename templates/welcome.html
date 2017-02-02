@@ -3,12 +3,14 @@
 {%block title%}Welcome | Multi User Blog Site{%endblock%}
 
 {%block navigation%}
-	<a href="/blog/logout">Logout</a>
+	<nav>
+		<a href="/blog/logout">Logout</a>
+	</nav>
 {%endblock%}
 
 {%block content_header%}
-	<header>
+	<section id="content-header" class="header">
 		<h2 class="title">Welcome {{user.username}}!</h2>
-	</header>
+	</section>
 {%endblock%}
 
