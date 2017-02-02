@@ -1,0 +1,8 @@
+body {margin:0px; padding: 0px;}
+
+.contents {max-width:768px; margin: 0 auto;}
+
+body header {margin-bottom: 1em;}
+body header .contents {border-bottom:solid 5px;}
+body header .contents nav {text-align:right;}
+body header .contents .title {text-align:center;}
