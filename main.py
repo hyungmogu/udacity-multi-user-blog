@@ -465,6 +465,36 @@ class ReadLogoutPage(Handler):
         self.response.headers.add_header('Set-Cookie','user_id=;Path=/')
         self.redirect('/blog/login')
 
+# class UpdatePostLikes(Handler):
+
+#     def post(self,post_id):
+
+#         # Harvest data from AJAX POST request
+#         # Retrieve blog data.
+#         blog = Blog.get_by_id(int(post_id))
+#         # Check if blog exists.
+#         # If not, send response and redirect user to not found page
+#         if not blog:
+
+#         # If exists, check if user signed in.
+#         # If not signed in, send response then redirect user to 'login' page
+#         if not is_signed_in(cookie_val):
+
+#         # If signed in, check if a user already liked the post.
+#         # If it is already liked, redirect to a page with error "User already liked the post".
+#         if is_already_liked(post_id,cookie_val):
+
+#         # If all is well, increment like count and add user_id to likes
+#         # Also, send response and change the like button to unlike button
+#         blog.like_count += 1
+#         (blog.likes).append(user_id)
+#         blog.put()
+
+# class UpdateCommentLikes(Handler):
+
+    
+
+
 class User(db.Model):
     username = db.StringProperty(required=True)
     password = db.StringProperty(required=True)
