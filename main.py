@@ -85,11 +85,12 @@ class Handler(webapp2.RequestHandler):
         # Return true when all is well
         return True
 
-    def is_author(self,cookie_val,blog):
+    def is_authorized(self,cookie_val,blog):
         # Harvest numeric user_id from the cookie_value
         user_id = int(cookie_val.split("|")[0]) 
         # Harvest the user id of author from the queried blog
-        author_id = int(blog.key().id())
+        author_id = int(blog.author.key().id())
+        print(user_id,author_id)
         # Check if the two user_ids match
         # If they match, return true
         if user_id == author_id:
@@ -113,7 +114,6 @@ class ReadMainPage(Handler):
             self.render('mainPage.html', blogs=blogs)
 
 class CreatePost(Handler):
-
     def get(self):
         cookie_val = self.request.cookies.get('user_id')
         if self.is_signed_in(cookie_val):
@@ -147,13 +147,16 @@ class UpdatePost(Handler):
         blog = Blog.get_by_id(int(post_id))
         if blog:
             # Check if user signed in.
-            # If all is well, proceed to update post page.
+            # Check if user is authorized to modify the post.
+            # If all is well, proceed to the page.
+            # If not, tell user is not authorized.
             if self.is_signed_in(cookie_val):
-                if self.is_author(cookie_val,blog):
+                if self.is_authorized(cookie_val,blog):
                     self.render('updatePost.html', blog=blog, signed_in=True)
                 else:
                     self.redirect('/blog/notauthorized')          
             else:
+
                 self.redirect('/blog/login')
         else:
             self.redirect('/blog') 
@@ -181,7 +184,6 @@ class UpdatePost(Handler):
             self.redirect('/blog')
 
 class DeletePost(Handler):
-
     def get(self,post_id):
         cookie_val = self.request.cookies.get('user_id')
         blog = Blog.get_by_id(int(post_id))
@@ -190,7 +192,7 @@ class DeletePost(Handler):
         # If all is well, proceed to delete page.
         if blog:
             if self.is_signed_in(cookie_val):
-                if self.is_author(cookie_val,blog):    
+                if self.is_authorized(cookie_val,blog):    
                     self.render('deletePost.html', blog=blog, signed_in=True)
                 else:
                     self.redirect('/blog/notauthorized')
@@ -456,7 +458,7 @@ class ReadLoginPage(Handler):
         # If username don't exist, return False. 
         else:
             return False 
-
+            
 class ReadLogoutPage(Handler):
 
     def get(self):
@@ -502,9 +504,14 @@ class User(db.Model):
 
 class Blog(db.Model):
     title = db.StringProperty(required=True)
+    subtitle = db.StringProperty()
     content = db.TextProperty(required=True)
     dateCreated = db.DateTimeProperty(auto_now_add=True)
     author = db.ReferenceProperty(User)
+    numberOfLikes = db.IntegerProperty()
+    liked_by = db.StringListProperty()
+
+
 
 app = webapp2.WSGIApplication([('/blog',ReadMainPage), ('/blog/',ReadMainPage),
                                 ('/blog/newpost', CreatePost),
