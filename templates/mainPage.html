@@ -28,7 +28,7 @@
 			<div class="header">
 				<h2 class="title">{{blog.title}}</h2>
 				<div class="date">
-					{{blog.dateCreated}}
+					{{blog.dateCreated.strftime('%B %d, %Y %I:%M%p')}}
 				</div>
 			</div>
 			<p>{{blog.content}}</p>
