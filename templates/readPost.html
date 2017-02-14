@@ -15,7 +15,7 @@
 	<section id="content-header" class="header">
 		<h2 class="title">{{blog.title}}</h2>
 		<div class="date">
-			{{blog.dateCreated}}
+			{{blog.dateCreated.strftime('%B %d, %Y %I:%M%p')}}
 		</div>
 		<div class="options">
 			<a href="/blog/{{blog.key().id()}}/edit">Edit</a>
