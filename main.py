@@ -7,6 +7,8 @@ import random
 import hashlib
 from google.appengine.ext import db
 
+import json
+
 template_dir = os.path.join(os.path.dirname(__file__),'templates')
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
                                 autoescape=True)
@@ -64,6 +66,7 @@ class Handler(webapp2.RequestHandler):
         @Outputs:
             (Boolean) - False when cookie is invalid, and True if not.
         """
+        print("In is_signed_in()")
         # Check if the cookie value is empty.
         # Return false if empty.
         if not cookie_val:
@@ -85,7 +88,8 @@ class Handler(webapp2.RequestHandler):
         # Return true when all is well
         return True
 
-    def is_authorized(self,cookie_val,blog):
+    def is_author(self,cookie_val,blog):
+        print("In is_author()")
         # Harvest numeric user_id from the cookie_value
         user_id = int(cookie_val.split("|")[0]) 
         # Harvest the user id of author from the queried blog
@@ -99,7 +103,71 @@ class Handler(webapp2.RequestHandler):
         else:
             return False
 
+    def blog_exists(self,blog):
+        print("In blog_exists()")
+        if not blog:
+            return False
+        else:
+            return True
 
+class LikePost(Handler):
+    def post(self,post_id):
+        print(post_id)
+        cookie_val = self.request.cookies.get('user_id')
+        user_id = cookie_val.split("|")[0]
+        blog = Blog.get_by_id(int(post_id))
+        if self.is_valid(cookie_val,blog):
+            print(blog.likedBy)
+            # Check if user already liked the post.
+            # This determines whether to like/unlike post.
+            if user_id in blog.likedBy:
+                print("Remove like")
+                self.remove_like(blog,user_id)
+            else:
+                print("Like")
+                self.add_like(blog,user_id) 
+
+
+    def is_valid(self,cookie_val,blog):
+        # Check if user is signed in.
+        if not self.is_signed_in(cookie_val):
+            error = {'status':401,'error': "Not signed in."}
+            self.response.set_status(401)
+            self.response.headers['Content-Type'] = 'application/json'
+            self.response.out.write(json.dumps(error))
+            return False
+        # Check if blog exists.
+        if not self.blog_exists(blog):
+            error = {'status':400, 'error': "Post doesn't exist."}
+            self.response.set_status(400)
+            self.response.headers['Content-Type'] = 'application/json'
+            self.response.out.write(json.dumps(error))
+            self.response
+            return False
+        # Check if user is the author.
+        if self.is_author(cookie_val,blog):
+            error = {'status':400,'error': "Post cannot be liked by creator."}
+            self.response.set_status(400)
+            self.response.headers['Content-Type'] = 'application/json'
+            self.response.out.write(json.dumps(error))
+            return False
+        return True
+
+    def add_like(self,blog,user_id):
+        blog.numberOfLikes += 1
+        blog.likedBy.append(user_id)
+        blog.put()
+        success = {"status":200, "success": "successfully liked a post", "new_count": blog.numberOfLikes}
+        self.response.set_status(200)
+        self.response.out.write(json.dumps(success))
+
+    def remove_like(self,blog,user_id):
+        blog.numberOfLikes -= 1
+        blog.likedBy = [x for x in blog.likedBy if(int(x)!=int(user_id))]
+        blog.put()
+        success = {"status":200, "success": "successfully unliked a post", "new_count": blog.numberOfLikes}
+        self.response.set_status(200)
+        self.response.out.write(json.dumps(success))
 
 class ReadMainPage(Handler):
     def get(self):
@@ -130,7 +198,7 @@ class CreatePost(Handler):
         if self.is_signed_in(cookie_val):
             if (title and content):
                 user = User.get_by_id(int(cookie_val.split("|")[0]))
-                blog_entry = Blog(title=title, content=content, author=user)
+                blog_entry = Blog(title=title, content=content, author=user, numberOfLikes=0)
                 blog_key = blog_entry.put()
                 blog_id = blog_key.id()
                 self.redirect('/blog/%s' %blog_id)                  
@@ -151,7 +219,7 @@ class UpdatePost(Handler):
             # If all is well, proceed to the page.
             # If not, tell user is not authorized.
             if self.is_signed_in(cookie_val):
-                if self.is_authorized(cookie_val,blog):
+                if self.is_author(cookie_val,blog):
                     self.render('updatePost.html', blog=blog, signed_in=True)
                 else:
                     self.redirect('/blog/notauthorized')          
@@ -192,7 +260,7 @@ class DeletePost(Handler):
         # If all is well, proceed to delete page.
         if blog:
             if self.is_signed_in(cookie_val):
-                if self.is_authorized(cookie_val,blog):    
+                if self.is_author(cookie_val,blog):    
                     self.render('deletePost.html', blog=blog, signed_in=True)
                 else:
                     self.redirect('/blog/notauthorized')
@@ -509,7 +577,7 @@ class Blog(db.Model):
     dateCreated = db.DateTimeProperty(auto_now_add=True)
     author = db.ReferenceProperty(User)
     numberOfLikes = db.IntegerProperty()
-    liked_by = db.StringListProperty()
+    likedBy = db.StringListProperty()
 
 
 
@@ -529,4 +597,6 @@ app = webapp2.WSGIApplication([('/blog',ReadMainPage), ('/blog/',ReadMainPage),
                                 ('/blog/login',ReadLoginPage),
                                 ('/blog/login/',ReadLoginPage),
                                 ('/blog/logout',ReadLogoutPage),
-                                ('/blog/logout/',ReadLogoutPage)], debug=True)
+                                ('/blog/logout/',ReadLogoutPage),
+                                ('/blog/(.*\d)/like',LikePost),
+                                ('/blog/(.*\d)/like/',LikePost)], debug=True)

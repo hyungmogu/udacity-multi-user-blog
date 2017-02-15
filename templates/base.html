@@ -3,6 +3,7 @@
 <head>
 	<title>{%block title%}{%endblock%}</title>
 	<link rel="stylesheet" type="text/css" href="/static/style.css">
+	{%block import%}{%endblock%}
 </head>
 <body>
 	<header>
@@ -15,7 +16,9 @@
 		<div class="contents">
 			{%block content_header%}{%endblock%}
 			{%block content%}{%endblock%}
+			{%block content_footer%}{%endblock%}
 		</div>
 	</main>
 </body>
+{%block javascript%}{%endblock%}
 </html>
