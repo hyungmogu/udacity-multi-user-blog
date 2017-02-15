@@ -66,7 +66,6 @@ class Handler(webapp2.RequestHandler):
         @Outputs:
             (Boolean) - False when cookie is invalid, and True if not.
         """
-        print("In is_signed_in()")
         # Check if the cookie value is empty.
         # Return false if empty.
         if not cookie_val:
@@ -89,12 +88,10 @@ class Handler(webapp2.RequestHandler):
         return True
 
     def is_author(self,cookie_val,blog):
-        print("In is_author()")
         # Harvest numeric user_id from the cookie_value
         user_id = int(cookie_val.split("|")[0]) 
         # Harvest the user id of author from the queried blog
         author_id = int(blog.author.key().id())
-        print(user_id,author_id)
         # Check if the two user_ids match
         # If they match, return true
         if user_id == author_id:
@@ -104,7 +101,6 @@ class Handler(webapp2.RequestHandler):
             return False
 
     def blog_exists(self,blog):
-        print("In blog_exists()")
         if not blog:
             return False
         else:
@@ -112,19 +108,15 @@ class Handler(webapp2.RequestHandler):
 
 class LikePost(Handler):
     def post(self,post_id):
-        print(post_id)
         cookie_val = self.request.cookies.get('user_id')
         user_id = cookie_val.split("|")[0]
         blog = Blog.get_by_id(int(post_id))
         if self.is_valid(cookie_val,blog):
-            print(blog.likedBy)
             # Check if user already liked the post.
             # This determines whether to like/unlike post.
             if user_id in blog.likedBy:
-                print("Remove like")
                 self.remove_like(blog,user_id)
             else:
-                print("Like")
                 self.add_like(blog,user_id) 
 
 
