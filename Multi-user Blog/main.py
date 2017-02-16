@@ -175,10 +175,32 @@ class PostComment(Handler):
                 self.redirect('/blog/%s'%post_id)                
             else:
                 self.response.set_status(400)
-                self.response.out.write("Incorrect blog. Comment failed to be loaded.")
+                self.redirect('/blog/not_found')
         else:
             self.response.set_status(401)
-            self.response.out.write("User must be signed in to post a blog.")
+            self.redirect('/blog/not_authorized')
+
+class DeleteComment(Handler):
+    def get(self,post_id):
+        blog = Blog.get_by_id(int(post_id))
+        comment = Comment.get_by_id(int(self.request.get("id")))
+        cookie_val = self.request.cookies.get("user_id")
+
+        # Check if the operation on the comment is valid.
+        if self.is_signed_in(cookie_val) and self.is_author(cookie_val,comment):
+            if self.blog_exists(blog) and self.has_comments(comment):
+                comment.delete()
+                self.redirect('/blog/%s/'%blog.key().id())
+            else:
+                self.redirect("/blog/not_found")
+        else:
+            self.redirect("/blog/not_authorized")
+
+    def has_comments(self,comments):
+        if comments:
+            return True
+        else:
+            return False  
 
 # class PutComment(Handler):
 
