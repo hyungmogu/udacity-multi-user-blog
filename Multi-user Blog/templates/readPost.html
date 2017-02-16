@@ -17,7 +17,7 @@
 {%endblock%}
 
 {%block content_header%}
-	<section id="content-header" class="header">
+	<section id="article-header" class="header">
 		<h2 class="title">{{blog.title}}</h2>
 		<div class="date">
 			{{blog.dateCreated.strftime('%B %d, %Y %I:%M%p')}}
@@ -40,19 +40,72 @@
 {%endblock%}
 
 {%block content_footer%}
-	<section id="content-footer">
-		<div class="likes">
-			<button id="like" data-liked="false">Like This Page</button>
+	<section id="article-footer">
+		<div id="like">
+			<button id="like-button" data-liked="false">Like This Page</button>
+		</div>
+		<div id="comments">
+			<div class="header">
+				{%if signed_in and comments%}
+					<h2 class="title">Share your Knowledge with Us!</h2>
+					<form action='/blog/{{blog.key().id()}}/comment/new' method="POST" enctype="multipart/form-data" id='new-comment-form'>
+						<div class='form-group'>
+							<input type='text' placeholder='title' name='title'>
+						</div>
+						<div class='form-group'>
+							<textarea name='texts' placeholder='Write your comments here.'></textarea>
+						</div>
+						<div class='form-group'>
+							<input type="submit" value="submit">
+						</div>
+					</form>
+				{%elif signed_in and not comments%}
+					<h2 class="title">Be the first person to post a comment!</h2>
+					<form action='/blog/{{blog.key().id()}}/comment/new' method="POST" enctype="multipart/form-data" id='new-comment-form'>
+						<div class='form-group'>
+							<input type='text' placeholder='title' name='title'>
+						</div>
+						<div class='form-group'>
+							<textarea name='texts' placeholder='Write your comments here.'></textarea>
+						</div>
+						<div class='form-group'>
+							<input type="submit" value="submit">
+						</div>
+					</form>
+				{%else%}
+					<h2 class="title">You must be logged in to post comments!</h2>
+					<a href='/blog/login'>Login/Signup</a>
+				{%endif%}
+			</div>
+			{%if comments%}
+				<ul>
+				{%set count = 0%}
+				{%for comment in comments%}
+					<li id="comment-{{count}}" class='comment'>
+						<h3 class='title'>{{comment.title}}</h3>
+						<div class='meta'>
+							<span class='author'>{{comment.author.username}}</span>
+							<span class='date-created'>{{comment.dateCreated}}</span>
+						</div>
+						<div class='texts'>{{comment.content}}</div>
+						<div class='options'>
+							<a href='/blog/{{blog.key().id()}}/comment/edit?id={{comment.key().id()}}'>Edit</a>
+							<a href='/blog/{{blog.key().id()}}/comment/delete?id={{comment.key().id()}}'>Delete</a>
+						</div>
+					</li>
+					{%set count = count + 1%}						
+				{%endfor%}
+				</ul>
+			{%endif%}
 		</div>
 	</section>
 {%endblock%}
-
 {%block javascript%}
 <script>
+	//Like handler
 	$(document).ready(function(){
-
-		$('#like').click(function(){
-			$liked = ($('#like').attr('data-liked') == 'true');
+		$('#like-button').click(function(){
+			$liked = ($('#like-button').attr('data-liked') == 'true');
 			if($liked){
 				$.ajax({
 					type: 'POST',
@@ -63,8 +116,8 @@
 							console.log(result["error"]);
 						} else {
 							$('#number-of-likes').html(result["new_count"]);
-							$('#like').attr('data-liked','false');
-							$('#like').html('Like This Page');
+							$('#like-button').attr('data-liked','false');
+							$('#like-button').html('Like This Page');
 						}
 					},
 					error: function(error){
@@ -81,8 +134,8 @@
 							console.log(result["error"]);
 						} else {
 							$('#number-of-likes').html(result["new_count"]);
-							$('#like').attr('data-liked','true');
-							$('#like').html('Liked');
+							$('#like-button').attr('data-liked','true');
+							$('#like-button').html('Liked');
 						}
 					},
 					error: function(error){
@@ -92,7 +145,6 @@
 			}
 		});
 	});
-
 </script>
 {%endblock%}
 

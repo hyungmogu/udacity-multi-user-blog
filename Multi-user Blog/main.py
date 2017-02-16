@@ -106,6 +106,87 @@ class Handler(webapp2.RequestHandler):
         else:
             return True
 
+#API
+
+class GetComments(Handler):
+    def get(self,post_id):
+        cookie_val = self.request.cookies.get("user_id")
+        blog = Blog.get_by_id(int(post_id))
+        comments = blog.comment_set.get()
+        self.response.set_status(200)
+        self.response.headers["Content-Type"] = "application/json"
+        if self.is_signed_in(cookie_val) and self.has_comments(comments):
+            self.response.out.write(json.dumps({"success": True, "data": [x.serialize for x in comments], "logged_in": True}))
+        elif self.is_signed_in(cookie_val) and not self.has_comments(comments):
+            self.response.out.write(json.dumps({"success": True, "logged_in": True}))
+        elif not self.is_signed_in(cookie_val) and self.has_comments(comments):
+            self.response.out.write(json.dumps({"success": True, "data": [x.serialize for x in comments], "logged_in": False}))
+        else:
+            self.response.out.write(json.dumps({"success": True, "logged_in": False}))    
+    def has_comments(self,comments):
+        if comments:
+            return True
+        else:
+            return False  
+
+# class PostComment(Handler):
+#     def post(self,post_id):
+#         cookie_val = self.request.cookies.get("user_id")
+#         blog = Blog.get_by_id(int(post_id))
+#         # Check if user is signed in.
+#         # Then, check if blog post exists.
+#         # If all is well, load it to the entity called Comment.
+#         if self.is_signed_in(cookie_val):
+#             if self.blog_exists(blog):
+#                 user = User.get_by_id(int(cookie_val.split("|")[0]))
+#                 title = self.request.get("title")
+#                 content = self.request.get("content")
+#                 print(title,content)
+#                 comment = Comment(title=title,content=content,blog=blog,author=user)
+#                 self.response.set_status(200)
+#                 self.response.headers["Content-Type"] = "application/json"
+#                 self.response.out.write(json.dumps({"success":True,"data":comment.serialize}))                
+#             else:
+#                 self.response.set_status(400)
+#                 self.response.headers["Content-Type"] = "application/json"
+#                 self.response.out.write(json.dumps({"error":"Incorrect blog. Comment failed to be loaded."}))
+#         else:
+#             self.response.set_status(401)
+#             self.response.headers["Content-Type"] = "application/json"
+#             self.response.out.write(json.dumps({"error":"User must be signed in to post a blog."}))
+
+
+class PostComment(Handler):
+    def post(self,post_id):
+        cookie_val = self.request.cookies.get("user_id")
+        blog = Blog.get_by_id(int(post_id))
+        # Check if user is signed in.
+        # Then, check if blog post exists.
+        # If all is well, load it to the entity called Comment.
+        if self.is_signed_in(cookie_val):
+            if self.blog_exists(blog):
+                user = User.get_by_id(int(cookie_val.split("|")[0]))
+                title = self.request.get("title")
+                content = self.request.get("texts")
+                print(title,content)
+                comment = Comment(title=title,content=content,blog=blog,author=user)
+                comment.put()
+                self.response.set_status(200)
+                self.response.headers["Content-Type"] = "application/json"
+                self.response.out.write(json.dumps({"success":True}))                
+            else:
+                self.response.set_status(400)
+                self.response.headers["Content-Type"] = "application/json"
+                self.response.out.write(json.dumps({"error":"Incorrect blog. Comment failed to be loaded."}))
+        else:
+            self.response.set_status(401)
+            self.response.headers["Content-Type"] = "application/json"
+            self.response.out.write(json.dumps({"error":"User must be signed in to post a blog."}))
+
+# class PutComment(Handler):
+
+# class DeleteComment(Handler):
+
 class LikePost(Handler):
     def post(self,post_id):
         cookie_val = self.request.cookies.get('user_id')
@@ -160,6 +241,8 @@ class LikePost(Handler):
         success = {"status":200, "success": "successfully unliked a post", "new_count": blog.numberOfLikes}
         self.response.set_status(200)
         self.response.out.write(json.dumps(success))
+
+# ROUTES
 
 class ReadMainPage(Handler):
     def get(self):
@@ -278,10 +361,20 @@ class ReadPost(Handler):
     def get(self,post_id):
         cookie_val = self.request.cookies.get('user_id')
         blog = Blog.get_by_id(int(post_id))
+        # Query all comments for the post
+        comments = Comment.all().filter("blog =",blog.key()).order('-dateCreated')
+        print(comments)
         if self.is_signed_in(cookie_val):
-            self.render('readPost.html', blog=blog, signed_in = True)
+            self.render('readPost.html', blog=blog, signed_in = True, comments=comments)
         else:
             self.render('readPost.html', blog=blog)
+
+
+    def has_comments(self,comments):
+        if comments:
+            return True
+        else:
+            return False
 
 class ReadSignUpPage(Handler):
     def get(self):
@@ -527,35 +620,7 @@ class ReadLogoutPage(Handler):
         self.response.headers.add_header('Set-Cookie','user_id=;Path=/')
         self.redirect('/blog/login')
 
-# class UpdatePostLikes(Handler):
-
-#     def post(self,post_id):
-
-#         # Harvest data from AJAX POST request
-#         # Retrieve blog data.
-#         blog = Blog.get_by_id(int(post_id))
-#         # Check if blog exists.
-#         # If not, send response and redirect user to not found page
-#         if not blog:
-
-#         # If exists, check if user signed in.
-#         # If not signed in, send response then redirect user to 'login' page
-#         if not is_signed_in(cookie_val):
-
-#         # If signed in, check if a user already liked the post.
-#         # If it is already liked, redirect to a page with error "User already liked the post".
-#         if is_already_liked(post_id,cookie_val):
-
-#         # If all is well, increment like count and add user_id to likes
-#         # Also, send response and change the like button to unlike button
-#         blog.like_count += 1
-#         (blog.likes).append(user_id)
-#         blog.put()
-
-# class UpdateCommentLikes(Handler):
-
-    
-
+# DATABASE
 
 class User(db.Model):
     username = db.StringProperty(required=True)
@@ -571,7 +636,12 @@ class Blog(db.Model):
     numberOfLikes = db.IntegerProperty()
     likedBy = db.StringListProperty()
 
-
+class Comment(db.Model):
+    title = db.StringProperty(required=True)
+    dateCreated = db.DateTimeProperty(auto_now_add=True)
+    content = db.TextProperty(required=True)
+    author = db.ReferenceProperty(User)
+    blog = db.ReferenceProperty(Blog)
 
 app = webapp2.WSGIApplication([('/blog',ReadMainPage), ('/blog/',ReadMainPage),
                                 ('/blog/newpost', CreatePost),
@@ -591,4 +661,8 @@ app = webapp2.WSGIApplication([('/blog',ReadMainPage), ('/blog/',ReadMainPage),
                                 ('/blog/logout',ReadLogoutPage),
                                 ('/blog/logout/',ReadLogoutPage),
                                 ('/blog/(.*\d)/like',LikePost),
-                                ('/blog/(.*\d)/like/',LikePost)], debug=True)
+                                ('/blog/(.*\d)/like/',LikePost),
+                                ('/blog/(.*\d)/comment',GetComments),
+                                ('/blog/(.*\d)/comment/',GetComments),
+                                ('/blog/(.*\d)/comment/new',PostComment),
+                                ('/blog/(.*\d)/comment/new/',PostComment)], debug=True)
