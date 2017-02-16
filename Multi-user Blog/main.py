@@ -172,16 +172,13 @@ class PostComment(Handler):
                 comment = Comment(title=title,content=content,blog=blog,author=user)
                 comment.put()
                 self.response.set_status(200)
-                self.response.headers["Content-Type"] = "application/json"
-                self.response.out.write(json.dumps({"success":True}))                
+                self.redirect('/blog/%s'%post_id)                
             else:
                 self.response.set_status(400)
-                self.response.headers["Content-Type"] = "application/json"
-                self.response.out.write(json.dumps({"error":"Incorrect blog. Comment failed to be loaded."}))
+                self.response.out.write("Incorrect blog. Comment failed to be loaded.")
         else:
             self.response.set_status(401)
-            self.response.headers["Content-Type"] = "application/json"
-            self.response.out.write(json.dumps({"error":"User must be signed in to post a blog."}))
+            self.response.out.write("User must be signed in to post a blog.")
 
 # class PutComment(Handler):
 
@@ -665,4 +662,6 @@ app = webapp2.WSGIApplication([('/blog',ReadMainPage), ('/blog/',ReadMainPage),
                                 ('/blog/(.*\d)/comment',GetComments),
                                 ('/blog/(.*\d)/comment/',GetComments),
                                 ('/blog/(.*\d)/comment/new',PostComment),
-                                ('/blog/(.*\d)/comment/new/',PostComment)], debug=True)
+                                ('/blog/(.*\d)/comment/new/',PostComment),
+                                ('/blog/(.*\d)/comment/delete',DeleteComment),
+                                ('/blog/(.*\d)/comment/delete/',DeleteComment)], debug=True)
