@@ -1,0 +1,25 @@
+{%extends "base.html"%}
+
+{%block title%}Not Authorized | Multi User Blog Site{%endblock%}
+
+{%block navigation%}
+	<nav>
+	{%if signed_in%}
+		<a href="/blog/logout">Logout</a>
+	{%else%}
+		<a href="/blog/login">Login / Sign-up</a>
+	{%endif%}
+	</nav>
+{%endblock%}
+
+{%block content_header%}
+	<section id="content-header" class="header">
+		<h2 class="title">(401)Not Authorized</h2>
+	</section>
+{%endblock%}
+
+{%block content%}
+	<section>
+		<p>You must be the right user in order to perform the operation.</p>
+	</section>
+{%endblock%}

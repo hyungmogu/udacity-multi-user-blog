@@ -639,6 +639,23 @@ class ReadLogoutPage(Handler):
         self.response.headers.add_header('Set-Cookie','user_id=;Path=/')
         self.redirect('/blog/login')
 
+class readNotFound(Handler):
+    def get(self):
+        cookie_val = self.request.cookies.get("user_id")
+        if self.is_signed_in(cookie_val):
+            self.render("readNotFound.html",signed_in=True)
+        else:
+            self.render("readNotFound.html")
+
+class readNotAuthorized(Handler):
+    def get(self):
+        cookie_val = self.request.cookies.get("user_id")
+        if self.is_signed_in(cookie_val):
+            self.render("readNotAuthorized.html",signed_in=True)
+        else:
+            self.render("readNotAuthorized.html")
+
+
 # DATABASE
 
 class User(db.Model):
@@ -686,4 +703,8 @@ app = webapp2.WSGIApplication([('/blog',ReadMainPage), ('/blog/',ReadMainPage),
                                 ('/blog/(.*\d)/comment/new',PostComment),
                                 ('/blog/(.*\d)/comment/new/',PostComment),
                                 ('/blog/(.*\d)/comment/delete',DeleteComment),
-                                ('/blog/(.*\d)/comment/delete/',DeleteComment)], debug=True)
+                                ('/blog/(.*\d)/comment/delete/',DeleteComment),
+                                ('/blog/not_found',readNotFound),
+                                ('/blog/not_found/',readNotFound),
+                                ('/blog/not_authorized',readNotAuthorized),
+                                ('/blog/not_authorized/',readNotAuthorized)], debug=True)
