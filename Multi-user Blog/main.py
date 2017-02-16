@@ -174,7 +174,7 @@ class PostComment(Handler):
                 self.response.set_status(200)
                 self.redirect('/blog/%s'%post_id)                
             else:
-                self.response.set_status(400)
+                self.response.set_status(404)
                 self.redirect('/blog/not_found')
         else:
             self.response.set_status(401)
@@ -654,7 +654,6 @@ class readNotAuthorized(Handler):
             self.render("readNotAuthorized.html",signed_in=True)
         else:
             self.render("readNotAuthorized.html")
-
 
 # DATABASE
 

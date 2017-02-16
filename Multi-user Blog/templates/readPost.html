@@ -146,5 +146,79 @@
 		});
 	});
 </script>
+<script>
+	// Comment Handler
+	function postComment(){
+		// Harvest form values
+		var $json = {};
+		$.each($("#new-comment-form").serializeArray(),function(i,field){
+			$json[field.name] = field.value;
+		});
+		console.log($json);
+		$.ajax({
+			url: "/blog/{{blog.key().id()}}/comment/new",
+			type: "POST",
+			dataType: "json",
+			data: $json,
+			processData:false,
+			success: function(result){
+				if(result["success"]){
+					$("#comments input[name=title]").val("");
+					$("#comments textarea[name=texts]").val("")
+					$("#comments .title").html("Thank you so much for sharing!");
+					comment = "<li class='comment'><h3 class='title'>"+result["data"]["title"]+"</h3><div class='meta'><span class='author'>"+result["data"]["author"]+"</span><span class='date-created'>"+result["data"]["dateCreated"]+"</span></div><div class='texts'>"+result["data"]["content"]+"</div><div class='options'><a href='/blog/{{blog.key().id()}}/comment/edit?id='><a href='/blog/{{blog.key().id()}}/comment/delete?id='></div>";
+					$("#comments ul").append(comment);
+				};
+			},
+			error: function(error){
+				console.log(error);					
+			} 
+		});
+	};
+
+	function retrieveComments(){
+		$.ajax({
+			url: "/blog/{{blog.key().id()}}/comment",
+			type: "GET",
+			dataType: "json",
+			success: function(result) {
+				if(result["success"] && result["logged_in"] && result["data"]){
+					$("#comments .title").html("Share Your Knowledge With us!");
+					form = "<form action='' id='new-comment-form'><div class='form-group'><input type='text' placeholder='title' name='title'></div><div class='form-group'><textarea name='texts' placeholder='Write your comments here.'></textarea></div><div class='form-group'><button>Submit</button></div></form>";
+					$("#comments .header").append(form)
+					for(data in result["data"]) {
+						comment = "<li class='comment'><h3 class='title'>"+data["title"]+"</h3><div class='meta'><span class='author'>"+data["author"]+"</span><span class='date-created'>"+data["dateCreated"]+"</span></div><div class='texts'>"+data["content"]+"</div><div class='options'><a href='/blog/{{blog.key().id()}}/comment/edit?id='>Edit</a><a href='/blog/{{blog.key().id()}}/comment/delete?id='>Delete</a></div></li>"; 
+						$("#comments ul").append(comment); 
+					} 
+				} else if (result["success"] && result["logged_in"] && !result["data"]){
+					$("#comments .title").html("Be the first person to post a comment!");
+					form = "<form action='' id='new-comment-form'><div class='form-group'><input type='text' placeholder='title' name='title'></div><div class='form-group'><textarea name='texts' placeholder='Write your comments here.'></textarea></div><div class='form-group'><button>Submit</button></div></form>";
+					$("#comments .header").append(form)
+				} else if (result["success"] && !result["logged_in"] && result["data"]) {
+					$("#comments .title").html("You must be logged in to post comments!");
+					link = "<a href='/blog/login'>Login/Signup</a>";
+					$("#comments .header").append(link);
+					for(data in result["data"]) {
+						comment = "<li class='comment'><h3 class='title'>"+data["title"]+"</h3><div class='meta'><span class='author'>"+data["author"]+"</span><span class='date-created'>"+data["dateCreated"]+"</span></div><div class='texts'>"+data["content"]+"</div><div class='options'><a href='/blog/{{blog.key().id()}}/comment/edit?id='>Edit</a><a href='/blog/{{blog.key().id()}}/comment/delete?id='>Delete</a></div></li>"; 
+						$("#comments ul").append(comment);
+					} 
+				} else if (result["success"] && !result["logged_in"] && !result["data"]) {
+					$("#comments .title").html("You must be logged in to post comments!");
+					link = "<a href='/blog/login'>Login/Signup</a>";
+					$("#comments .header").append(link);					
+				} 
+			},
+			error: function(error) {
+				$("#comments .title").html("Sorry. Failed to load comments.");
+			}  
+		});
+	};
+	$(document).ready(function(){
+		// Retrieve comments on load.
+		retrieveComments();
+		// Submit a comment upon clicking submit button.
+		$('#new-comment-form button').click(postComment());  
+	});
+</script>
 {%endblock%}
 
