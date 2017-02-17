@@ -202,7 +202,52 @@ class DeleteComment(Handler):
         else:
             return False  
 
-# class PutComment(Handler):
+class PutComment(Handler):
+    def put(self,post_id):
+        comment = comment.get_by_id(int(self.request.get("id")))
+        blog = Blog.get_by_id(int(post_id))
+        cookie_val = self.request.cookies.get("user_id")
+        new_title = self.request.get("title")
+        new_content = self.request.get("texts")
+
+        if self.is_valid(blog,comment,cookie_val,new_content,new_title):
+            comment.title = new_title
+            comment.content = new_content
+            comment.put()
+            self.response.status_code(200)
+            self.response.out.write(json.dumps({"success":"The comment has been successfully updated."}))
+        else:
+            if not (new_content and new_title):
+                self.response.status_code(400)
+                self.response.out.write(json.dumps({"error":"Invalid. Both title and comment must not be empty."}))
+            if not self.blog_exists(blog):
+                self.response.status_code(404)
+                self.response.out.write(json.dumps({"error": "Invalid. The blog page does not exist."}))
+            if not self.comment_exists(comment):
+                self.response.status_code(404)
+                self.response.out.write(json.dumps({"error": "Invalid. The comment does not exist."}))
+            if not self.is_signed_in(cookie_val):
+                self.response.status_code(401)
+                self.response.out.write(json.dumps({"error": "Invalid. Must be signed in to edit comment."}))
+            if not self.is_author(cookie_val,comment):
+                self.response.status_code(401)
+                self.response.out.write(json.dumps({"error":"Invalid. Must be the creator of the comment to edit."}))
+
+    def is_valid(self,blog,comment,cookie_val,new_content,new_title):
+        # Check if new comment and title are empty.
+        if not (new_content and new_title):
+            return False
+        if not self.blog_exists(blog):
+            return False
+        if not self.comment_exists(comment):
+            return False
+        if not self.is_signed_in(cookie_val):
+            return False
+        if not self.is_author(cookie_val,comment):
+            return False
+        return True    
+        
+
 
 # class DeleteComment(Handler):
 
