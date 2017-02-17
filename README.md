@@ -2,12 +2,16 @@
 
 ## Installing Pre-requisites
 
-### Windows
-
-### Linux / Mac OS X
-
-## Running the Program
+## Downloading the Program
 
 ### Windows
 
 ### Linux / Mac OS X
+
+## Viewing the Program
+
+
+
+
+
+
