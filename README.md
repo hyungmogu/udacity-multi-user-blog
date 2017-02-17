@@ -19,7 +19,8 @@
 4. Type `https://github.com/hyungmogu/udacity-multi-user-blog`; download the repository
 
 ## Viewing the Program
-
+5. Open a web browser (Chrome is strongly suggested)
+6. Type `https://udacity-multiuser-blog-4.appspot.com/blog`
 
 
 
