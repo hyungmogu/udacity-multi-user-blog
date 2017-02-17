@@ -1,7 +1,5 @@
 # udacity-multi-user-blog
 
-## Description
-
 ## Installing Pre-requisites
 
 ### Windows
