@@ -246,8 +246,6 @@ class PutComment(Handler):
         if not self.is_author(cookie_val,comment):
             return False
         return True    
-        
-
 
 # class DeleteComment(Handler):
 

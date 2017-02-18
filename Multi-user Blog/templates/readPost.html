@@ -82,16 +82,19 @@
 				{%set count = 0%}
 				{%for comment in comments%}
 					<li id="comment-{{count}}" class='comment'>
-						<h3 class='title'>{{comment.title}}</h3>
-						<div class='meta'>
-							<span class='author'>{{comment.author.username}}</span>
-							<span class='date-created'>{{comment.dateCreated}}</span>
+						<div class="content">
+							<h3 class='title'>{{comment.title}}</h3>
+							<div class='meta'>
+								<span class='author'>{{comment.author.username}}</span>
+								<span class='date-created'>{{comment.dateCreated}}</span>
+							</div>
+							<div class='texts'>{{comment.content}}</div>
+							<div class='options'>
+								<button class="edit" data-value="{{comment.key().id()}}">Edit</button>
+								<a href='/blog/{{blog.key().id()}}/comment/delete?id={{comment.key().id()}}'>Delete</a>
+							</div>
 						</div>
-						<div class='texts'>{{comment.content}}</div>
-						<div class='options'>
-							<a href='/blog/{{blog.key().id()}}/comment/edit?id={{comment.key().id()}}'>Edit</a>
-							<a href='/blog/{{blog.key().id()}}/comment/delete?id={{comment.key().id()}}'>Delete</a>
-						</div>
+						<div class="result"></div>
 					</li>
 					{%set count = count + 1%}						
 				{%endfor%}
@@ -148,6 +151,22 @@
 </script>
 <script>
 	// Comment Handler
+	function renderCommentEdit(){
+		var $li_id = $(this).closest("li").prop("id");
+		var $title = $('#'+$li_id+" h3.title").html();
+		var $content = $('#'+$li_id+" div.texts").html();
+		var $comment_key_id = $(this).attr("data-value");
+		// Validate user
+		if(!is_user_valid($comment_key_id)){
+			$("#"+$li_id+" div.result").html("Invalid. Either user is not signed in, or is not the author of this comment.");
+			return;
+		};
+
+		var $form = "<div class='edit'><form action=''><div class='form-group'><input type='text' placeholder='title' name='title' value='"+$title+"'></div><div class='form-group'><textarea name='texts' placeholder='Write your comments here.'>"+$content+"</textarea></div></form><button class='submit'>Submit</button></div>";
+		$("#"+$li_id+" div.content").after($form);
+
+	};
+
 	function submitEdit(){
 		var $error_400 = "Invalid. Both title and content must not be empty.";
 		// Harvest form data.
@@ -253,12 +272,14 @@
 	// 		}  
 	// 	});
 	// };
-	// $(document).ready(function(){
-	// 	// Retrieve comments on load.
-	// 	retrieveComments();
-	// 	// Submit a comment upon clicking submit button.
-	// 	$('#new-comment-form button').click(postComment());  
-	// });
+	$(document).ready(function(){
+		// Retrieve comments on load.
+		// retrieveComments();
+		// Submit a comment upon clicking submit button.
+		// $('#new-comment-form button').click(postComment());
+		$(".comment button.edit").click(renderCommentEdit());  
+	});
+
 </script>
 {%endblock%}
 
