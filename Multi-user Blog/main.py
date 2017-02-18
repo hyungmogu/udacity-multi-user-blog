@@ -215,22 +215,28 @@ class PutComment(Handler):
             comment.content = new_content
             comment.put()
             self.response.status_code(200)
+            self.response.headers["Content-Type"] = "application/json"
             self.response.out.write(json.dumps({"success":"The comment has been successfully updated."}))
         else:
             if not (new_content and new_title):
                 self.response.status_code(400)
+                self.response.headers["Content-Type"] = "application/json"
                 self.response.out.write(json.dumps({"error":"Invalid. Both title and comment must not be empty."}))
             if not self.blog_exists(blog):
                 self.response.status_code(404)
+                self.response.headers["Content-Type"] = "application/json"
                 self.response.out.write(json.dumps({"error": "Invalid. The blog page does not exist."}))
             if not self.comment_exists(comment):
                 self.response.status_code(404)
+                self.response.headers["Content-Type"] = "application/json"
                 self.response.out.write(json.dumps({"error": "Invalid. The comment does not exist."}))
             if not self.is_signed_in(cookie_val):
                 self.response.status_code(401)
+                self.response.headers["Content-Type"] = "application/json"
                 self.response.out.write(json.dumps({"error": "Invalid. Must be signed in to edit comment."}))
             if not self.is_author(cookie_val,comment):
                 self.response.status_code(401)
+                self.response.headers["Content-Type"] = "application/json"
                 self.response.out.write(json.dumps({"error":"Invalid. Must be the creator of the comment to edit."}))
 
     def is_valid(self,blog,comment,cookie_val,new_content,new_title):
@@ -248,6 +254,19 @@ class PutComment(Handler):
         return True    
 
 # class DeleteComment(Handler):
+
+class ValidateUser(Handler):
+    def get(self,post_id):
+        cookie_val = self.request.cookies.get("user_id")
+        comment = Comment.get_by_id(int(self.request.get("id")))
+        if self.is_signed_in(cookie_val) and self.is_author(cookie_val,comment):
+            self.response.status_code(200)
+            self.response.headers["Content-Type"] = "application/json"
+            self.response.out.write(json.dumps({"success":"User is allowed to edit this post."}))                    
+        else:
+            self.response.status_code(401)
+            self.response.headers["Content-Type"] = "application/json"
+            self.response.out.write(json.dumps({"error": "User is either not signed in or is not authorized to edit this comment."}))         
 
 class LikePost(Handler):
     def post(self,post_id):
