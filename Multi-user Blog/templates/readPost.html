@@ -150,7 +150,8 @@
 	});
 </script>
 <script>
-	// Comment Handler
+	// Comment Handlers
+	// Edit Handler
 	function is_user_valid(comment_key_id){
 		var $url = "/blog/{{blog.key().id()}}/comment/validate?id="+comment_key_id;
 		$.ajax({
@@ -194,7 +195,7 @@
 		var $new_title = $("#"+$li_id+" input[name=title]").val();
 		var $new_content = $("#"+$li_id+" textarea[name=texts]").val();
 		// Check if submitting title and contents are non-empty.
-		if(!($title.length > 0 and $content.length>0)){
+		if(!($title.length > 0 && $content.length>0)){
 			$("#"+$li_id+" div.result").html($error_400);
 			return false;
 		};
