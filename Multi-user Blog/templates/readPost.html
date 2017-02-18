@@ -172,11 +172,11 @@
 		});
 	};
 
-	function renderCommentEdit(){
-		var $li_id = $(this).closest("li").prop("id");
+	function renderCommentEdit(THIS){
+		var $li_id = $(THIS).closest("li").prop("id");
 		var $title = $('#'+$li_id+" h3.title").html();
 		var $content = $('#'+$li_id+" div.texts").html();
-		var $comment_key_id = $(this).attr("data-value");
+		var $comment_key_id = $(THIS).attr("data-value");
 		// Validate user
 		if(!is_user_valid($comment_key_id)){
 			$("#"+$li_id+" div.result").html("Invalid. Either user is not signed in, or is not the author of this comment.");
@@ -298,7 +298,7 @@
 		// retrieveComments();
 		// Submit a comment upon clicking submit button.
 		// $('#new-comment-form button').click(postComment());
-		$(".comment button.edit").click(renderCommentEdit());  
+		$(".comment button.edit").click(function(){renderCommentEdit(this)});  
 	});
 
 </script>
