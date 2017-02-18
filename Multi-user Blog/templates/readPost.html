@@ -151,6 +151,26 @@
 </script>
 <script>
 	// Comment Handler
+	function is_user_valid(comment_key_id){
+		var $url = "/blog/{{blog.key().id()}}/comment/validate?id="+comment_key_id;
+		$.ajax({
+			url: $url,
+			type: "GET",
+			success:function(result){
+				if(result["success"]){
+					return true;
+				};
+			},
+			error:function(error){
+				if(error["status"] == 401){
+					return false;
+				} else {
+					console.log(error);
+				};
+			}  
+		});
+	};
+
 	function renderCommentEdit(){
 		var $li_id = $(this).closest("li").prop("id");
 		var $title = $('#'+$li_id+" h3.title").html();
