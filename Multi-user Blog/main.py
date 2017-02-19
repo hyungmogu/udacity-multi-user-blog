@@ -202,7 +202,7 @@ class DeleteComment(Handler):
         else:
             return False  
 
-class PutComment(Handler):
+class UpdateComment(Handler):
     def put(self,post_id):
         comment = comment.get_by_id(int(self.request.get("id")))
         blog = Blog.get_by_id(int(post_id))
@@ -765,6 +765,8 @@ app = webapp2.WSGIApplication([('/blog',ReadMainPage), ('/blog/',ReadMainPage),
                                 ('/blog/(.*\d)/comment/new/',PostComment),
                                 ('/blog/(.*\d)/comment/delete',DeleteComment),
                                 ('/blog/(.*\d)/comment/delete/',DeleteComment),
+                                ('/blog/(.*\d)/comment/edit',UpdateComment),
+                                ('/blog/(.*\d)/comment/edit/',UpdateComment),
                                 ('/blog/(.*\d)/comment/validate',ValidateUser),
                                 ('/blog/(.*\d)/comment/validate/',ValidateUser),
                                 ('/blog/not_found',readNotFound),
