@@ -152,29 +152,6 @@
 <script>
 	// Comment Handlers
 	// Edit Handler
-	// function is_user_valid(comment_key_id){
-	// 	var $url = "/blog/{{blog.key().id()}}/comment/validate?id="+comment_key_id;
-	// 	var $response;
-	// 	$.ajax({
-	// 		url: $url,
-	// 		type: "GET",
-	// 		success:function(result){
-	// 			if(result["success"]){
-	// 				console.log("success!");
-	// 				$response = true;
-	// 	 		};
-	// 		},
-	// 		error:function(error){
-	// 			console.log(error);
-	// 			if(error["status"] == 401){
-	// 				return 0;
-	// 			} else {
-	// 				$response = false;
-	// 			};
-	// 		}  
-	// 	});
-	// };
-
 	function renderCommentEdit(THIS){
 		var $li_id = $(THIS).closest("li").prop("id");
 		var $title = $('#'+$li_id+" h3.title").html();
@@ -188,6 +165,7 @@
 			success:function(result){
 				if(result["success"]){
 					var $form = "<div class='edit'><form action=''><div class='form-group'><input type='text' placeholder='title' name='title' value='"+$title+"'></div><div class='form-group'><textarea name='texts' placeholder='Write your comments here.'>"+$content+"</textarea></div></form><button class='submit'>Submit</button></div>";
+					$("#"+$li_id+" div.content").css("display","None");
 					$("#"+$li_id+" div.content").after($form);
 		 		};
 			},
