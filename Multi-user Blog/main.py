@@ -204,7 +204,7 @@ class DeleteComment(Handler):
 
 class UpdateComment(Handler):
     def put(self,post_id):
-        comment = comment.get_by_id(int(self.request.get("id")))
+        comment = Comment.get_by_id(int(self.request.get("id")))
         blog = Blog.get_by_id(int(post_id))
         cookie_val = self.request.cookies.get("user_id")
         new_title = self.request.get("title")
