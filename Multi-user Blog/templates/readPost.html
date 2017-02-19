@@ -168,7 +168,7 @@
 					$("#"+$li_id+" div.content").css("display","None");
 					$("#"+$li_id+" div.content").after($form);
 					$(".comment button.submit").click(function(){
-						submitCommentEdit();
+						submitCommentEdit(this);
 					});  
 		 		};
 			},
@@ -182,10 +182,10 @@
 		});
 	};
 
-	function submitCommentEdit(){
+	function submitCommentEdit(THIS){
 		var $error_400 = "Invalid. Both title and content must not be empty.";
 		// Harvest form data.
-		var $li_id = $(this).closest("li").prop("id");
+		var $li_id = $(THIS).closest("li").prop("id");
 		var $new_title = $("#"+$li_id+" input[name=title]").val();
 		var $new_content = $("#"+$li_id+" textarea[name=texts]").val();
 		// Check if submitting title and contents are non-empty.
