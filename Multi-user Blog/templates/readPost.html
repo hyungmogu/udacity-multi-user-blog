@@ -167,10 +167,6 @@
 					var $form = "<div class='edit'><form action=''><div class='form-group'><input type='text' placeholder='title' name='title' value='"+$title+"'></div><div class='form-group'><textarea name='texts' placeholder='Write your comments here.'>"+$content+"</textarea></div></form><button class='submit'>Submit</button></div>";
 					$("#"+$li_id+" div.content").css("display","None");
 					$("#"+$li_id+" div.content").after($form);
-					$(".comment button.submit").click(function(){
-						console.log("Submit button is clicked!");
-						submitCommentEdit(this);
-					});  
 		 		};
 			},
 			error:function(error){
@@ -183,15 +179,12 @@
 		});
 	};
 
-	function submitCommentEdit(THIS){
+	function submitCommentEdit(){
 		var $error_400 = "Invalid. Both title and content must not be empty.";
 		// Harvest form data.
-		var $li_id = $(THIS).closest("li").prop("id");
-		console.log($li_id);
+		var $li_id = $(this).closest("li").prop("id");
 		var $new_title = $("#"+$li_id+" input[name=title]").val();
 		var $new_content = $("#"+$li_id+" textarea[name=texts]").val();
-		console.log($new_title);
-		console.log($new_content);
 		// Check if submitting title and contents are non-empty.
 		if(!($title.length > 0 && $content.length>0)){
 			$("#"+$li_id+" div.result").html($error_400);
@@ -296,10 +289,8 @@
 		// retrieveComments();
 		// Submit a comment upon clicking submit button.
 		// $('#new-comment-form button').click(postComment());
-		$(".comment button.edit").click(function(){
-			console.log("Edit button is clicked!");
-			renderCommentEdit(this);
-		});
+		$(".comment button.edit").click(function(){renderCommentEdit(this)});  
+		$(".comment .edit button.submit").click(submitCommentEdit());
 	});
 
 </script>
