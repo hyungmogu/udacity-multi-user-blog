@@ -189,7 +189,7 @@
 		var $new_title = $("#"+$li_id+" input[name=title]").val();
 		var $new_content = $("#"+$li_id+" textarea[name=texts]").val();
 		// Check if submitting title and contents are non-empty.
-		if(!($title.length > 0 && $content.length>0)){
+		if(!($new_title.length > 0 && $new_content.length>0)){
 			$("#"+$li_id+" div.result").html($error_400);
 			return false;
 		};
