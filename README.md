@@ -4,8 +4,6 @@
 
 The program uses Google App Engine, Google Datastore, Jinja2, Python, HTML5, CSS3, Javscript and jQuery. 
 
-## Installing Pre-requisites
-
 ## Downloading the Program
 - The following steps are for individuals who wishes to view the code.
 - For those of who are interested in seeing the program only, skip to `Viewing the Program`
