@@ -1,5 +1,9 @@
 # udacity-multi-user-blog
 
+'Multi-user Blog' is the final project for the course 'Intro to Backend'. Here, the registered users can post blogs and comments, and as well as upvoting a blog of their choice. Basically, it is a scaled-down, primitive version of Reddit.
+
+The program uses Google App Engine, Google Datastore, Jinja2, Python, HTML5, CSS3, Javscript and jQuery. 
+
 ## Installing Pre-requisites
 
 ## Downloading the Program
