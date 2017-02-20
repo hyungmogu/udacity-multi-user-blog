@@ -107,7 +107,6 @@ class Handler(webapp2.RequestHandler):
             return True
 
 #API
-
 class GetComments(Handler):
     def get(self,post_id):
         cookie_val = self.request.cookies.get("user_id")
@@ -204,11 +203,12 @@ class DeleteComment(Handler):
 
 class UpdateComment(Handler):
     def put(self,post_id):
-        comment = Comment.get_by_id(int(self.request.get("id")))
+        data = json.loads(self.request.body)
+        comment = Comment.get_by_id(int(data["id"]))
         blog = Blog.get_by_id(int(post_id))
         cookie_val = self.request.cookies.get("user_id")
-        new_title = self.request.get("title")
-        new_content = self.request.get("texts")
+        new_title = data["title"]
+        new_content = data["content"]
 
         if self.is_valid(blog,comment,cookie_val,new_content,new_title):
             comment.title = new_title
