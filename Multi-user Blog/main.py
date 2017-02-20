@@ -239,6 +239,12 @@ class UpdateComment(Handler):
                 self.response.headers["Content-Type"] = "application/json"
                 self.response.out.write(json.dumps({"error":"Invalid. Must be the creator of the comment to edit."}))
 
+    def comment_exists(self,comments):
+        if comments:
+            return True
+        else:
+            return False  
+
     def is_valid(self,blog,comment,cookie_val,new_content,new_title):
         # Check if new comment and title are empty.
         if not (new_content and new_title):
