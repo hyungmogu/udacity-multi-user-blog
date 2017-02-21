@@ -180,27 +180,52 @@ class PostComment(Handler):
             self.redirect('/blog/not_authorized')
 
 class DeleteComment(Handler):
-    def get(self,post_id):
+    def delete(self,post_id):
         blog = Blog.get_by_id(int(post_id))
         comment = Comment.get_by_id(int(self.request.get("id")))
         cookie_val = self.request.cookies.get("user_id")
-
         # Check if the operation on the comment is valid.
-        if self.is_signed_in(cookie_val) and self.is_author(cookie_val,comment):
-            if self.blog_exists(blog) and self.has_comments(comment):
-                comment.delete()
-                self.redirect('/blog/%s/'%blog.key().id())
-            else:
-                self.redirect("/blog/not_found")
+        if self.is_valid(blog,comment,cookie_val):
+            comment.delete()  
+            self.response.set_status(200)
+            self.response.headers["Content-Type"] = "application/json"
+            self.response.out.write(json.dumps({"success":"The comment has been deleted successfully."}))
         else:
-            self.redirect("/blog/not_authorized")
+            if not self.blog_exists(blog):
+                self.response.set_status(404)
+                self.response.headers["Content-Type"] = "application/json"
+                self.response.out.write(json.dumps({"error": "Invalid. The blog page does not exist."}))
+            if not self.comment_exists(comment):
+                self.response.set_status(400)
+                self.response.headers["Content-Type"] = "application/json"
+                self.response.out.write(json.dumps({"error": "Invalid. The comment does not exist."}))
+            if not self.is_signed_in(cookie_val):
+                self.response.set_status(401)
+                self.response.headers["Content-Type"] = "application/json"
+                self.response.out.write(json.dumps({"error": "Invalid. Must be signed in to edit comment."}))
+            if not self.is_author(cookie_val,comment):
+                self.response.set_status(403)
+                self.response.headers["Content-Type"] = "application/json"
+                self.response.out.write(json.dumps({"error":"Invalid. Must be the creator of the comment to edit."}))
 
-    def has_comments(self,comments):
-        if comments:
+
+    def comment_exists(self,comment):
+        if comment:
             return True
         else:
             return False  
 
+    def is_valid(self,blog,comment,cookie_val):
+        # Check if new comment and title are empty.
+        if not self.blog_exists(blog):
+            return False
+        if not self.comment_exists(comment):
+            return False
+        if not self.is_signed_in(cookie_val):
+            return False
+        if not self.is_author(cookie_val,comment):
+            return False
+        return True   
 class UpdateComment(Handler):
     def put(self,post_id):
         data = json.loads(self.request.body)
@@ -450,7 +475,7 @@ class ReadPost(Handler):
         blog = Blog.get_by_id(int(post_id))
         # Query all comments for the post
         comments = Comment.all().filter("blog =",blog.key()).order('-dateCreated')
-        print(comments)
+        # print(comments)
         if self.is_signed_in(cookie_val):
             self.render('readPost.html', blog=blog, signed_in = True, comments=comments)
         else:

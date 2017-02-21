@@ -91,7 +91,7 @@
 							<div class='texts'>{{comment.content}}</div>
 							<div class='options'>
 								<button class="edit">Edit</button>
-								<a href='/blog/{{blog.key().id()}}/comment/delete?id={{comment.key().id()}}'>Delete</a>
+								<button class="delete">Delete</button>
 							</div>
 							<input type="hidden" value="{{comment.key().id()}}">
 						</div>
@@ -182,7 +182,7 @@
 			}  
 		});
 	};
-
+ 
 	function submitCommentEdit(THIS){
 		var $error_400 = "Invalid. Both title and content must not be empty.";
 		// Harvest form data.
@@ -226,6 +226,39 @@
 			}
 		});
 	}; 
+
+	function deleteComment(THIS){
+		// Harvest comment id.
+		var $li_id = $(THIS).closest("li").prop("id");
+		var $comment_key_id = $("#"+$li_id+" input[type=hidden]").val();		
+		// Send AJAX DELETE request to server.
+		$.ajax({
+			url: "/blog/{{blog.key().id()}}/comment/delete?id="+$comment_key_id,
+			type: "DELETE",
+			dataType:'json',
+			success:function(result){
+				if(result["success"]){
+					$("#"+$li_id).remove();
+				}
+			},
+			error:function(error){
+				if(error["status"]==400){
+					console.log(400);
+					$("#"+$li_id+" div.result").html("Invalid. Comment is not found.");
+				} else if(error["status"]==401){
+					console.log(401);
+					$("#"+$li_id+" div.result").html("Invalid. User is not logged in.");
+				} else if(error["status"]==403){
+					console.log(403);
+					$("#"+$li_id+" div.result").html("Not allowed. User must be the author of this post.");
+				} else if(error["status"]==404){
+					window.location.href="/blog/not_found";
+				}
+			}
+
+		});
+
+	};
 
 	// function postComment(){
 	// 	// Harvest form values
@@ -298,6 +331,7 @@
 		// Submit a comment upon clicking submit button.
 		// $('#new-comment-form button').click(postComment());
 		$(".comment button.edit").click(function(){renderCommentEdit(this);});
+		$(".comment button.delete").click(function(){deleteComment(this);});
 	});
 
 </script>
