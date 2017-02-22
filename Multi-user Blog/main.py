@@ -362,7 +362,7 @@ class ReadMainPage(Handler):
             self.render('mainPage.html', blogs=blogs)
 
 
-class CreatePost(Handler):
+class CreateBlog(Handler):
 
     def get(self):
         # Harvest requirements.
@@ -810,8 +810,8 @@ class Comment(db.Model):
     blog = db.ReferenceProperty(Blog)
 
 app = webapp2.WSGIApplication([('/blog',ReadMainPage), ('/blog/',ReadMainPage),
-                                ('/blog/newpost', CreatePost),
-                                ('/blog/newpost/', CreatePost),
+                                ('/blog/newpost', CreateBlog),
+                                ('/blog/newpost/', CreateBlog),
                                 ('/blog/(.*\d)',ReadPost),
                                 ('/blog/(.*\d)/',ReadPost),
                                 ('/blog/(.*\d)/edit',UpdatePost),
