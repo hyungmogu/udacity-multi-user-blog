@@ -5,9 +5,10 @@ import hmac
 import string
 import random
 import hashlib
-from google.appengine.ext import db
 
 import json
+
+from database import User,Blog,Comment
 
 template_dir = os.path.join(os.path.dirname(__file__),'templates')
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
@@ -773,6 +774,7 @@ class ReadLogout(LoginHandler):
         self.response.headers.add_header('Set-Cookie','user_id=;Path=/')
         self.redirect('/blog/login')
 
+
 class ReadNotFound(Handler):
 
     def get(self):
@@ -783,6 +785,7 @@ class ReadNotFound(Handler):
             self.render("readNotFound.html",signed_in=True)
         else:
             self.render("readNotFound.html")
+
 
 class ReadNotAuthorized(Handler):
 
@@ -795,28 +798,6 @@ class ReadNotAuthorized(Handler):
         else:
             self.render("readNotAuthorized.html")
 
-
-# DATABASE
-class User(db.Model):
-    username = db.StringProperty(required=True)
-    password = db.StringProperty(required=True)
-    email = db.EmailProperty(required=True)
-
-class Blog(db.Model):
-    title = db.StringProperty(required=True)
-    subtitle = db.StringProperty()
-    content = db.TextProperty(required=True)
-    date_created = db.DateTimeProperty(auto_now_add=True)
-    author = db.ReferenceProperty(User)
-    number_of_likes = db.IntegerProperty()
-    liked_by = db.StringListProperty()
-
-class Comment(db.Model):
-    title = db.StringProperty(required=True)
-    date_created = db.DateTimeProperty(auto_now_add=True)
-    content = db.TextProperty(required=True)
-    author = db.ReferenceProperty(User)
-    blog = db.ReferenceProperty(Blog)
 
 app = webapp2.WSGIApplication([('/blog',ReadMain), ('/blog/',ReadMain),
                                 ('/blog/newpost', CreateBlog),
