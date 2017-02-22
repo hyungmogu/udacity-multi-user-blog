@@ -511,7 +511,7 @@ class ReadBlog(Handler):
             return False
 
 
-class ReadSignUpPage(Handler):
+class ReadSignUp(Handler):
 
     def get(self):
         cookie_val = self.request.cookies.get('user_id')
@@ -672,7 +672,7 @@ class ReadSignUpPage(Handler):
         return "".join([random.choice(string.letters+string.digits) 
                         for i in range(10)])
 
-class ReadWelcomePage(Handler):
+class ReadWelcome(Handler):
 
     def get(self):
         # Harvest requirements.
@@ -688,7 +688,7 @@ class ReadWelcomePage(Handler):
             # Otherwise, make user login.
             self.redirect('/blog/login')
 
-class ReadLoginPage(Handler):
+class ReadLogin(Handler):
 
     def get(self):
         # Harvest requirements.
@@ -756,7 +756,7 @@ class ReadLoginPage(Handler):
         else:
             return False 
             
-class ReadLogoutPage(Handler):
+class ReadLogout(Handler):
 
     def get(self):
         # Clear out the cookie. 
@@ -818,14 +818,14 @@ app = webapp2.WSGIApplication([('/blog',ReadMainPage), ('/blog/',ReadMainPage),
                                 ('/blog/(.*\d)/edit/',UpdateBlog),
                                 ('/blog/(.*\d)/delete',DeleteBlog),
                                 ('/blog/(.*\d)/delete/',DeleteBlog),
-                                ('/blog/signup',ReadSignUpPage),
-                                ('/blog/signup/',ReadSignUpPage),
-                                ('/blog/welcome',ReadWelcomePage),
-                                ('/blog/welcome/',ReadWelcomePage),
-                                ('/blog/login',ReadLoginPage),
-                                ('/blog/login/',ReadLoginPage),
-                                ('/blog/logout',ReadLogoutPage),
-                                ('/blog/logout/',ReadLogoutPage),
+                                ('/blog/signup',ReadSignUp),
+                                ('/blog/signup/',ReadSignUp),
+                                ('/blog/welcome',ReadWelcome),
+                                ('/blog/welcome/',ReadWelcome),
+                                ('/blog/login',ReadLogin),
+                                ('/blog/login/',ReadLogin),
+                                ('/blog/logout',ReadLogout),
+                                ('/blog/logout/',ReadLogout),
                                 ('/blog/(.*\d)/like',LikeHandler),
                                 ('/blog/(.*\d)/like/',LikeHandler),
                                 ('/blog/(.*\d)/comment/new',PostComment),
