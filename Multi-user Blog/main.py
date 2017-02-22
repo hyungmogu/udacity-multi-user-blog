@@ -259,7 +259,7 @@ class LikePost(Handler):
         if self.is_valid(cookie_val,blog):
             # Check if user already liked the post.
             # This determines whether to like/unlike post.
-            if user_id in blog.likedBy:
+            if user_id in blog.liked_by:
                 self.remove_like(blog,user_id)
             else:
                 self.add_like(blog,user_id) 
@@ -291,18 +291,18 @@ class LikePost(Handler):
         return True
 
     def add_like(self,blog,user_id):
-        blog.numberOfLikes += 1
-        blog.likedBy.append(user_id)
+        blog.number_of_likes += 1
+        blog.liked_by.append(user_id)
         blog.put()
-        success = {"status":200, "success": "successfully liked a post", "new_count": blog.numberOfLikes}
+        success = {"status":200, "success": "successfully liked a post", "new_count": blog.number_of_likes}
         self.response.set_status(200)
         self.response.out.write(json.dumps(success))
 
     def remove_like(self,blog,user_id):
-        blog.numberOfLikes -= 1
-        blog.likedBy = [x for x in blog.likedBy if(int(x)!=int(user_id))]
+        blog.number_of_likes -= 1
+        blog.liked_by = [x for x in blog.liked_by if(int(x)!=int(user_id))]
         blog.put()
-        success = {"status":200, "success": "successfully unliked a post", "new_count": blog.numberOfLikes}
+        success = {"status":200, "success": "successfully unliked a post", "new_count": blog.number_of_likes}
         self.response.set_status(200)
         self.response.out.write(json.dumps(success))
 
@@ -312,7 +312,7 @@ class ReadMainPage(Handler):
     def get(self):
         cookie_val = self.request.cookies.get('user_id')
         # Query 10 most recent blog entries in descending order.
-        query = Blog.gql("ORDER BY dateCreated DESC")
+        query = Blog.gql("ORDER BY date_created DESC")
         blogs = query.fetch(limit=10)
         # Render page.
         if self.is_signed_in(cookie_val):
@@ -337,7 +337,7 @@ class CreatePost(Handler):
         if self.is_signed_in(cookie_val):
             if (title and content):
                 user = User.get_by_id(int(cookie_val.split("|")[0]))
-                blog_entry = Blog(title=title, content=content, author=user, numberOfLikes=0)
+                blog_entry = Blog(title=title, content=content, author=user, number_of_likes=0)
                 blog_key = blog_entry.put()
                 blog_id = blog_key.id()
                 self.redirect('/blog/%s' %blog_id)                  
@@ -426,7 +426,7 @@ class ReadPost(Handler):
         cookie_val = self.request.cookies.get('user_id')
         blog = Blog.get_by_id(int(post_id))
         # Query all comments for the post
-        comments = Comment.all().filter("blog =",blog.key()).order('-dateCreated')
+        comments = Comment.all().filter("blog =",blog.key()).order('-date_created')
         # print(comments)
         if self.is_signed_in(cookie_val):
             self.render('readPost.html', blog=blog, signed_in = True, comments=comments)
@@ -711,14 +711,14 @@ class Blog(db.Model):
     title = db.StringProperty(required=True)
     subtitle = db.StringProperty()
     content = db.TextProperty(required=True)
-    dateCreated = db.DateTimeProperty(auto_now_add=True)
+    date_created = db.DateTimeProperty(auto_now_add=True)
     author = db.ReferenceProperty(User)
-    numberOfLikes = db.IntegerProperty()
-    likedBy = db.StringListProperty()
+    number_of_likes = db.IntegerProperty()
+    liked_by = db.StringListProperty()
 
 class Comment(db.Model):
     title = db.StringProperty(required=True)
-    dateCreated = db.DateTimeProperty(auto_now_add=True)
+    date_created = db.DateTimeProperty(auto_now_add=True)
     content = db.TextProperty(required=True)
     author = db.ReferenceProperty(User)
     blog = db.ReferenceProperty(Blog)
