@@ -119,6 +119,64 @@ class CommentHandler(Handler):
             return False  
 
 
+class LikeHandler(Handler):
+
+    def post(self,post_id):
+        cookie_val = self.request.cookies.get('user_id')
+        user_id = cookie_val.split("|")[0]
+        blog = Blog.get_by_id(int(post_id))
+        if self.is_valid(cookie_val,blog):
+            # Check if user already liked the post.
+            # This determines whether to like/unlike post.
+            if user_id in blog.liked_by:
+                self.remove_like(blog,user_id)
+            else:
+                self.add_like(blog,user_id) 
+
+    def is_valid(self,cookie_val,blog):
+        # Check if user is signed in.
+        if not self.is_signed_in(cookie_val):
+            error = {'status':401,'error': "Not signed in."}
+            self.response.set_status(401)
+            self.response.headers['Content-Type'] = 'application/json'
+            self.response.out.write(json.dumps(error))
+            return False
+        # Check if blog exists.
+        if not self.blog_exists(blog):
+            error = {'status':400, 'error': "Post doesn't exist."}
+            self.response.set_status(400)
+            self.response.headers['Content-Type'] = 'application/json'
+            self.response.out.write(json.dumps(error))
+            self.response
+            return False
+        # Check if user is the author.
+        if self.is_author(cookie_val,blog):
+            error = {'status':400,'error': "Post cannot be liked by creator."}
+            self.response.set_status(400)
+            self.response.headers['Content-Type'] = 'application/json'
+            self.response.out.write(json.dumps(error))
+            return False
+        return True
+
+    def add_like(self,blog,user_id):
+        blog.number_of_likes += 1
+        blog.liked_by.append(user_id)
+        blog.put()
+        success = {"status":200, "success": "successfully liked a post",
+                    "new_count": blog.number_of_likes}
+        self.response.set_status(200)
+        self.response.out.write(json.dumps(success))
+
+    def remove_like(self,blog,user_id):
+        blog.number_of_likes -= 1
+        blog.liked_by = [x for x in blog.liked_by if(int(x)!=int(user_id))]
+        blog.put()
+        success = {"status":200, "success": "successfully unliked a post", 
+                    "new_count": blog.number_of_likes}
+        self.response.set_status(200)
+        self.response.out.write(json.dumps(success))
+
+
 #API
 class PostComment(CommentHandler):
 
@@ -182,7 +240,6 @@ class DeleteComment(CommentHandler):
                 self.response.out.write(json.dumps({"error":"Invalid. Must be "
                                                     "the creator of the comment "
                                                     "to edit."}))
-
 
     def is_valid(self,blog,comment,cookie_val):
         # Check if new comment and title are empty.
@@ -274,65 +331,6 @@ class ValidateUser(Handler):
             self.response.out.write(json.dumps({"error": "User is either not "
                                                 "signed in or is not authorized "
                                                 "to edit this comment."}))         
-
-
-class LikePost(Handler):
-
-    def post(self,post_id):
-        cookie_val = self.request.cookies.get('user_id')
-        user_id = cookie_val.split("|")[0]
-        blog = Blog.get_by_id(int(post_id))
-        if self.is_valid(cookie_val,blog):
-            # Check if user already liked the post.
-            # This determines whether to like/unlike post.
-            if user_id in blog.liked_by:
-                self.remove_like(blog,user_id)
-            else:
-                self.add_like(blog,user_id) 
-
-
-    def is_valid(self,cookie_val,blog):
-        # Check if user is signed in.
-        if not self.is_signed_in(cookie_val):
-            error = {'status':401,'error': "Not signed in."}
-            self.response.set_status(401)
-            self.response.headers['Content-Type'] = 'application/json'
-            self.response.out.write(json.dumps(error))
-            return False
-        # Check if blog exists.
-        if not self.blog_exists(blog):
-            error = {'status':400, 'error': "Post doesn't exist."}
-            self.response.set_status(400)
-            self.response.headers['Content-Type'] = 'application/json'
-            self.response.out.write(json.dumps(error))
-            self.response
-            return False
-        # Check if user is the author.
-        if self.is_author(cookie_val,blog):
-            error = {'status':400,'error': "Post cannot be liked by creator."}
-            self.response.set_status(400)
-            self.response.headers['Content-Type'] = 'application/json'
-            self.response.out.write(json.dumps(error))
-            return False
-        return True
-
-    def add_like(self,blog,user_id):
-        blog.number_of_likes += 1
-        blog.liked_by.append(user_id)
-        blog.put()
-        success = {"status":200, "success": "successfully liked a post",
-                    "new_count": blog.number_of_likes}
-        self.response.set_status(200)
-        self.response.out.write(json.dumps(success))
-
-    def remove_like(self,blog,user_id):
-        blog.number_of_likes -= 1
-        blog.liked_by = [x for x in blog.liked_by if(int(x)!=int(user_id))]
-        blog.put()
-        success = {"status":200, "success": "successfully unliked a post", 
-                    "new_count": blog.number_of_likes}
-        self.response.set_status(200)
-        self.response.out.write(json.dumps(success))
 
 
 # ROUTES
@@ -783,8 +781,8 @@ app = webapp2.WSGIApplication([('/blog',ReadMainPage), ('/blog/',ReadMainPage),
                                 ('/blog/login/',ReadLoginPage),
                                 ('/blog/logout',ReadLogoutPage),
                                 ('/blog/logout/',ReadLogoutPage),
-                                ('/blog/(.*\d)/like',LikePost),
-                                ('/blog/(.*\d)/like/',LikePost),
+                                ('/blog/(.*\d)/like',LikeHandler),
+                                ('/blog/(.*\d)/like/',LikeHandler),
                                 ('/blog/(.*\d)/comment/new',PostComment),
                                 ('/blog/(.*\d)/comment/new/',PostComment),
                                 ('/blog/(.*\d)/comment/delete',DeleteComment),
