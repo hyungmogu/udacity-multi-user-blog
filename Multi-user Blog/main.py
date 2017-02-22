@@ -225,24 +225,32 @@ class CreateBlog(Handler):
         content = self.request.get('content')
         cookie_val = self.request.cookies.get('user_id')
         # Check that there are no problem with creating a blog post.
-        if self.is_signed_in(cookie_val):
-            # Check contents are non-empty.
-            if (title and content):
-                # If all is well, store information to database.
-                user = User.get_by_id(int(cookie_val.split("|")[0]))
-                blog_entry = Blog(title=title, content=content, author=user, 
+        if self.is_valid(cookie_val,content,title):
+            # If all is well, store information to database.
+            user = User.get_by_id(int(cookie_val.split("|")[0]))
+            blog_entry = Blog(title=title, content=content, author=user, 
                                     number_of_likes=0)
-                blog_key = blog_entry.put()
-                blog_id = blog_key.id()
-                self.redirect('/blog/%s' %blog_id)
-            # If any contents are missing, return message to user.                   
-            else:
+            # Finally, redirect user to the newly created page
+            blog_id = (blog_entry.put()).id()
+            self.redirect('/blog/%s' %blog_id)
+        else:
+            # If not signed in, redirect user to login page.
+            if not self.is_signed_in(cookie_val):
+                self.redirect("/blog/login")
+            # If any contents are missing, return error to user. 
+            if not (title and content):
                 error = ("Either title or content is missing. Please fill both "
                         "in, and try again.")
                 self.render('createPost.html', error=error)
-        else:
-            self.redirect('/blog/login')  
 
+    def is_valid(self,cookie_val,content,title):
+        # Check if user signed in.
+        if not self.is_signed_in(cookie_val):
+            return False
+        # Check contents are non-empty.
+        if not (title and content):
+            return False
+        return True
 
 class UpdateBlog(Handler):
 
