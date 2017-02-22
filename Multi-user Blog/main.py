@@ -17,13 +17,17 @@ SECRET = "A!03bcAs249Gka134!4*@1`asdAq"
 
 
 class Handler(webapp2.RequestHandler):
+
     def write(self, *a, **kw): 
         return self.response.out.write(*a,**kw)
+
     def render_str(self, template, **params):
         template_file = jinja_env.get_template(template)
         return template_file.render(params)
+
     def render(self, template, **kw):
         self.write(self.render_str(template,**kw))
+
     def hash_str(self, s, secret=SECRET):
         """Converts the input into a hashed value. 
 
@@ -106,8 +110,10 @@ class Handler(webapp2.RequestHandler):
         else:
             return True
 
+
 #API
 class PostComment(Handler):
+
     def post(self,post_id):
         cookie_val = self.request.cookies.get("user_id")
         blog = Blog.get_by_id(int(post_id))
@@ -132,7 +138,9 @@ class PostComment(Handler):
             self.response.set_status(401)
             self.redirect('/blog/not_authorized')
 
+
 class DeleteComment(Handler):
+
     def delete(self,post_id):
         blog = Blog.get_by_id(int(post_id))
         comment = Comment.get_by_id(int(self.request.get("id")))
@@ -167,7 +175,6 @@ class DeleteComment(Handler):
                                                     "the creator of the comment "
                                                     "to edit."}))
 
-
     def comment_exists(self,comment):
         if comment:
             return True
@@ -185,7 +192,9 @@ class DeleteComment(Handler):
         if not self.is_author(cookie_val,comment):
             return False
         return True   
+
 class UpdateComment(Handler):
+
     def put(self,post_id):
         data = json.loads(self.request.body)
         comment = Comment.get_by_id(int(data["id"]))
@@ -251,9 +260,9 @@ class UpdateComment(Handler):
             return False
         return True    
 
-# class DeleteComment(Handler):
 
 class ValidateUser(Handler):
+
     def get(self,post_id):
         cookie_val = self.request.cookies.get("user_id")
         comment = Comment.get_by_id(int(self.request.get("id")))
@@ -269,7 +278,9 @@ class ValidateUser(Handler):
                                                 "signed in or is not authorized "
                                                 "to edit this comment."}))         
 
+
 class LikePost(Handler):
+
     def post(self,post_id):
         cookie_val = self.request.cookies.get('user_id')
         user_id = cookie_val.split("|")[0]
@@ -326,9 +337,10 @@ class LikePost(Handler):
         self.response.set_status(200)
         self.response.out.write(json.dumps(success))
 
-# ROUTES
 
+# ROUTES
 class ReadMainPage(Handler):
+
     def get(self):
         cookie_val = self.request.cookies.get('user_id')
         # Query 10 most recent blog entries in descending order.
@@ -340,7 +352,9 @@ class ReadMainPage(Handler):
         else:
             self.render('mainPage.html', blogs=blogs)
 
+
 class CreatePost(Handler):
+
     def get(self):
         cookie_val = self.request.cookies.get('user_id')
         if self.is_signed_in(cookie_val):
@@ -370,7 +384,9 @@ class CreatePost(Handler):
         else:
             self.redirect('/blog/login')  
 
+
 class UpdatePost(Handler):
+
     def get(self,post_id):
         cookie_val = self.request.cookies.get('user_id')
         blog = Blog.get_by_id(int(post_id))
@@ -389,6 +405,7 @@ class UpdatePost(Handler):
                 self.redirect('/blog/login')
         else:
             self.redirect('/blog') 
+
     def post(self,post_id):
         title = self.request.get('title')
         content = self.request.get('content')
@@ -412,7 +429,9 @@ class UpdatePost(Handler):
         else:
             self.redirect('/blog')
 
+
 class DeletePost(Handler):
+
     def get(self,post_id):
         cookie_val = self.request.cookies.get('user_id')
         blog = Blog.get_by_id(int(post_id))
@@ -444,6 +463,7 @@ class DeletePost(Handler):
 
 
 class ReadPost(Handler):
+
     def get(self,post_id):
         cookie_val = self.request.cookies.get('user_id')
         blog = Blog.get_by_id(int(post_id))
@@ -457,14 +477,15 @@ class ReadPost(Handler):
         else:
             self.render('readPost.html', blog=blog)
 
-
     def has_comments(self,comments):
         if comments:
             return True
         else:
             return False
 
+
 class ReadSignUpPage(Handler):
+
     def get(self):
         cookie_val = self.request.cookies.get('user_id')
         # Empty the cookie, before proceeding to signup page
@@ -625,6 +646,7 @@ class ReadSignUpPage(Handler):
                         for i in range(10)])
 
 class ReadWelcomePage(Handler):
+
     def get(self):
         cookie_val = self.request.cookies.get('user_id')
         if self.is_signed_in(cookie_val):
@@ -635,6 +657,7 @@ class ReadWelcomePage(Handler):
             self.redirect('/blog/login')
 
 class ReadLoginPage(Handler):
+
     def get(self):
         cookie_val = self.request.cookies.get('user_id')
         if self.is_signed_in(cookie_val):
@@ -705,6 +728,7 @@ class ReadLogoutPage(Handler):
         self.redirect('/blog/login')
 
 class ReadNotFound(Handler):
+
     def get(self):
         cookie_val = self.request.cookies.get("user_id")
         if self.is_signed_in(cookie_val):
@@ -713,6 +737,7 @@ class ReadNotFound(Handler):
             self.render("readNotFound.html")
 
 class ReadNotAuthorized(Handler):
+
     def get(self):
         cookie_val = self.request.cookies.get("user_id")
         if self.is_signed_in(cookie_val):
@@ -720,8 +745,8 @@ class ReadNotAuthorized(Handler):
         else:
             self.render("readNotAuthorized.html")
 
-# DATABASE
 
+# DATABASE
 class User(db.Model):
     username = db.StringProperty(required=True)
     password = db.StringProperty(required=True)
