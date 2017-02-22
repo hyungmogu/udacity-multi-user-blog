@@ -312,31 +312,48 @@ class DeleteBlog(Handler):
         cookie_val = self.request.cookies.get('user_id')
         blog = Blog.get_by_id(int(post_id))
         # Check if user has all req. to delete a post.
-        if blog:
-            if self.is_signed_in(cookie_val):
-                if self.is_author(cookie_val,blog):
-                    # Since user is logged in, display 'Logout' button.
-                    self.render('deleteBlog.html', blog=blog, signed_in=True)
-                else:
-                    self.redirect('/blog/notauthorized')
-            else:
-                self.redirect('/blog/login')
+        if self.is_valid(blog,cookie_val):
+            # Since user is logged in, display 'Logout' button.
+            self.render('deleteBlog.html', blog=blog, signed_in=True)
         else:
-            self.redirect('/blog')
+            if not blog:
+                self.response.set_status(404)
+                self.redirect("/blog/not_found")
+            if not self.is_signed_in(cookie_val):
+                self.response.set_status(401)
+                self.redirect("/blog/login")
+            if not self.is_author(cookie_val,blog):
+                self.response.set_status(403)
+                self.redirect("/blog/not_authorized")
 
     def post(self,post_id):
         # Harvest requirements.
         blog = Blog.get_by_id(int(post_id))
         cookie_val = self.request.cookies.get('user_id')
         # Check whether all req. has been met before deleting a post.
-        if blog:
-            if self.is_signed_in(cookie_val):
-                blog.delete() 
-                self.redirect('/blog')
-            else:
-                self.redirect('/blog/login')
+        if self.is_valid(blog,cookie_val):
+                blog.delete()
+                self.response.set_status(200)
+                self.redirect("/blog")
         else:
-            self.redirect('/blog')
+            if not blog:
+                self.response.set_status(404)
+                self.redirect("/blog/not_found")
+            if not self.is_signed_in(cookie_val):
+                self.response.set_status(401)
+                self.redirect("/blog/login")
+            if not self.is_author(cookie_val,blog):
+                self.response.set_status(403)
+                self.redirect("/blog/not_authorized")
+
+    def is_valid(self,blog,cookie_val):
+        if not blog:
+            return False
+        if not self.is_signed_in(cookie_val):
+            return False
+        if not self.is_author(cookie_val,blog):
+            return False
+        return True
 
 
 class ReadBlog(Handler):
