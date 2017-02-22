@@ -259,20 +259,20 @@ class UpdateBlog(Handler):
         cookie_val = self.request.cookies.get('user_id')
         blog = Blog.get_by_id(int(post_id))
         # Check if user is authorized to modify the blog post.
-        if blog:
-            if self.is_signed_in(cookie_val):
-                if self.is_author(cookie_val,blog):
-                    # If all is well, proceed to the page.
-                    # Since user is logged in, insert logout button.
-                    self.render('updateBlog.html', blog=blog, signed_in=True)
-                else:
-                    # If not, show error page.
-                    self.redirect('/blog/notauthorized')          
-            else:
-
-                self.redirect('/blog/login')
+        if self.is_get_valid(blog,cookie_val):
+            # If all is well, proceed to the page.
+            # Since user is logged in, insert logout button.
+            self.render('updateBlog.html', blog=blog, signed_in=True)       
         else:
-            self.redirect('/blog') 
+            if not blog:
+                self.response.set_status(404)
+                self.redirect("/blog/not_found")
+            if not self.is_signed_in(cookie_val):
+                self.response.set_status(401)
+                self.redirect("/blog/login")
+            if not self.is_author(cookie_val,blog):
+                self.response.set_status(403)
+                self.redirect("/blog/not_authorized")
 
     def post(self,post_id):
         # Harvest requirments.
@@ -281,28 +281,50 @@ class UpdateBlog(Handler):
         cookie_val = self.request.cookies.get('user_id')
         blog = Blog.get_by_id(int(post_id))
         # Check whether all req. has been met.
-        if blog:
-            if self.is_signed_in(cookie_val):
-                # Check if content in title and content are non-empty.
-                if (title and content):
-                    # If all is well, store information to database.
-                    blog.title = title
-                    blog.content = content
-                    blog_key = blog.put()
-                    blog_id = blog_key.id()
-                    self.redirect('/blog/%s' % blog_id)
-                else:
-                    # Otherwise, re-render page with error.
-                    # Since user is logged in, continue to display
-                    #  'Logout' button.
-                    self.render('updateBlog.html', title=title, content=content,
-                                signed_in=True)
-            else:
-                # Make user login.
-                self.redirect('/blog/login')
+        if self.is_post_valid(blog,cookie_val,content,title):
+                # If all is well, store information to database.
+                blog.title = title
+                blog.content = content
+                # Finally, redirect user to the newly created page
+                blog_id = (blog.put()).id()
+                self.response.set_status(200)
+                self.redirect('/blog/%s' % blog_id)
         else:
-            # Direct user to 'Not Found' page.
-            self.redirect('/blog')
+            if not blog:
+                self.response.set_status(404)
+                self.redirect("/blog/not_found")
+            if not self.is_signed_in(cookie_val):
+                self.response.set_status(401)
+                self.redirect("/blog/login")
+            if not self.is_author(cookie_val,blog):
+                self.response.set_status(403)
+                self.redirect("/blog/not_authorized")
+            if not (title and content):
+                # Re-render page with error.
+                error = ("Either title or texts are empty. Please fill "
+                        "both in before trying again.")
+                self.render('updateBlog.html', title=title, content=content,
+                            error=error, signed_in=True)               
+
+    def is_get_valid(self,blog,cookie_val):
+        if not blog:
+            return False
+        if not self.is_signed_in(cookie_val):
+            return False
+        if not self.is_author(cookie_val,blog):
+            return False
+        return True
+
+    def is_post_valid(self,blog,cookie_val,content,title):
+        if not blog:
+            return False
+        if not self.is_signed_in(cookie_val):
+            return False
+        if not self.is_author(cookie_val,blog):
+            return False
+        if not (title and content):
+            return False
+        return True
 
 
 class DeleteBlog(Handler):
