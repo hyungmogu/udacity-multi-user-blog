@@ -487,7 +487,7 @@ class DeleteBlog(Handler):
             self.redirect('/blog')
 
 
-class ReadPost(Handler):
+class ReadBlog(Handler):
 
     def get(self,post_id):
         # Harvest requirements.
@@ -812,8 +812,8 @@ class Comment(db.Model):
 app = webapp2.WSGIApplication([('/blog',ReadMainPage), ('/blog/',ReadMainPage),
                                 ('/blog/newpost', CreateBlog),
                                 ('/blog/newpost/', CreateBlog),
-                                ('/blog/(.*\d)',ReadPost),
-                                ('/blog/(.*\d)/',ReadPost),
+                                ('/blog/(.*\d)',ReadBlog),
+                                ('/blog/(.*\d)/',ReadBlog),
                                 ('/blog/(.*\d)/edit',UpdateBlog),
                                 ('/blog/(.*\d)/edit/',UpdateBlog),
                                 ('/blog/(.*\d)/delete',DeleteBlog),
