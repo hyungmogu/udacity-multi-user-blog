@@ -121,21 +121,6 @@ class CommentHandler(Handler):
 
 class LikeHandler(Handler):
 
-    def post(self,post_id):
-        # Harvest requirements.
-        cookie_val = self.request.cookies.get('user_id')
-        user_id = cookie_val.split("|")[0]
-        blog = Blog.get_by_id(int(post_id))
-        # Before adding/removing likes, first check if the op is valid.
-        # Proceed if all is well.
-        if self.is_valid(cookie_val,blog):
-            # Check if user already liked the post.
-            # This determines whether to like/unlike post.
-            if user_id in blog.liked_by:
-                self.remove_like(blog,user_id)
-            else:
-                self.add_like(blog,user_id) 
-
     def is_valid(self,cookie_val,blog):
         # Check if user is signed in.
         if not self.is_signed_in(cookie_val):
@@ -344,6 +329,24 @@ class ValidateBeforeEdit(CommentHandler):
             self.response.out.write(json.dumps({"error": "User is either not "
                                                 "signed in or is not authorized "
                                                 "to edit this comment."}))         
+
+
+class UpdateLike(LikeHandler):
+
+    def post(self,post_id):
+        # Harvest requirements.
+        cookie_val = self.request.cookies.get('user_id')
+        user_id = cookie_val.split("|")[0]
+        blog = Blog.get_by_id(int(post_id))
+        # Before adding/removing likes, first check if the op is valid.
+        # Proceed if all is well.
+        if self.is_valid(cookie_val,blog):
+            # Check if user already liked the post.
+            # This determines whether to like/unlike post.
+            if user_id in blog.liked_by:
+                self.remove_like(blog,user_id)
+            else:
+                self.add_like(blog,user_id) 
 
 
 # ROUTES
@@ -826,8 +829,8 @@ app = webapp2.WSGIApplication([('/blog',ReadMainPage), ('/blog/',ReadMainPage),
                                 ('/blog/login/',ReadLogin),
                                 ('/blog/logout',ReadLogout),
                                 ('/blog/logout/',ReadLogout),
-                                ('/blog/(.*\d)/like',LikeHandler),
-                                ('/blog/(.*\d)/like/',LikeHandler),
+                                ('/blog/(.*\d)/like',UpdateLike),
+                                ('/blog/(.*\d)/like/',UpdateLike),
                                 ('/blog/(.*\d)/comment/new',PostComment),
                                 ('/blog/(.*\d)/comment/new/',PostComment),
                                 ('/blog/(.*\d)/comment/delete',DeleteComment),
