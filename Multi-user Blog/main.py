@@ -507,6 +507,7 @@ class ReadLogout(LoginHandler):
         self.response.headers.add_header('Set-Cookie','user_id=;Path=/')
         self.redirect('/blog/login')
 
+
 class ReadNotFound(Handler):
 
     def get(self):
@@ -517,6 +518,7 @@ class ReadNotFound(Handler):
             self.render("readNotFound.html",signed_in=True)
         else:
             self.render("readNotFound.html")
+
 
 class ReadNotAuthorized(Handler):
 
