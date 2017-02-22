@@ -649,7 +649,7 @@ class ReadSignUp(Handler):
         return str(user_key.id())
 
     def make_pw_hash(self,password):
-        """ Converts input into a hased value. 
+        """ Converts input into a hashed value. 
 
         This method uses sha256 algorithm and randomly generated salt.
 
