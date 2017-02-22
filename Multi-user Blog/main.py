@@ -15,7 +15,7 @@ jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
 
 SECRET = "A!03bcAs249Gka134!4*@1`asdAq"
 
-
+# HANDLERS
 class Handler(webapp2.RequestHandler):
 
     def write(self, *a, **kw): 
@@ -110,9 +110,17 @@ class Handler(webapp2.RequestHandler):
         else:
             return True
 
+class CommentHandler(Handler):
+
+    def comment_exists(self,comment):
+        if comment:
+            return True
+        else:
+            return False  
+
 
 #API
-class PostComment(Handler):
+class PostComment(CommentHandler):
 
     def post(self,post_id):
         cookie_val = self.request.cookies.get("user_id")
@@ -139,7 +147,7 @@ class PostComment(Handler):
             self.redirect('/blog/not_authorized')
 
 
-class DeleteComment(Handler):
+class DeleteComment(CommentHandler):
 
     def delete(self,post_id):
         blog = Blog.get_by_id(int(post_id))
@@ -175,11 +183,6 @@ class DeleteComment(Handler):
                                                     "the creator of the comment "
                                                     "to edit."}))
 
-    def comment_exists(self,comment):
-        if comment:
-            return True
-        else:
-            return False  
 
     def is_valid(self,blog,comment,cookie_val):
         # Check if new comment and title are empty.
@@ -193,7 +196,7 @@ class DeleteComment(Handler):
             return False
         return True   
 
-class UpdateComment(Handler):
+class UpdateComment(CommentHandler):
 
     def put(self,post_id):
         data = json.loads(self.request.body)
@@ -239,12 +242,6 @@ class UpdateComment(Handler):
                 self.response.out.write(json.dumps({"error":"Invalid. Must be "
                                                     "the creator of the comment "
                                                     "to edit."}))
-
-    def comment_exists(self,comments):
-        if comments:
-            return True
-        else:
-            return False  
 
     def is_valid(self,blog,comment,cookie_val,new_content,new_title):
         # Check if new comment and title are empty.
