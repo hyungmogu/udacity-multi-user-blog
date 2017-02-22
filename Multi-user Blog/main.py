@@ -350,7 +350,7 @@ class UpdateLike(LikeHandler):
 
 
 # ROUTES
-class ReadMainPage(Handler):
+class ReadMain(Handler):
 
     def get(self):
         # Harvest requirements.
@@ -812,7 +812,7 @@ class Comment(db.Model):
     author = db.ReferenceProperty(User)
     blog = db.ReferenceProperty(Blog)
 
-app = webapp2.WSGIApplication([('/blog',ReadMainPage), ('/blog/',ReadMainPage),
+app = webapp2.WSGIApplication([('/blog',ReadMain), ('/blog/',ReadMain),
                                 ('/blog/newpost', CreateBlog),
                                 ('/blog/newpost/', CreateBlog),
                                 ('/blog/(.*\d)',ReadBlog),
