@@ -325,7 +325,7 @@ class UpdateComment(CommentHandler):
         return True    
 
 
-class ValidateUser(Handler):
+class ValidateBeforeEdit(CommentHandler):
 
     def get(self,post_id):
         # Harvest requirements.
@@ -834,8 +834,8 @@ app = webapp2.WSGIApplication([('/blog',ReadMainPage), ('/blog/',ReadMainPage),
                                 ('/blog/(.*\d)/comment/delete/',DeleteComment),
                                 ('/blog/(.*\d)/comment/edit',UpdateComment),
                                 ('/blog/(.*\d)/comment/edit/',UpdateComment),
-                                ('/blog/(.*\d)/comment/validate',ValidateUser),
-                                ('/blog/(.*\d)/comment/validate/',ValidateUser),
+                                ('/blog/(.*\d)/comment/validate',ValidateBeforeEdit),
+                                ('/blog/(.*\d)/comment/validate/',ValidateBeforeEdit),
                                 ('/blog/not_found',ReadNotFound),
                                 ('/blog/not_found/',ReadNotFound),
                                 ('/blog/not_authorized',ReadNotAuthorized),
