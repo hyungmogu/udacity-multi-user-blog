@@ -120,7 +120,8 @@ class PostComment(Handler):
                 title = self.request.get("title")
                 content = self.request.get("texts")
                 print(title,content)
-                comment = Comment(title=title,content=content,blog=blog,author=user)
+                comment = Comment(title=title, content=content, blog=blog, 
+                                author=user)
                 comment.put()
                 self.response.set_status(200)
                 self.redirect('/blog/%s'%post_id)                
@@ -141,24 +142,30 @@ class DeleteComment(Handler):
             comment.delete()  
             self.response.set_status(200)
             self.response.headers["Content-Type"] = "application/json"
-            self.response.out.write(json.dumps({"success":"The comment has been deleted successfully."}))
+            self.response.out.write(json.dumps({"success":"The comment has been " 
+                                                "deleted successfully."}))
         else:
             if not self.blog_exists(blog):
                 self.response.set_status(404)
                 self.response.headers["Content-Type"] = "application/json"
-                self.response.out.write(json.dumps({"error": "Invalid. The blog page does not exist."}))
+                self.response.out.write(json.dumps({"error": "Invalid. The blog "
+                                                    "page does not exist."}))
             if not self.comment_exists(comment):
                 self.response.set_status(400)
                 self.response.headers["Content-Type"] = "application/json"
-                self.response.out.write(json.dumps({"error": "Invalid. The comment does not exist."}))
+                self.response.out.write(json.dumps({"error": "Invalid. The "
+                                                    "comment does not exist."}))
             if not self.is_signed_in(cookie_val):
                 self.response.set_status(401)
                 self.response.headers["Content-Type"] = "application/json"
-                self.response.out.write(json.dumps({"error": "Invalid. Must be signed in to edit comment."}))
+                self.response.out.write(json.dumps({"error": "Invalid. Must be "
+                                                    "signed in to edit comment."}))
             if not self.is_author(cookie_val,comment):
                 self.response.set_status(403)
                 self.response.headers["Content-Type"] = "application/json"
-                self.response.out.write(json.dumps({"error":"Invalid. Must be the creator of the comment to edit."}))
+                self.response.out.write(json.dumps({"error":"Invalid. Must be "
+                                                    "the creator of the comment "
+                                                    "to edit."}))
 
 
     def comment_exists(self,comment):
@@ -193,28 +200,36 @@ class UpdateComment(Handler):
             comment.put()
             self.response.set_status(200)
             self.response.headers["Content-Type"] = "application/json"
-            self.response.out.write(json.dumps({"success":"The comment has been successfully updated."}))
+            self.response.out.write(json.dumps({"success":"The comment has been "
+                                                "successfully updated."}))
         else:
             if not (new_content and new_title):
                 self.response.set_status(400)
                 self.response.headers["Content-Type"] = "application/json"
-                self.response.out.write(json.dumps({"error":"Invalid. Both title and comment must not be empty."}))
+                self.response.out.write(json.dumps({"error":"Invalid. Both title "
+                                                    "and comment must not be "
+                                                    "empty."}))
             if not self.blog_exists(blog):
                 self.response.set_status(404)
                 self.response.headers["Content-Type"] = "application/json"
-                self.response.out.write(json.dumps({"error": "Invalid. The blog page does not exist."}))
+                self.response.out.write(json.dumps({"error": "Invalid. The blog "
+                                                    "page does not exist."}))
             if not self.comment_exists(comment):
                 self.response.set_status(404)
                 self.response.headers["Content-Type"] = "application/json"
-                self.response.out.write(json.dumps({"error": "Invalid. The comment does not exist."}))
+                self.response.out.write(json.dumps({"error": "Invalid. The "
+                                                    "comment does not exist."}))
             if not self.is_signed_in(cookie_val):
                 self.response.set_status(401)
                 self.response.headers["Content-Type"] = "application/json"
-                self.response.out.write(json.dumps({"error": "Invalid. Must be signed in to edit comment."}))
+                self.response.out.write(json.dumps({"error": "Invalid. Must be "
+                                                    "signed in to edit comment."}))
             if not self.is_author(cookie_val,comment):
                 self.response.set_status(401)
                 self.response.headers["Content-Type"] = "application/json"
-                self.response.out.write(json.dumps({"error":"Invalid. Must be the creator of the comment to edit."}))
+                self.response.out.write(json.dumps({"error":"Invalid. Must be "
+                                                    "the creator of the comment "
+                                                    "to edit."}))
 
     def comment_exists(self,comments):
         if comments:
@@ -245,11 +260,14 @@ class ValidateUser(Handler):
         if self.is_signed_in(cookie_val) and self.is_author(cookie_val,comment):
             self.response.set_status(200)
             self.response.headers["Content-Type"] = "application/json"
-            self.response.out.write(json.dumps({"success":"User is allowed to edit this post."}))                    
+            self.response.out.write(json.dumps({"success":"User is allowed to "
+                                                "edit this post."}))                    
         else:
             self.response.set_status(401)
             self.response.headers["Content-Type"] = "application/json"
-            self.response.out.write(json.dumps({"error": "User is either not signed in or is not authorized to edit this comment."}))         
+            self.response.out.write(json.dumps({"error": "User is either not "
+                                                "signed in or is not authorized "
+                                                "to edit this comment."}))         
 
 class LikePost(Handler):
     def post(self,post_id):
@@ -294,7 +312,8 @@ class LikePost(Handler):
         blog.number_of_likes += 1
         blog.liked_by.append(user_id)
         blog.put()
-        success = {"status":200, "success": "successfully liked a post", "new_count": blog.number_of_likes}
+        success = {"status":200, "success": "successfully liked a post",
+                    "new_count": blog.number_of_likes}
         self.response.set_status(200)
         self.response.out.write(json.dumps(success))
 
@@ -302,7 +321,8 @@ class LikePost(Handler):
         blog.number_of_likes -= 1
         blog.liked_by = [x for x in blog.liked_by if(int(x)!=int(user_id))]
         blog.put()
-        success = {"status":200, "success": "successfully unliked a post", "new_count": blog.number_of_likes}
+        success = {"status":200, "success": "successfully unliked a post", 
+                    "new_count": blog.number_of_likes}
         self.response.set_status(200)
         self.response.out.write(json.dumps(success))
 
@@ -337,13 +357,15 @@ class CreatePost(Handler):
         if self.is_signed_in(cookie_val):
             if (title and content):
                 user = User.get_by_id(int(cookie_val.split("|")[0]))
-                blog_entry = Blog(title=title, content=content, author=user, number_of_likes=0)
+                blog_entry = Blog(title=title, content=content, author=user, 
+                                    number_of_likes=0)
                 blog_key = blog_entry.put()
                 blog_id = blog_key.id()
                 self.redirect('/blog/%s' %blog_id)                  
             # If either title or content are missing, tell user to fill out the missing content.
             else:
-                error = "Either title or content is missing. Please fill both in, and try again."
+                error = ("Either title or content is missing. Please fill both "
+                        "in, and try again.")
                 self.render('createPost.html', error=error)
         else:
             self.redirect('/blog/login')  
@@ -426,10 +448,12 @@ class ReadPost(Handler):
         cookie_val = self.request.cookies.get('user_id')
         blog = Blog.get_by_id(int(post_id))
         # Query all comments for the post
-        comments = Comment.all().filter("blog =",blog.key()).order('-date_created')
+        comments = (Comment.all().filter("blog =",blog.key()).
+                    order('-date_created'))
         # print(comments)
         if self.is_signed_in(cookie_val):
-            self.render('readPost.html', blog=blog, signed_in = True, comments=comments)
+            self.render('readPost.html', blog=blog, signed_in = True, 
+                        comments=comments)
         else:
             self.render('readPost.html', blog=blog)
 
@@ -460,11 +484,8 @@ class ReadSignUpPage(Handler):
         # If errors exist, re-render template with errors.
         errors = self.check_form_info(username,password,verify_pw,email)
         if errors["errors_exist"]:
-            self.render_front(username=username,
-                                password=password,
-                                verify_pw=verify_pw,
-                                email=email,
-                                errors=errors)
+            self.render_front(username=username, password=password, 
+                                verify_pw=verify_pw, email=email, errors=errors)
         # If all is well, store newly created user to database.
         # And finish by generating a cookie.  This keeps user signed in.
         else:
@@ -477,12 +498,9 @@ class ReadSignUpPage(Handler):
 
     def render_front(self, title="", username="", password="", verify_pw="", 
                     email="", errors=""):
-        self.render('signUp.html',title=title,
-                                    username=username,
-                                    password=password,
-                                    verify_pw=verify_pw,
-                                    email=email,
-                                    errors=errors)
+        self.render('signUp.html',title=title, username=username, 
+                    password=password, verify_pw=verify_pw, email=email,
+                    errors=errors)
 
     def username_already_exists(self, username):
         """Checks if username exists in database. 
@@ -639,11 +657,13 @@ class ReadLoginPage(Handler):
                                                 'user_id=%s;Path=/'%cookie_val)      
                 self.redirect('/blog/welcome')
             else:
-                error = "Either username or password are incorrect. Please try again."
+                error = ("Either username or password are incorrect. Please try "
+                        "again.")
                 self.render('login.html', error=error, username=username,
                             password=password)
         else:
-            error = "Either username or password fields are empty. Please fill in, and try again."
+            error = ("Either username or password fields are empty. Please fill "
+                    "in, and try again.")
             self.render('login.html', error=error, username=username, 
                         password=password)
 
@@ -742,8 +762,6 @@ app = webapp2.WSGIApplication([('/blog',ReadMainPage), ('/blog/',ReadMainPage),
                                 ('/blog/logout/',ReadLogoutPage),
                                 ('/blog/(.*\d)/like',LikePost),
                                 ('/blog/(.*\d)/like/',LikePost),
-                                ('/blog/(.*\d)/comment',GetComments),
-                                ('/blog/(.*\d)/comment/',GetComments),
                                 ('/blog/(.*\d)/comment/new',PostComment),
                                 ('/blog/(.*\d)/comment/new/',PostComment),
                                 ('/blog/(.*\d)/comment/delete',DeleteComment),
@@ -755,4 +773,5 @@ app = webapp2.WSGIApplication([('/blog',ReadMainPage), ('/blog/',ReadMainPage),
                                 ('/blog/not_found',ReadNotFound),
                                 ('/blog/not_found/',ReadNotFound),
                                 ('/blog/not_authorized',ReadNotAuthorized),
-                                ('/blog/not_authorized/',ReadNotAuthorized)], debug=True)
+                                ('/blog/not_authorized/',ReadNotAuthorized)], 
+                                debug=True)
