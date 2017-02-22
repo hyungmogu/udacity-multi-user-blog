@@ -20,10 +20,10 @@
 	<section id="article-header" class="header">
 		<h2 class="title">{{blog.title}}</h2>
 		<div class="date">
-			{{blog.dateCreated.strftime('%B %d, %Y %I:%M%p')}}
+			{{blog.date_created.strftime('%B %d, %Y %I:%M%p')}}
 		</div>
 		<div class="meta">
-			<span id="number-of-likes">{{blog.numberOfLikes}}</span>
+			<span id="number-of-likes">{{blog.number_of_likes}}</span>
 			<!-- Need to add blog.author.username here -->
 		</div>
 		<div class="options">
@@ -86,7 +86,7 @@
 							<h3 class='title'>{{comment.title}}</h3>
 							<div class='meta'>
 								<span class='author'>{{comment.author.username}}</span>
-								<span class='date-created'>{{comment.dateCreated}}</span>
+								<span class='date-created'>{{comment.date_created}}</span>
 							</div>
 							<div class='texts'>{{comment.content}}</div>
 							<div class='options'>
@@ -153,7 +153,7 @@
 <script>
 	// Comment Handlers
 	// Edit Handler
-	function renderCommentEdit(THIS){
+	function render_comment_edit(THIS){
 		var $li_id = $(THIS).closest("li").prop("id");
 		var $title = $('#'+$li_id+" h3.title").html();
 		var $content = $('#'+$li_id+" div.texts").html();
@@ -169,7 +169,7 @@
 					$("#"+$li_id+" div.content").css("display","None");
 					$("#"+$li_id+" div.content").after($form);
 					$(".comment button.submit").click(function(){
-						submitCommentEdit(this);
+						submit_comment_edit(this);
 					});  
 		 		};
 			},
@@ -183,7 +183,7 @@
 		});
 	};
  
-	function submitCommentEdit(THIS){
+	function submit_comment_edit(THIS){
 		var $error_400 = "Invalid. Both title and content must not be empty.";
 		// Harvest form data.
 		var $li_id = $(THIS).closest("li").prop("id");
@@ -227,7 +227,7 @@
 		});
 	}; 
 
-	function deleteComment(THIS){
+	function delete_comment(THIS){
 		// Harvest comment id.
 		var $li_id = $(THIS).closest("li").prop("id");
 		var $comment_key_id = $("#"+$li_id+" input[type=hidden]").val();		
@@ -261,8 +261,8 @@
 	};
 
 	$(document).ready(function(){
-		$(".comment button.edit").click(function(){renderCommentEdit(this);});
-		$(".comment button.delete").click(function(){deleteComment(this);});
+		$(".comment button.edit").click(function(){render_comment_edit(this);});
+		$(".comment button.delete").click(function(){delete_comment(this);});
 	});
 
 </script>
