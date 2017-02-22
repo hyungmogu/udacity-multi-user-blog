@@ -476,7 +476,7 @@ class ReadPost(Handler):
             self.render('readPost.html', blog=blog, signed_in = True, 
                         comments=comments)
         else:
-            self.render('readPost.html', blog=blog)
+            self.render('readPost.html', blog=blog,comments=comments)
 
     def has_comments(self,comments):
         if comments:
