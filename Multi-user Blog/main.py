@@ -165,6 +165,160 @@ class LikeHandler(Handler):
         self.response.out.write(json.dumps(success))
 
 
+class LoginHandler(Handler):
+
+    def is_login_successful(self,username,password,user):
+        """ Determines whether the user is signed in. 
+
+        @Args:
+            username (string)
+            password (string)
+            user     (list) - Query result of anyone with the same 
+                              username.
+
+        @Outputs:
+            Boolean - True if username exists and if the entered 
+                      password matches the stored password. Otherwise,
+                      False is returned.
+        """
+        # First check if username exists.
+        # Then, check if password match.
+        # If passwords don't match, it's incorrect and False is returned.
+        if user:
+            stored_hashed_password,salt = (user[0].password).split(",")
+            hashed_password = hmac.new(str(salt), str(password),
+                                        hashlib.sha256).hexdigest()
+            if stored_hashed_password == hashed_password:
+                return True 
+            else:
+                return False
+        # If username don't exist, return False. 
+        else:
+            return False
+
+    def username_already_exists(self, username):
+        """Checks if username exists in database. 
+
+        This method ensures the uniqueness of usernames.
+
+        @Args:
+            username (String) 
+
+        @Outputs:
+            boolean - True if returned value not empty. False otherwise.
+        """
+        query = User.gql("WHERE username=:username", username = username)
+        result = query.fetch(limit=1)
+        if result:
+            return True
+        return False
+
+
+    def check_form_info(self, username="", password="", verify_pw="", 
+                        email=""):
+        """Checks if inputs are filled correctly. 
+
+        If all informations are present without errors, 'errors_exist' 
+        will return FALSE.
+
+        If one or more errors are present, 'errors_exist' will return 
+        TRUE.
+
+        @Args:
+            username  (String)
+            password  (String)
+            verify_pw (String)
+            email     (String)
+
+        @Outputs:
+            Dictionary - dictionary of errors, consisting of:
+                - errors_exist      (Boolean)
+                - username_empty    (Boolean)
+                - password_empty    (Boolean)
+                - verify_pw_empty   (Boolean)
+                - email_empty       (Boolean)
+                - username_incorrect(Boolean)
+                - username_exists   (Boolean)
+                - password_mismatch (Boolean)
+        """
+        errors = {"errors_exist": False, "username_empty": False,
+                "password_empty": False, "verify_pw_empty": False, 
+                "email_empty": False, "username_incorrect": False,
+                "username_exists": False, "password_mismatch":False}
+        # Checks if inputs are non-empty.
+        # If so, checks each field and see which of them are missing.
+        if not (username and password and verify_pw and email):
+            if not username:
+                errors["username_empty"] = True
+                errors["errors_exist"] = True
+            if not password:
+                errors["password_empty"] = True
+                errors["errors_exist"] = True
+            if not verify_pw:
+                errors["verify_pw_empty"] = True
+                errors["errors_exist"] = True
+            if not email:
+                errors["email_empty"] = True
+                errors["errors_exist"] = True
+            return errors
+        # Check if username has any spaces.
+        if len(username.split(" ")) > 1:
+            errors["errors_exist"] = True
+            errors["username_incorrect"] = True
+        # Check if username already exists.
+        if self.username_already_exists(username):
+            errors["username_exists"] = True
+            errors["errors_exist"] = True
+        # Check if the password and verify password match.
+        if not (password == verify_pw):
+            errors["password_mismatch"] = True
+            errors["errors_exist"] = True
+
+        return errors
+
+    def register(self,username,hashed_password,email):
+        """Registers an user to database.
+
+        @Args:
+            username        (string)
+            hashed_password (string)
+            email           (string)
+
+        @Output:
+            String - id of username
+        """
+        user = User(username=username,password=hashed_password,email=email)
+        user_key = user.put()
+        return str(user_key.id())
+
+    def make_pw_hash(self,password):
+        """ Converts input into a hashed value. 
+
+        This method uses sha256 algorithm and randomly generated salt.
+
+        @Args:
+            password (String)
+
+        @Outputs:
+            String - Hashed input and its salt separated by a comma.
+        """
+        salt = self.make_salt()         
+        hashed_password = hmac.new(salt,password,hashlib.sha256).hexdigest()
+        return "%s,%s" % (hashed_password,salt)
+
+    def make_salt(self):
+        """ Randomly generates 10 characters of alphanumeric string.
+
+        @Args:
+            None
+
+        @Output
+            String - Alphanumeric string
+        """
+        return "".join([random.choice(string.letters+string.digits) 
+                        for i in range(10)])
+
+
 #API
 class PostComment(CommentHandler):
 
@@ -514,7 +668,7 @@ class ReadBlog(Handler):
             return False
 
 
-class ReadSignUp(Handler):
+class ReadSignUp(LoginHandler):
 
     def get(self):
         cookie_val = self.request.cookies.get('user_id')
@@ -553,127 +707,6 @@ class ReadSignUp(Handler):
                     password=password, verify_pw=verify_pw, email=email,
                     errors=errors)
 
-    def username_already_exists(self, username):
-        """Checks if username exists in database. 
-
-        This method ensures the uniqueness of usernames.
-
-        @Args:
-            username (String) 
-
-        @Outputs:
-            boolean - True if returned value not empty. False otherwise.
-        """
-        query = User.gql("WHERE username=:username", username = username)
-        result = query.fetch(limit=1)
-        if result:
-            return True
-        return False
-
-
-    def check_form_info(self, username="", password="", verify_pw="", 
-                        email=""):
-        """Checks if inputs are filled correctly. 
-
-        If all informations are present without errors, 'errors_exist' 
-        will return FALSE.
-
-        If one or more errors are present, 'errors_exist' will return 
-        TRUE.
-
-        @Args:
-            username  (String)
-            password  (String)
-            verify_pw (String)
-            email     (String)
-
-        @Outputs:
-            Dictionary - dictionary of errors, consisting of:
-                - errors_exist      (Boolean)
-                - username_empty    (Boolean)
-                - password_empty    (Boolean)
-                - verify_pw_empty   (Boolean)
-                - email_empty       (Boolean)
-                - username_incorrect(Boolean)
-                - username_exists   (Boolean)
-                - password_mismatch (Boolean)
-        """
-        errors = {"errors_exist": False, "username_empty": False,
-                "password_empty": False, "verify_pw_empty": False, 
-                "email_empty": False, "username_incorrect": False,
-                "username_exists": False, "password_mismatch":False}
-        # Checks if inputs are non-empty.
-        # If so, checks each field and see which of them are missing.
-        if not (username and password and verify_pw and email):
-            if not username:
-                errors["username_empty"] = True
-                errors["errors_exist"] = True
-            if not password:
-                errors["password_empty"] = True
-                errors["errors_exist"] = True
-            if not verify_pw:
-                errors["verify_pw_empty"] = True
-                errors["errors_exist"] = True
-            if not email:
-                errors["email_empty"] = True
-                errors["errors_exist"] = True
-            return errors
-        # Check if username has any spaces.
-        if len(username.split(" ")) > 1:
-            errors["errors_exist"] = True
-            errors["username_incorrect"] = True
-        # Check if username already exists.
-        if self.username_already_exists(username):
-            errors["username_exists"] = True
-            errors["errors_exist"] = True
-        # Check if the password and verify password match.
-        if not (password == verify_pw):
-            errors["password_mismatch"] = True
-            errors["errors_exist"] = True
-
-        return errors
-
-    def register(self,username,hashed_password,email):
-        """Registers an user to database.
-
-        @Args:
-            username        (string)
-            hashed_password (string)
-            email           (string)
-
-        @Output:
-            String - id of username
-        """
-        user = User(username=username,password=hashed_password,email=email)
-        user_key = user.put()
-        return str(user_key.id())
-
-    def make_pw_hash(self,password):
-        """ Converts input into a hashed value. 
-
-        This method uses sha256 algorithm and randomly generated salt.
-
-        @Args:
-            password (String)
-
-        @Outputs:
-            String - Hashed input and its salt separated by a comma.
-        """
-        salt = self.make_salt()         
-        hashed_password = hmac.new(salt,password,hashlib.sha256).hexdigest()
-        return "%s,%s" % (hashed_password,salt)
-
-    def make_salt(self):
-        """ Randomly generates 10 characters of alphanumeric string.
-
-        @Args:
-            None
-
-        @Output
-            String - Alphanumeric string
-        """
-        return "".join([random.choice(string.letters+string.digits) 
-                        for i in range(10)])
 
 class ReadWelcome(Handler):
 
@@ -691,7 +724,8 @@ class ReadWelcome(Handler):
             # Otherwise, make user login.
             self.redirect('/blog/login')
 
-class ReadLogin(Handler):
+
+class ReadLogin(LoginHandler):
 
     def get(self):
         # Harvest requirements.
@@ -729,37 +763,9 @@ class ReadLogin(Handler):
                     "in, and try again.")
             self.render('login.html', error=error, username=username, 
                         password=password)
-
-    def is_login_successful(self,username,password,user):
-        """ Determines whether the user is signed in. 
-
-        @Args:
-            username (string)
-            password (string)
-            user     (list) - Query result of anyone with the same 
-                              username.
-
-        @Outputs:
-            Boolean - True if username exists and if the entered 
-                      password matches the stored password. Otherwise,
-                      False is returned.
-        """
-        # First check if username exists.
-        # Then, check if password match.
-        # If passwords don't match, it's incorrect and False is returned.
-        if user:
-            stored_hashed_password,salt = (user[0].password).split(",")
-            hashed_password = hmac.new(str(salt), str(password),
-                                        hashlib.sha256).hexdigest()
-            if stored_hashed_password == hashed_password:
-                return True 
-            else:
-                return False
-        # If username don't exist, return False. 
-        else:
-            return False 
+ 
             
-class ReadLogout(Handler):
+class ReadLogout(LoginHandler):
 
     def get(self):
         # Clear out the cookie. 
