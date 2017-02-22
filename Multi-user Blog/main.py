@@ -30,7 +30,7 @@ class Handler(webapp2.RequestHandler):
         md5 hash algorithm is used.
 
         @Args:
-            s (String) - String to be hashed
+            (String) - String to be hashed
             
         @Outputs:
             (String) - Hashed value of the input
@@ -107,54 +107,6 @@ class Handler(webapp2.RequestHandler):
             return True
 
 #API
-class GetComments(Handler):
-    def get(self,post_id):
-        cookie_val = self.request.cookies.get("user_id")
-        blog = Blog.get_by_id(int(post_id))
-        comments = blog.comment_set.get()
-        self.response.set_status(200)
-        self.response.headers["Content-Type"] = "application/json"
-        if self.is_signed_in(cookie_val) and self.has_comments(comments):
-            self.response.out.write(json.dumps({"success": True, "data": [x.serialize for x in comments], "logged_in": True}))
-        elif self.is_signed_in(cookie_val) and not self.has_comments(comments):
-            self.response.out.write(json.dumps({"success": True, "logged_in": True}))
-        elif not self.is_signed_in(cookie_val) and self.has_comments(comments):
-            self.response.out.write(json.dumps({"success": True, "data": [x.serialize for x in comments], "logged_in": False}))
-        else:
-            self.response.out.write(json.dumps({"success": True, "logged_in": False}))    
-    def has_comments(self,comments):
-        if comments:
-            return True
-        else:
-            return False  
-
-# class PostComment(Handler):
-#     def post(self,post_id):
-#         cookie_val = self.request.cookies.get("user_id")
-#         blog = Blog.get_by_id(int(post_id))
-#         # Check if user is signed in.
-#         # Then, check if blog post exists.
-#         # If all is well, load it to the entity called Comment.
-#         if self.is_signed_in(cookie_val):
-#             if self.blog_exists(blog):
-#                 user = User.get_by_id(int(cookie_val.split("|")[0]))
-#                 title = self.request.get("title")
-#                 content = self.request.get("content")
-#                 print(title,content)
-#                 comment = Comment(title=title,content=content,blog=blog,author=user)
-#                 self.response.set_status(200)
-#                 self.response.headers["Content-Type"] = "application/json"
-#                 self.response.out.write(json.dumps({"success":True,"data":comment.serialize}))                
-#             else:
-#                 self.response.set_status(400)
-#                 self.response.headers["Content-Type"] = "application/json"
-#                 self.response.out.write(json.dumps({"error":"Incorrect blog. Comment failed to be loaded."}))
-#         else:
-#             self.response.set_status(401)
-#             self.response.headers["Content-Type"] = "application/json"
-#             self.response.out.write(json.dumps({"error":"User must be signed in to post a blog."}))
-
-
 class PostComment(Handler):
     def post(self,post_id):
         cookie_val = self.request.cookies.get("user_id")
