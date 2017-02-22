@@ -400,7 +400,7 @@ class CreateBlog(Handler):
             self.redirect('/blog/login')  
 
 
-class UpdatePost(Handler):
+class UpdateBlog(Handler):
 
     def get(self,post_id):
         # Harvest requirements.
@@ -412,7 +412,7 @@ class UpdatePost(Handler):
                 if self.is_author(cookie_val,blog):
                     # If all is well, proceed to the page.
                     # Since user is logged in, insert logout button.
-                    self.render('updatePost.html', blog=blog, signed_in=True)
+                    self.render('updateBlog.html', blog=blog, signed_in=True)
                 else:
                     # If not, show error page.
                     self.redirect('/blog/notauthorized')          
@@ -443,7 +443,7 @@ class UpdatePost(Handler):
                     # Otherwise, re-render page with error.
                     # Since user is logged in, continue to display
                     #  'Logout' button.
-                    self.render('updatePost.html', title=title, content=content,
+                    self.render('updateBlog.html', title=title, content=content,
                                 signed_in=True)
             else:
                 # Make user login.
@@ -814,8 +814,8 @@ app = webapp2.WSGIApplication([('/blog',ReadMainPage), ('/blog/',ReadMainPage),
                                 ('/blog/newpost/', CreateBlog),
                                 ('/blog/(.*\d)',ReadPost),
                                 ('/blog/(.*\d)/',ReadPost),
-                                ('/blog/(.*\d)/edit',UpdatePost),
-                                ('/blog/(.*\d)/edit/',UpdatePost),
+                                ('/blog/(.*\d)/edit',UpdateBlog),
+                                ('/blog/(.*\d)/edit/',UpdateBlog),
                                 ('/blog/(.*\d)/delete',DeletePost),
                                 ('/blog/(.*\d)/delete/',DeletePost),
                                 ('/blog/signup',ReadSignUpPage),
