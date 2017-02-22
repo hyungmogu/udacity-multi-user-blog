@@ -122,9 +122,12 @@ class CommentHandler(Handler):
 class LikeHandler(Handler):
 
     def post(self,post_id):
+        # Harvest requirements.
         cookie_val = self.request.cookies.get('user_id')
         user_id = cookie_val.split("|")[0]
         blog = Blog.get_by_id(int(post_id))
+        # Before adding/removing likes, first check if the op is valid.
+        # Proceed if all is well.
         if self.is_valid(cookie_val,blog):
             # Check if user already liked the post.
             # This determines whether to like/unlike post.
@@ -181,13 +184,14 @@ class LikeHandler(Handler):
 class PostComment(CommentHandler):
 
     def post(self,post_id):
+        # Harvest requirements.
         cookie_val = self.request.cookies.get("user_id")
         blog = Blog.get_by_id(int(post_id))
-        # Check if user is signed in.
-        # Then, check if blog post exists.
-        # If all is well, load it to the entity called Comment.
+        # Check if user is allowed to post a comment.
         if self.is_signed_in(cookie_val):
+            # Then, check there are no problem with posting a comment.
             if self.blog_exists(blog):
+                # Extract user_id from cookie
                 user = User.get_by_id(int(cookie_val.split("|")[0]))
                 title = self.request.get("title")
                 content = self.request.get("texts")
@@ -256,13 +260,14 @@ class DeleteComment(CommentHandler):
 class UpdateComment(CommentHandler):
 
     def put(self,post_id):
+        # Harvest requirements.
         data = json.loads(self.request.body)
         comment = Comment.get_by_id(int(data["id"]))
         blog = Blog.get_by_id(int(post_id))
         cookie_val = self.request.cookies.get("user_id")
         new_title = data["title"]
         new_content = data["content"]
-
+        # Ensure all req. has been met before applying changes.
         if self.is_valid(blog,comment,cookie_val,new_content,new_title):
             comment.title = new_title
             comment.content = new_content
@@ -271,6 +276,7 @@ class UpdateComment(CommentHandler):
             self.response.headers["Content-Type"] = "application/json"
             self.response.out.write(json.dumps({"success":"The comment has been "
                                                 "successfully updated."}))
+        # If not satisfied, identify where and return it back to user.
         else:
             if not (new_content and new_title):
                 self.response.set_status(400)
@@ -301,15 +307,19 @@ class UpdateComment(CommentHandler):
                                                     "to edit."}))
 
     def is_valid(self,blog,comment,cookie_val,new_content,new_title):
-        # Check if new comment and title are empty.
+        # Check if content and title are non-empty.
         if not (new_content and new_title):
             return False
+        # Check if blog with post_id is non-empty.
         if not self.blog_exists(blog):
             return False
+        # Check if comment with comment_id is non-empty. 
         if not self.comment_exists(comment):
             return False
+        # Check if user has logged in.
         if not self.is_signed_in(cookie_val):
             return False
+        # Check if user has authority to apply changes to the comment.
         if not self.is_author(cookie_val,comment):
             return False
         return True    
@@ -318,13 +328,16 @@ class UpdateComment(CommentHandler):
 class ValidateUser(Handler):
 
     def get(self,post_id):
+        # Harvest requirements.
         cookie_val = self.request.cookies.get("user_id")
         comment = Comment.get_by_id(int(self.request.get("id")))
+        # Check if user has authority to edit the comment.
         if self.is_signed_in(cookie_val) and self.is_author(cookie_val,comment):
             self.response.set_status(200)
             self.response.headers["Content-Type"] = "application/json"
             self.response.out.write(json.dumps({"success":"User is allowed to "
                                                 "edit this post."}))                    
+        # If not satisfied, return message to user.
         else:
             self.response.set_status(401)
             self.response.headers["Content-Type"] = "application/json"
@@ -337,11 +350,12 @@ class ValidateUser(Handler):
 class ReadMainPage(Handler):
 
     def get(self):
+        # Harvest requirements.
         cookie_val = self.request.cookies.get('user_id')
-        # Query 10 most recent blog entries in descending order.
+        # Query 10 most recent blog posts.
         query = Blog.gql("ORDER BY date_created DESC")
         blogs = query.fetch(limit=10)
-        # Render page.
+        # Determine whether to insert 'Login' or 'Logout' button.
         if self.is_signed_in(cookie_val):
             self.render('mainPage.html', blogs=blogs, signed_in=True)
         else:
@@ -351,28 +365,33 @@ class ReadMainPage(Handler):
 class CreatePost(Handler):
 
     def get(self):
+        # Harvest requirements.
         cookie_val = self.request.cookies.get('user_id')
+        # Check if user has enough authority to create a blog post.
         if self.is_signed_in(cookie_val):
+            # Since user is logged in, insert 'Logout' button.
             self.render('createPost.html', error="", signed_in= True)
         else:
+            # Otherwise, make user login.
             self.redirect('/blog/login')
 
     def post(self):
+        # Harvest requirements.
         title = self.request.get('title')
         content = self.request.get('content')
         cookie_val = self.request.cookies.get('user_id')
-        # Check if the retrieved information are non-empty.
-        # If all is well, proceed to storing information to database.
-        # If either title or content are missing, tell user to fill 
-        # out the missing content.
+        # Check that there are no problem with creating a blog post.
         if self.is_signed_in(cookie_val):
+            # Check contents are non-empty.
             if (title and content):
+                # If all is well, store information to database.
                 user = User.get_by_id(int(cookie_val.split("|")[0]))
                 blog_entry = Blog(title=title, content=content, author=user, 
                                     number_of_likes=0)
                 blog_key = blog_entry.put()
                 blog_id = blog_key.id()
-                self.redirect('/blog/%s' %blog_id)                  
+                self.redirect('/blog/%s' %blog_id)
+            # If any contents are missing, return message to user.                   
             else:
                 error = ("Either title or content is missing. Please fill both "
                         "in, and try again.")
@@ -384,17 +403,18 @@ class CreatePost(Handler):
 class UpdatePost(Handler):
 
     def get(self,post_id):
+        # Harvest requirements.
         cookie_val = self.request.cookies.get('user_id')
         blog = Blog.get_by_id(int(post_id))
+        # Check if user is authorized to modify the blog post.
         if blog:
-            # Check if user signed in.
-            # Check if user is authorized to modify the post.
-            # If all is well, proceed to the page.
-            # If not, tell user is not authorized.
             if self.is_signed_in(cookie_val):
                 if self.is_author(cookie_val,blog):
+                    # If all is well, proceed to the page.
+                    # Since user is logged in, insert logout button.
                     self.render('updatePost.html', blog=blog, signed_in=True)
                 else:
+                    # If not, show error page.
                     self.redirect('/blog/notauthorized')          
             else:
 
@@ -403,40 +423,47 @@ class UpdatePost(Handler):
             self.redirect('/blog') 
 
     def post(self,post_id):
+        # Harvest requirments.
         title = self.request.get('title')
         content = self.request.get('content')
         cookie_val = self.request.cookies.get('user_id')
         blog = Blog.get_by_id(int(post_id))
+        # Check whether all req. has been met.
         if blog:
             if self.is_signed_in(cookie_val):
                 # Check if content in title and content are non-empty.
-                # If all is well, store information to database.
                 if (title and content):
+                    # If all is well, store information to database.
                     blog.title = title
                     blog.content = content
                     blog_key = blog.put()
                     blog_id = blog_key.id()
                     self.redirect('/blog/%s' % blog_id)
                 else:
+                    # Otherwise, re-render page with error.
+                    # Since user is logged in, continue to display
+                    #  'Logout' button.
                     self.render('updatePost.html', title=title, content=content,
                                 signed_in=True)
             else:
+                # Make user login.
                 self.redirect('/blog/login')
         else:
+            # Direct user to 'Not Found' page.
             self.redirect('/blog')
 
 
 class DeletePost(Handler):
 
     def get(self,post_id):
+        # Harvest requirements.
         cookie_val = self.request.cookies.get('user_id')
         blog = Blog.get_by_id(int(post_id))
-        # Check if user is signed in.
-        # If signed in, check if blog exists. 
-        # If all is well, proceed to delete page.
+        # Check if user has all req. to delete a post.
         if blog:
             if self.is_signed_in(cookie_val):
-                if self.is_author(cookie_val,blog):    
+                if self.is_author(cookie_val,blog):
+                    # Since user is logged in, display 'Logout' button.
                     self.render('deletePost.html', blog=blog, signed_in=True)
                 else:
                     self.redirect('/blog/notauthorized')
@@ -446,8 +473,10 @@ class DeletePost(Handler):
             self.redirect('/blog')
 
     def post(self,post_id):
+        # Harvest requirements.
         blog = Blog.get_by_id(int(post_id))
         cookie_val = self.request.cookies.get('user_id')
+        # Check whether all req. has been met before deleting a post.
         if blog:
             if self.is_signed_in(cookie_val):
                 blog.delete() 
@@ -461,12 +490,14 @@ class DeletePost(Handler):
 class ReadPost(Handler):
 
     def get(self,post_id):
+        # Harvest requirements.
         cookie_val = self.request.cookies.get('user_id')
         blog = Blog.get_by_id(int(post_id))
         # Query all comments for the post
         comments = (Comment.all().filter("blog =",blog.key()).
                     order('-date_created'))
-        # print(comments)
+        # Determine whether to insert 'Login' or 'Logout' button.
+        # As well, determine what type of message to put for comments.
         if self.is_signed_in(cookie_val):
             self.render('readPost.html', blog=blog, signed_in = True, 
                         comments=comments)
@@ -644,20 +675,28 @@ class ReadSignUpPage(Handler):
 class ReadWelcomePage(Handler):
 
     def get(self):
+        # Harvest requirements.
         cookie_val = self.request.cookies.get('user_id')
+        # Show this page to logged-users only.
         if self.is_signed_in(cookie_val):
+            # Query user to display username in the welcome message.
             user_id = cookie_val.split("|")[0]
             result = User.get_by_id(int(user_id))
+            # Also, include 'Logout' button, since user has singed in.
             self.render("welcome.html",user= result,signed_in = True)
         else:
+            # Otherwise, make user login.
             self.redirect('/blog/login')
 
 class ReadLoginPage(Handler):
 
     def get(self):
+        # Harvest requirements.
         cookie_val = self.request.cookies.get('user_id')
+        # Check if user has logged in.
         if self.is_signed_in(cookie_val):
             self.redirect('/blog/welcome')
+        # If not logged in, continue to login page.
         else:
             self.render('login.html')
 
@@ -665,22 +704,24 @@ class ReadLoginPage(Handler):
         username = self.request.get('username')
         password = self.request.get('password')      
         # Checks whehter the inputs are correctly filled.
-        # Creates cookie if username exists and password is correct.
         if (username and password):
             query = User.gql("WHERE username=:username",username=username)
             user = query.fetch(limit=1)
             if self.is_login_successful(username,password,user):
+                # Create cookie and store user info if successful.
                 user_id = user[0].key().id()
                 cookie_val = self.make_secure_val(user_id)
                 self.response.headers.add_header('Set-Cookie',
                                                 'user_id=%s;Path=/'%cookie_val)      
                 self.redirect('/blog/welcome')
             else:
+                # Else, re-render page with the following message.
                 error = ("Either username or password are incorrect. Please try "
                         "again.")
                 self.render('login.html', error=error, username=username,
                             password=password)
         else:
+            # Else, re-render page with the following message.
             error = ("Either username or password fields are empty. Please fill "
                     "in, and try again.")
             self.render('login.html', error=error, username=username, 
@@ -726,7 +767,9 @@ class ReadLogoutPage(Handler):
 class ReadNotFound(Handler):
 
     def get(self):
+        # Harvest requirements.
         cookie_val = self.request.cookies.get("user_id")
+        #  Determine whether to insert 'Login' or 'Logout' button.
         if self.is_signed_in(cookie_val):
             self.render("readNotFound.html",signed_in=True)
         else:
@@ -735,7 +778,9 @@ class ReadNotFound(Handler):
 class ReadNotAuthorized(Handler):
 
     def get(self):
+        # Harvest requirements.
         cookie_val = self.request.cookies.get("user_id")
+        #  Determine whether to insert 'Login' or 'Logout' button.
         if self.is_signed_in(cookie_val):
             self.render("readNotAuthorized.html",signed_in=True)
         else:
