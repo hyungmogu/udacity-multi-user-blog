@@ -368,6 +368,8 @@ class CreatePost(Handler):
         cookie_val = self.request.cookies.get('user_id')
         # Check if the retrieved information are non-empty.
         # If all is well, proceed to storing information to database.
+        # If either title or content are missing, tell user to fill 
+        # out the missing content.
         if self.is_signed_in(cookie_val):
             if (title and content):
                 user = User.get_by_id(int(cookie_val.split("|")[0]))
@@ -376,7 +378,6 @@ class CreatePost(Handler):
                 blog_key = blog_entry.put()
                 blog_id = blog_key.id()
                 self.redirect('/blog/%s' %blog_id)                  
-            # If either title or content are missing, tell user to fill out the missing content.
             else:
                 error = ("Either title or content is missing. Please fill both "
                         "in, and try again.")
@@ -669,7 +670,7 @@ class ReadLoginPage(Handler):
         username = self.request.get('username')
         password = self.request.get('password')      
         # Checks whehter the inputs are correctly filled.
-        # Creates cookie if the username exists and the password is correct.
+        # Creates cookie if username exists and password is correct.
         if (username and password):
             query = User.gql("WHERE username=:username",username=username)
             user = query.fetch(limit=1)
