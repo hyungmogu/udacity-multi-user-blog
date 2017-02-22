@@ -453,7 +453,7 @@ class UpdateBlog(Handler):
             self.redirect('/blog')
 
 
-class DeletePost(Handler):
+class DeleteBlog(Handler):
 
     def get(self,post_id):
         # Harvest requirements.
@@ -464,7 +464,7 @@ class DeletePost(Handler):
             if self.is_signed_in(cookie_val):
                 if self.is_author(cookie_val,blog):
                     # Since user is logged in, display 'Logout' button.
-                    self.render('deletePost.html', blog=blog, signed_in=True)
+                    self.render('deleteBlog.html', blog=blog, signed_in=True)
                 else:
                     self.redirect('/blog/notauthorized')
             else:
@@ -816,8 +816,8 @@ app = webapp2.WSGIApplication([('/blog',ReadMainPage), ('/blog/',ReadMainPage),
                                 ('/blog/(.*\d)/',ReadPost),
                                 ('/blog/(.*\d)/edit',UpdateBlog),
                                 ('/blog/(.*\d)/edit/',UpdateBlog),
-                                ('/blog/(.*\d)/delete',DeletePost),
-                                ('/blog/(.*\d)/delete/',DeletePost),
+                                ('/blog/(.*\d)/delete',DeleteBlog),
+                                ('/blog/(.*\d)/delete/',DeleteBlog),
                                 ('/blog/signup',ReadSignUpPage),
                                 ('/blog/signup/',ReadSignUpPage),
                                 ('/blog/welcome',ReadWelcomePage),
