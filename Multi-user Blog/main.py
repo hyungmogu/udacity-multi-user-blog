@@ -30,9 +30,9 @@ class PostComment(CommentHandler):
         else:
             if not self.blog_exists(blog):
                 self.response.set_status(404)
-            if not self.is_signed_in(cookie_val):
+            elif not self.is_signed_in(cookie_val):
                 self.response.set_status(401)
-            if not (title and content):
+            elif not (title and content):
                 self.response.set_status(400)
                 self.response.headers["Content-Type"]="application/json"
                 self.response.out.write(json.dumps({"error":"Invalid. Title and texts must not be empty."}))
@@ -41,10 +41,10 @@ class PostComment(CommentHandler):
         if not self.blog_exists(blog):
             return False
         # Check is user 
-        if not self.is_signed_in(cookie_val):
+        elif not self.is_signed_in(cookie_val):
             return False
         # Check if title and content are non-empty.
-        if not (title and content):
+        elif not (title and content):
             return False
         return True
 
@@ -67,17 +67,17 @@ class DeleteComment(CommentHandler):
                 self.response.headers["Content-Type"] = "application/json"
                 self.response.out.write(json.dumps({"error": "Invalid. The blog "
                                                     "page does not exist."}))
-            if not self.comment_exists(comment):
+            elif not self.comment_exists(comment):
                 self.response.set_status(400)
                 self.response.headers["Content-Type"] = "application/json"
                 self.response.out.write(json.dumps({"error": "Invalid. The "
                                                     "comment does not exist."}))
-            if not self.is_signed_in(cookie_val):
+            elif not self.is_signed_in(cookie_val):
                 self.response.set_status(401)
                 self.response.headers["Content-Type"] = "application/json"
                 self.response.out.write(json.dumps({"error": "Invalid. Must be "
                                                     "signed in to edit comment."}))
-            if not self.is_author(cookie_val,comment):
+            elif not self.is_author(cookie_val,comment):
                 self.response.set_status(403)
                 self.response.headers["Content-Type"] = "application/json"
                 self.response.out.write(json.dumps({"error":"Invalid. Must be "
@@ -87,11 +87,11 @@ class DeleteComment(CommentHandler):
     def is_valid(self,blog,comment,cookie_val):
         if not self.blog_exists(blog):
             return False
-        if not self.comment_exists(comment):
+        elif not self.comment_exists(comment):
             return False
-        if not self.is_signed_in(cookie_val):
+        elif not self.is_signed_in(cookie_val):
             return False
-        if not self.is_author(cookie_val,comment):
+        elif not self.is_author(cookie_val,comment):
             return False
         return True   
 
@@ -122,22 +122,22 @@ class UpdateComment(CommentHandler):
                 self.response.out.write(json.dumps({"error":"Invalid. Both title "
                                                     "and comment must not be "
                                                     "empty."}))
-            if not self.blog_exists(blog):
+            elif not self.blog_exists(blog):
                 self.response.set_status(404)
                 self.response.headers["Content-Type"] = "application/json"
                 self.response.out.write(json.dumps({"error": "Invalid. The blog "
                                                     "page does not exist."}))
-            if not self.comment_exists(comment):
+            elif not self.comment_exists(comment):
                 self.response.set_status(404)
                 self.response.headers["Content-Type"] = "application/json"
                 self.response.out.write(json.dumps({"error": "Invalid. The "
                                                     "comment does not exist."}))
-            if not self.is_signed_in(cookie_val):
+            elif not self.is_signed_in(cookie_val):
                 self.response.set_status(401)
                 self.response.headers["Content-Type"] = "application/json"
                 self.response.out.write(json.dumps({"error": "Invalid. Must be "
                                                     "signed in to edit comment."}))
-            if not self.is_author(cookie_val,comment):
+            elif not self.is_author(cookie_val,comment):
                 self.response.set_status(401)
                 self.response.headers["Content-Type"] = "application/json"
                 self.response.out.write(json.dumps({"error":"Invalid. Must be "
@@ -149,16 +149,16 @@ class UpdateComment(CommentHandler):
         if not (new_content and new_title):
             return False
         # Check if blog with post_id is non-empty.
-        if not self.blog_exists(blog):
+        elif not self.blog_exists(blog):
             return False
         # Check if comment with comment_id is non-empty. 
-        if not self.comment_exists(comment):
+        elif not self.comment_exists(comment):
             return False
         # Check if user has logged in.
-        if not self.is_signed_in(cookie_val):
+        elif not self.is_signed_in(cookie_val):
             return False
         # Check if user has authority to apply changes to the comment.
-        if not self.is_author(cookie_val,comment):
+        elif not self.is_author(cookie_val,comment):
             return False
         return True    
 
@@ -200,6 +200,37 @@ class UpdateLike(LikeHandler):
                 self.remove_like(blog,user_id)
             else:
                 self.add_like(blog,user_id) 
+        else:
+            if not self.is_signed_in(cookie_val):
+                error = "Not signed in."
+                self.response.set_status(401)
+                self.response.headers['Content-Type'] = 'application/json'
+                self.response.out.write(error)
+            # Check if blog exists.
+            elif not self.blog_exists(blog):
+                error = "Post doesn't exist."
+                self.response.set_status(404)
+                self.response.headers['Content-Type'] = 'application/json'
+                self.response.out.write(error)
+                self.response
+            # Check if user is the author.
+            elif self.is_author(cookie_val,blog):
+                error = "Post cannot be liked by creator."
+                self.response.set_status(400)
+                self.response.headers['Content-Type'] = 'application/json'
+                self.response.out.write(error)
+    
+    def is_valid(self,cookie_val,blog):
+        # Check if user is signed in.
+        if not self.is_signed_in(cookie_val):
+            return False
+        # Check if blog exists.
+        elif not self.blog_exists(blog):
+            return False
+        # Check if user is the author.
+        elif self.is_author(cookie_val,blog):
+            return False
+        return True
 
 
 # ROUTES
@@ -250,7 +281,7 @@ class CreateBlog(Handler):
             if not self.is_signed_in(cookie_val):
                 self.redirect("/blog/login")
             # If any contents are missing, return error to user. 
-            if not (title and content):
+            elif not (title and content):
                 error = ("Either title or content is missing. Please fill both "
                         "in, and try again.")
                 self.render('createPost.html', error=error)
@@ -260,7 +291,7 @@ class CreateBlog(Handler):
         if not self.is_signed_in(cookie_val):
             return False
         # Check contents are non-empty.
-        if not (title and content):
+        elif not (title and content):
             return False
         return True
 
@@ -279,10 +310,10 @@ class UpdateBlog(Handler):
             if not blog:
                 self.response.set_status(404)
                 self.redirect("/blog/not_found")
-            if not self.is_signed_in(cookie_val):
+            elif not self.is_signed_in(cookie_val):
                 self.response.set_status(401)
                 self.redirect("/blog/login")
-            if not self.is_author(cookie_val,blog):
+            elif not self.is_author(cookie_val,blog):
                 self.response.set_status(403)
                 self.redirect("/blog/not_authorized")
 
@@ -305,13 +336,13 @@ class UpdateBlog(Handler):
             if not blog:
                 self.response.set_status(404)
                 self.redirect("/blog/not_found")
-            if not self.is_signed_in(cookie_val):
+            elif not self.is_signed_in(cookie_val):
                 self.response.set_status(401)
                 self.redirect("/blog/login")
-            if not self.is_author(cookie_val,blog):
+            elif not self.is_author(cookie_val,blog):
                 self.response.set_status(403)
                 self.redirect("/blog/not_authorized")
-            if not (title and content):
+            elif not (title and content):
                 # Re-render page with error.
                 error = ("Either title or texts are empty. Please fill "
                         "both in before trying again.")
@@ -321,20 +352,20 @@ class UpdateBlog(Handler):
     def is_get_valid(self,blog,cookie_val):
         if not blog:
             return False
-        if not self.is_signed_in(cookie_val):
+        elif not self.is_signed_in(cookie_val):
             return False
-        if not self.is_author(cookie_val,blog):
+        elif not self.is_author(cookie_val,blog):
             return False
         return True
 
     def is_post_valid(self,blog,cookie_val,content,title):
         if not blog:
             return False
-        if not self.is_signed_in(cookie_val):
+        elif not self.is_signed_in(cookie_val):
             return False
-        if not self.is_author(cookie_val,blog):
+        elif not self.is_author(cookie_val,blog):
             return False
-        if not (title and content):
+        elif not (title and content):
             return False
         return True
 
@@ -353,10 +384,10 @@ class DeleteBlog(Handler):
             if not blog:
                 self.response.set_status(404)
                 self.redirect("/blog/not_found")
-            if not self.is_signed_in(cookie_val):
+            elif not self.is_signed_in(cookie_val):
                 self.response.set_status(401)
                 self.redirect("/blog/login")
-            if not self.is_author(cookie_val,blog):
+            elif not self.is_author(cookie_val,blog):
                 self.response.set_status(403)
                 self.redirect("/blog/not_authorized")
 
@@ -373,19 +404,19 @@ class DeleteBlog(Handler):
             if not blog:
                 self.response.set_status(404)
                 self.redirect("/blog/not_found")
-            if not self.is_signed_in(cookie_val):
+            elif not self.is_signed_in(cookie_val):
                 self.response.set_status(401)
                 self.redirect("/blog/login")
-            if not self.is_author(cookie_val,blog):
+            elif not self.is_author(cookie_val,blog):
                 self.response.set_status(403)
                 self.redirect("/blog/not_authorized")
 
     def is_valid(self,blog,cookie_val):
         if not blog:
             return False
-        if not self.is_signed_in(cookie_val):
+        elif not self.is_signed_in(cookie_val):
             return False
-        if not self.is_author(cookie_val,blog):
+        elif not self.is_author(cookie_val,blog):
             return False
         return True
 
