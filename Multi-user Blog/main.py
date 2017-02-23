@@ -11,29 +11,42 @@ class PostComment(CommentHandler):
 
     def post(self,post_id):
         # Harvest requirements.
+        data = json.loads(self.request.body)
         cookie_val = self.request.cookies.get("user_id")
         blog = Blog.get_by_id(int(post_id))
+        title = data["title"]
+        content = data["content"]
         # Check if user is allowed to post a comment.
-        if self.is_signed_in(cookie_val):
-            # Then, check there are no problem with posting a comment.
-            if self.blog_exists(blog):
-                # Extract user_id from cookie
-                user = User.get_by_id(int(cookie_val.split("|")[0]))
-                title = self.request.get("title")
-                content = self.request.get("texts")
-                print(title,content)
-                comment = Comment(title=title, content=content, blog=blog, 
-                                author=user)
-                comment.put()
-                self.response.set_status(200)
-                self.redirect('/blog/%s'%post_id)                
-            else:
-                self.response.set_status(404)
-                self.redirect('/blog/not_found')
+        if self.is_post_valid(blog,cookie_val,content,title):
+            # Harvest more requirements.
+            user = User.get_by_id(int(cookie_val.split("|")[0]))
+            # Store information.
+            comment = Comment(title=title, content=content, blog=blog, 
+                            author=user)
+            comment_id = (comment.put()).id()
+            # Return user back to page.
+            self.response.set_status(200)
+            self.response.out.write(json.dumps({"success":"Comment successfully added to database.","id":comment_id, "title": title, "content": content,"author": user.username,"date_created":(comment.date_created).strftime("%B %d, %Y %I:%M%p")}))             
         else:
-            self.response.set_status(401)
-            self.redirect('/blog/not_authorized')
+            if not self.blog_exists(blog):
+                self.response.set_status(404)
+            if not self.is_signed_in(cookie_val):
+                self.response.set_status(401)
+            if not (title and content):
+                self.response.set_status(400)
+                self.response.headers["Content-Type"]="application/json"
+                self.response.out.write(json.dumps({"error":"Invalid. Title and texts must not be empty."}))
 
+    def is_post_valid(self,blog,cookie_val,content,title):
+        if not self.blog_exists(blog):
+            return False
+        # Check is user 
+        if not self.is_signed_in(cookie_val):
+            return False
+        # Check if title and content are non-empty.
+        if not (title and content):
+            return False
+        return True
 
 class DeleteComment(CommentHandler):
 
@@ -72,7 +85,6 @@ class DeleteComment(CommentHandler):
                                                     "to edit."}))
 
     def is_valid(self,blog,comment,cookie_val):
-        # Check if new comment and title are empty.
         if not self.blog_exists(blog):
             return False
         if not self.comment_exists(comment):
