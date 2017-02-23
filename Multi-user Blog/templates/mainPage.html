@@ -27,12 +27,10 @@
 		<article class="blog">
 			<div class="header">
 				<h2 class="title">{{blog.title}}</h2>
-				<div class="date">
-					{{blog.date_created.strftime('%B %d, %Y %I:%M%p')}}
-				</div>
 				<div class="meta">
+					<span class="author">{{blog.author.username}}</span>
+					<span class="date-created">{{blog.date_created.strftime('%B %d, %Y %I:%M%p')}}</span>
 					<span>{{blog.number_of_likes}}</span>
-					<span>{{blog.author.username}}</span>
 				</div>
 			</div>
 			<div class="options">
