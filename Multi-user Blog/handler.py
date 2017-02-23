@@ -126,7 +126,7 @@ class LikeHandler(Handler):
         blog.number_of_likes += 1
         blog.liked_by.append(user_id)
         blog.put()
-        success = {"status":200, "success": "successfully liked a post",
+        success = {"success": "successfully liked a post",
                     "new_count": blog.number_of_likes}
         self.response.set_status(200)
         self.response.out.write(json.dumps(success))
@@ -135,7 +135,7 @@ class LikeHandler(Handler):
         blog.number_of_likes -= 1
         blog.liked_by = [x for x in blog.liked_by if(int(x)!=int(user_id))]
         blog.put()
-        success = {"status":200, "success": "successfully unliked a post", 
+        success = {"success": "successfully unliked a post", 
                     "new_count": blog.number_of_likes}
         self.response.set_status(200)
         self.response.out.write(json.dumps(success))
