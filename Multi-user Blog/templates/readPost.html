@@ -22,7 +22,7 @@
 		<div class="meta">
 			<span class="author">{{blog.author.username}}</span>
 			<span class="date-created">{{blog.date_created.strftime('%B %d, %Y %I:%M%p')}}</span>
-			<span id="number-of-likes">{{blog.number_of_likes}}</span>
+			<span id="number-of-likes">Likes: {{blog.number_of_likes}}</span>
 		</div>
 		<div class="options">
 			<a href="/blog/{{blog.key().id()}}/edit">Edit</a>
@@ -114,7 +114,7 @@
 					dataType: "json",
 					success: function(result){
 						if(result["success"]){
-							$('#number-of-likes').html(result["new_count"]);
+							$('#number-of-likes').html("Likes: "+result["new_count"]);
 							$('#like-button').attr('data-liked','false');
 							$('#like-button').html('Like This Page');
 							$("#like div.result").html(result["success"]);
@@ -137,7 +137,7 @@
 						if(result["error"]){
 							console.log(result["error"]);
 						} else {
-							$('#number-of-likes').html(result["new_count"]);
+							$('#number-of-likes').html("Likes: "+result["new_count"]);
 							$('#like-button').attr('data-liked','true');
 							$('#like-button').html('Liked');
 							$("#like div.result").html(result["success"]);
