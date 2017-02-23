@@ -6,3 +6,5 @@ body header {margin-bottom: 1em;}
 body header .contents {border-bottom:solid 5px;}
 body header .contents nav {text-align:right;}
 body header .contents .title {text-align:center;}
+
+body main .contents .meta span {display: block;}
