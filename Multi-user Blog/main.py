@@ -189,13 +189,13 @@ class UpdateLike(LikeHandler):
     def post(self,post_id):
         # Harvest requirements.
         cookie_val = self.request.cookies.get('user_id')
-        user_id = cookie_val.split("|")[0]
         blog = Blog.get_by_id(int(post_id))
         # Before adding/removing likes, first check if the op is valid.
         # Proceed if all is well.
         if self.is_valid(cookie_val,blog):
             # Check if user already liked the post.
             # This determines whether to like/unlike post.
+            user_id = cookie_val.split("|")[0]
             if user_id in blog.liked_by:
                 self.remove_like(blog,user_id)
             else:
