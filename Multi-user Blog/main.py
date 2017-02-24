@@ -69,6 +69,7 @@ class PostComment(CommentHandler):
             return False
         return True
 
+
 class DeleteComment(CommentHandler):
 
     def delete(self, post_id):
@@ -126,6 +127,7 @@ class DeleteComment(CommentHandler):
         elif(not self.is_author(cookie_val, comment)):
             return False
         return True   
+
 
 class UpdateComment(CommentHandler):
 
@@ -339,6 +341,7 @@ class CreateBlog(Handler):
         elif(not(title and content)):
             return False
         return True
+
 
 class UpdateBlog(Handler):
 
