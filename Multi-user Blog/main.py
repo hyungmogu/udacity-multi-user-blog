@@ -258,8 +258,7 @@ class UpdateLike(LikeHandler):
                 self.response.headers['Content-Type'] = 'application/json'
                 self.response.out.write(error)
                 self.response
-            # Check if user is author.  Note that author cannot like its
-            # own post.
+            # Check if user is author.  Author cannot like its own post.
             elif(self.is_author(cookie_val, blog)):
                 error = "Post cannot be liked by creator."
                 self.response.set_status(400)
@@ -273,7 +272,7 @@ class UpdateLike(LikeHandler):
         # Check if blog exists.
         elif(not self.blog_exists(blog)):
             return False
-        # Checks if the user is author.  Author cannot like its own post.
+        # Checks if the is author.  Author cannot like its own post.
         elif(self.is_author(cookie_val, blog)):
             return False
         return True
