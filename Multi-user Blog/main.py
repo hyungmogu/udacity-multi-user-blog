@@ -306,7 +306,7 @@ class CreateBlog(Handler):
         # 
         # Also, determine whether to insert 'Login' or 'Logout' button.
         if(self.is_signed_in(cookie_val)):
-            self.render('createPost.html', error="", signed_in=True)
+            self.render('createBlog.html', error="", signed_in=True)
         else:
             self.redirect('/blog/login')
 
@@ -332,7 +332,7 @@ class CreateBlog(Handler):
             elif(not(title and content)):
                 error = ("Either title or content is missing. Please fill "
                         "both in, and try again.")
-                self.render('createPost.html', error=error)
+                self.render('createBlog.html', error=error)
 
     def is_valid(self, cookie_val, content,title):
         # Check if user signed in.
