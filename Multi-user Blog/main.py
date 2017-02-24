@@ -9,7 +9,7 @@ from database import User,Blog,Comment
 #API
 class PostComment(CommentHandler):
 
-    def post(self,post_id):
+    def post(self, post_id):
         # Harvest requirements.
         data = json.loads(self.request.body)
         cookie_val = self.request.cookies.get("user_id")
@@ -41,7 +41,7 @@ class PostComment(CommentHandler):
                 self.response.headers["Content-Type"]="application/json"
                 self.response.out.write(json.dumps({"error":"Invalid. Title and texts must not be empty."}))
 
-    def is_post_valid(self,blog,cookie_val,content,title):
+    def is_post_valid(self, blog, cookie_val, content,title):
         # Check if blog with post_id is non-empty.
         if(not self.blog_exists(blog)):
             return False
@@ -55,7 +55,7 @@ class PostComment(CommentHandler):
 
 class DeleteComment(CommentHandler):
 
-    def delete(self,post_id):
+    def delete(self, post_id):
         # Harvest requirements.
         blog = Blog.get_by_id(int(post_id))
         comment = Comment.get_by_id(int(self.request.get("id")))
@@ -95,7 +95,7 @@ class DeleteComment(CommentHandler):
                                                     "the creator of the comment "
                                                     "to edit."}))
 
-    def is_valid(self,blog,comment,cookie_val):
+    def is_valid(self, blog, comment, cookie_val):
         # Check if blog with post_id is non-empty.
         if(not self.blog_exists(blog)):
             return False
@@ -112,7 +112,7 @@ class DeleteComment(CommentHandler):
 
 class UpdateComment(CommentHandler):
 
-    def put(self,post_id):
+    def put(self, post_id):
         # Harvest requirements.
         data = json.loads(self.request.body)
         comment = Comment.get_by_id(int(data["id"]))
@@ -164,7 +164,7 @@ class UpdateComment(CommentHandler):
                                                     "the creator of the comment "
                                                     "to edit."}))
 
-    def is_valid(self,blog,comment,cookie_val,new_content,new_title):
+    def is_valid(self, blog, comment, cookie_val, new_content, new_title):
         # Check if content and title are non-empty.
         if(not(new_content and new_title)):
             return False
@@ -185,7 +185,7 @@ class UpdateComment(CommentHandler):
 
 class ValidateBeforeEdit(CommentHandler):
 
-    def get(self,post_id):
+    def get(self, post_id):
         # Harvest requirements.
         cookie_val = self.request.cookies.get("user_id")
         comment = Comment.get_by_id(int(self.request.get("id")))
@@ -206,7 +206,7 @@ class ValidateBeforeEdit(CommentHandler):
 
 class UpdateLike(LikeHandler):
 
-    def post(self,post_id):
+    def post(self, post_id):
         # Harvest requirements.
         cookie_val = self.request.cookies.get('user_id')
         blog = Blog.get_by_id(int(post_id))
@@ -243,7 +243,7 @@ class UpdateLike(LikeHandler):
                 self.response.headers['Content-Type'] = 'application/json'
                 self.response.out.write(error)
     
-    def is_valid(self,cookie_val,blog):
+    def is_valid(self, cookie_val, blog):
         # Check if user has logged in.
         if(not self.is_signed_in(cookie_val)):
             return False
@@ -309,7 +309,7 @@ class CreateBlog(Handler):
                         "in, and try again.")
                 self.render('createPost.html', error=error)
 
-    def is_valid(self,cookie_val,content,title):
+    def is_valid(self, cookie_val, content,title):
         # Check if user signed in.
         if(not self.is_signed_in(cookie_val)):
             return False
@@ -320,7 +320,7 @@ class CreateBlog(Handler):
 
 class UpdateBlog(Handler):
 
-    def get(self,post_id):
+    def get(self, post_id):
         # Harvest requirements.
         cookie_val = self.request.cookies.get('user_id')
         blog = Blog.get_by_id(int(post_id))
@@ -341,7 +341,7 @@ class UpdateBlog(Handler):
                 self.response.set_status(403)
                 self.redirect("/blog/not_authorized")
 
-    def post(self,post_id):
+    def post(self, post_id):
         # Harvest requirments.
         title = self.request.get('title')
         content = self.request.get('content')
@@ -378,7 +378,7 @@ class UpdateBlog(Handler):
                 self.render('updateBlog.html', title=title, content=content,
                             error=error, signed_in=True)               
 
-    def is_get_valid(self,blog,cookie_val):
+    def is_get_valid(self, blog, cookie_val):
         # Check if blog exists.
         if(not blog):
             return False
@@ -390,7 +390,7 @@ class UpdateBlog(Handler):
             return False
         return True
 
-    def is_post_valid(self,blog,cookie_val,content,title):
+    def is_post_valid(self, blog, cookie_val, scontent,title):
         # Check if blog exists.
         if(not blog):
             return False
@@ -408,7 +408,7 @@ class UpdateBlog(Handler):
 
 class DeleteBlog(Handler):
 
-    def get(self,post_id):
+    def get(self, post_id):
         # Harvest requirements.
         cookie_val = self.request.cookies.get('user_id')
         blog = Blog.get_by_id(int(post_id))
@@ -427,7 +427,7 @@ class DeleteBlog(Handler):
                 self.response.set_status(403)
                 self.redirect("/blog/not_authorized")
 
-    def post(self,post_id):
+    def post(self, post_id):
         # Harvest requirements.
         blog = Blog.get_by_id(int(post_id))
         cookie_val = self.request.cookies.get('user_id')
@@ -453,7 +453,7 @@ class DeleteBlog(Handler):
                 self.response.set_status(403)
                 self.redirect("/blog/not_authorized")
 
-    def is_valid(self,blog,cookie_val):
+    def is_valid(self, blog, cookie_val):
         # Check if blog exists.
         if(not blog):
             return False
@@ -468,7 +468,7 @@ class DeleteBlog(Handler):
 
 class ReadBlog(Handler):
 
-    def get(self,post_id):
+    def get(self, post_id):
         # Harvest requirements.
         cookie_val = self.request.cookies.get('user_id')
         blog = Blog.get_by_id(int(post_id))

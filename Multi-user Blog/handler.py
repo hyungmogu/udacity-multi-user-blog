@@ -58,7 +58,7 @@ class Handler(webapp2.RequestHandler):
         """
         return "%s|%s" %(s, self.hash_str(s)) 
 
-    def is_signed_in(self,cookie_val):
+    def is_signed_in(self, cookie_val):
         """ Checks if user is signed in. 
 
         User is signed in if "user_id" in cookie is valid.
@@ -73,7 +73,7 @@ class Handler(webapp2.RequestHandler):
         """
         # Check if the cookie value is empty.
         # Return false if empty.
-        if not cookie_val:
+        if(not cookie_val):
             return False 
         # Check if the cookie value is in right format.
         # Return False if its in wrong format.
@@ -83,38 +83,39 @@ class Handler(webapp2.RequestHandler):
             return False 
         # Check if the cookie value is not tempered / corrupted.
         # Return false when the two values don't match.
-        if not (self.hash_str(val) == hashed_val): 
+        if(not (self.hash_str(val) == hashed_val)): 
             return False 
         # Check if the user exists in database.
         # Return False when no users are found.
-        if not User.get_by_id(int(val)):
+        if(not User.get_by_id(int(val))):
             return False 
         # Return true when all is well
         return True
 
-    def is_author(self,cookie_val,blog):
+    def is_author(self, cookie_val, blog):
         # Harvest numeric user_id from the cookie_value
         user_id = int(cookie_val.split("|")[0]) 
         # Harvest the user id of author from the queried blog
         author_id = int(blog.author.key().id())
         # Check if the two user_ids match
         # If they match, return true
-        if user_id == author_id:
+        if(user_id == author_id):
             return True
         # Otherwise, return false 
         else:
             return False
 
     def blog_exists(self,blog):
-        if not blog:
+        if(not blog):
             return False
         else:
             return True
 
+
 class CommentHandler(Handler):
 
     def comment_exists(self,comment):
-        if comment:
+        if(comment):
             return True
         else:
             return False  
@@ -122,7 +123,7 @@ class CommentHandler(Handler):
 
 class LikeHandler(Handler):
 
-    def add_like(self,blog,user_id):
+    def add_like(self, blog, user_id):
         blog.number_of_likes += 1
         blog.liked_by.append(user_id)
         blog.put()
@@ -131,9 +132,9 @@ class LikeHandler(Handler):
         self.response.set_status(200)
         self.response.out.write(json.dumps(success))
 
-    def remove_like(self,blog,user_id):
+    def remove_like(self, blog,user_id):
         blog.number_of_likes -= 1
-        blog.liked_by = [x for x in blog.liked_by if(int(x)!=int(user_id))]
+        blog.liked_by = [x for x in blog.liked_by if(int(x) != int(user_id))]
         blog.put()
         success = {"success": "successfully unliked a post", 
                     "new_count": blog.number_of_likes}
@@ -143,7 +144,7 @@ class LikeHandler(Handler):
 
 class LoginHandler(Handler):
 
-    def is_login_successful(self,username,password,user):
+    def is_login_successful(self, username, password,user):
         """ Determines whether the user is signed in. 
 
         @Args:
@@ -160,11 +161,11 @@ class LoginHandler(Handler):
         # First check if username exists.
         # Then, check if password match.
         # If passwords don't match, it's incorrect and False is returned.
-        if user:
+        if(user):
             stored_hashed_password,salt = (user[0].password).split(",")
             hashed_password = hmac.new(str(salt), str(password),
                                         hashlib.sha256).hexdigest()
-            if stored_hashed_password == hashed_password:
+            if(stored_hashed_password == hashed_password):
                 return True 
             else:
                 return False
@@ -185,7 +186,7 @@ class LoginHandler(Handler):
         """
         query = User.gql("WHERE username=:username", username = username)
         result = query.fetch(limit=1)
-        if result:
+        if(result):
             return True
         return False
 
@@ -223,36 +224,36 @@ class LoginHandler(Handler):
                 "username_exists": False, "password_mismatch":False}
         # Checks if inputs are non-empty.
         # If so, checks each field and see which of them are missing.
-        if not (username and password and verify_pw and email):
-            if not username:
+        if(not (username and password and verify_pw and email)):
+            if(not username):
                 errors["username_empty"] = True
                 errors["errors_exist"] = True
-            if not password:
+            if(not password):
                 errors["password_empty"] = True
                 errors["errors_exist"] = True
-            if not verify_pw:
+            if(not verify_pw):
                 errors["verify_pw_empty"] = True
                 errors["errors_exist"] = True
-            if not email:
+            if(not email):
                 errors["email_empty"] = True
                 errors["errors_exist"] = True
             return errors
         # Check if username has any spaces.
-        if len(username.split(" ")) > 1:
+        if(len(username.split(" ")) > 1):
             errors["errors_exist"] = True
             errors["username_incorrect"] = True
         # Check if username already exists.
-        if self.username_already_exists(username):
+        if(self.username_already_exists(username)):
             errors["username_exists"] = True
             errors["errors_exist"] = True
         # Check if the password and verify password match.
-        if not (password == verify_pw):
+        if(not (password == verify_pw)):
             errors["password_mismatch"] = True
             errors["errors_exist"] = True
 
         return errors
 
-    def register(self,username,hashed_password,email):
+    def register(self, username, hashed_password,email):
         """Registers an user to database.
 
         @Args:
@@ -267,7 +268,7 @@ class LoginHandler(Handler):
         user_key = user.put()
         return str(user_key.id())
 
-    def make_pw_hash(self,password):
+    def make_pw_hash(self, password):
         """ Converts input into a hashed value. 
 
         This method uses sha256 algorithm and randomly generated salt.
