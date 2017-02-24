@@ -646,10 +646,10 @@ class ReadNotAuthorized(Handler):
         cookie_val = self.request.cookies.get("user_id")
         # Determine whether to insert 'Login' or 'Logout' button.
         if(self.is_signed_in(cookie_val)):
-            self.render("readNotAuthorized.html", signed_in=True)
+            self.render("403.html", signed_in=True)
         # If not logged in, insert login button.
         else:
-            self.render("readNotAuthorized.html")
+            self.render("403.html")
 
 
 app = webapp2.WSGIApplication([('/blog', ReadMain), ('/blog/', ReadMain),
