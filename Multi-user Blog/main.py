@@ -1,7 +1,8 @@
+# Import standard library
 import json
-
+# Import related third party library
 import webapp2
-
+# Import local application/library
 from handler import Handler,CommentHandler,LikeHandler,LoginHandler
 from database import User,Blog,Comment
 

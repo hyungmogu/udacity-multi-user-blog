@@ -1,13 +1,14 @@
+# Import standard library
 import os
 import hmac
 import string
 import hashlib
 import random
 import json
-
+# Import related third party library
 import webapp2
 import jinja2
-
+# Import local application/library
 from database import User,Blog,Comment
 
 template_dir = os.path.join(os.path.dirname(__file__),'templates')
