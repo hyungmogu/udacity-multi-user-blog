@@ -503,11 +503,11 @@ class ReadBlog(Handler):
                     order('-date_created'))
         # Determine whether to insert 'Login' or 'Logout' button.
         if(self.is_signed_in(cookie_val)):
-            self.render('readPost.html', blog=blog, signed_in=True, 
+            self.render('readBlog.html', blog=blog, signed_in=True, 
                         comments=comments)
         # If not logged in, insert 'login' button.
         else:
-            self.render('readPost.html', blog=blog, comments=comments)
+            self.render('readBlog.html', blog=blog, comments=comments)
 
     def has_comments(self,comments):
         if(comments):
