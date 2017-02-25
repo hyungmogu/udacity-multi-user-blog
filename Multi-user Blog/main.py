@@ -202,7 +202,7 @@ class ReadMain(Handler):
 
         query = Blog.gql("ORDER BY date_created DESC")
         blogs = query.fetch(limit=10)
-        
+
         # Determine whether to insert 'Login' or 'Logout' button.
         if(self.is_signed_in(cookie_val)):
             self.render("mainPage.html", blogs=blogs, signed_in=True)
@@ -225,37 +225,27 @@ class CreateBlog(Handler):
             self.redirect("/blog/login")
 
     def post(self):
-        # Harvest requirements.
         title = self.request.get("title")
         content = self.request.get("content")
         cookie_val = self.request.cookies.get("user_id")
-        # Check if all req. has been met.
-        if(self.is_valid(cookie_val, content, title)):
-            # If all is wel, store information in database.
-            user = User.get_by_id(int(cookie_val.split("|")[0]))
-            blog_entry = Blog(title=title, content=content, author=user, 
-                                    number_of_likes=0)
-            # Finally, redirect user to the newly created page
-            blog_id = (blog_entry.put()).id()
-            self.redirect("/blog/%s" %blog_id)
-        else:
-            # If not signed in, redirect user to login page.
-            if(not self.is_signed_in(cookie_val)):
-                self.redirect("/blog/login")
-            # If any contents are missing, return error to user. 
-            elif(not(title and content)):
-                error = ("Either title or content is missing. Please fill "
-                        "both in, and try again.")
-                self.render("createBlog.html", error=error)
 
-    def is_valid(self, cookie_val, content,title):
-        # Check if user signed in.
-        if(not self.is_signed_in(cookie_val)):
-            return False
-        # Check contents are non-empty.
-        elif(not(title and content)):
-            return False
-        return True
+        if not self.is_signed_in(cookie_val):
+            self.redirect("/blog/login")
+            return
+        if not title and content:
+            error = ("Either title or content is missing. Please make sure "
+                    "both are filled in, and try again.")
+            self.render("createBlog.html", error=error)
+            return
+
+        # Here, cookie is non-empty.  Its value can be retrieved safely.
+        user = User.get_by_id(int(cookie_val.split("|")[0]))
+
+        blog_entry = Blog(title=title, content=content, author=user, 
+                                number_of_likes=0)
+        blog_id = blog_entry.put().id()
+
+        self.redirect("/blog/%s" %blog_id)
 
 
 class UpdateBlog(Handler):
