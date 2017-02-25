@@ -14,7 +14,7 @@ class PostComment(CommentHandler):
         self.response.set_status(status_code)
         self.response.headers["Content-Type"] = "application/json"
         if message:
-            self.response.out.write(json.dumps(message)) 
+            self.response.out.write(message)
 
     def post(self, post_id):
         data = json.loads(self.request.body)
@@ -55,7 +55,7 @@ class DeleteComment(CommentHandler):
         self.response.set_status(status_code)
         self.response.headers["Content-Type"] = "application/json"
         if message:
-            self.response.out.write(json.dumps(message)) 
+            self.response.out.write(message)
 
     def delete(self, post_id):
         blog = Blog.get_by_id(int(post_id))
@@ -91,7 +91,7 @@ class UpdateComment(CommentHandler):
         self.response.set_status(status_code)
         self.response.headers["Content-Type"] = "application/json"
         if message:
-            self.response.out.write(json.dumps(message)) 
+            self.response.out.write(message)
 
     def put(self, post_id):
         data = json.loads(self.request.body)
@@ -136,7 +136,7 @@ class ValidateBeforeEdit(CommentHandler):
         self.response.set_status(status_code)
         self.response.headers["Content-Type"] = "application/json"
         if message:
-            self.response.out.write(json.dumps(message)) 
+            self.response.out.write(message)
 
     def get(self, post_id):
         cookie_val = self.request.cookies.get("user_id")
@@ -161,7 +161,7 @@ class UpdateLike(LikeHandler):
         self.response.set_status(status_code)
         self.response.headers["Content-Type"] = "application/json"
         if message:
-            self.response.out.write(json.dumps(message)) 
+            self.response.out.write(message) 
 
     def post(self, post_id):
         cookie_val = self.request.cookies.get("user_id")
