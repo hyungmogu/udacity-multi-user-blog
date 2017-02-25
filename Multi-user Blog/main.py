@@ -51,61 +51,38 @@ class PostComment(CommentHandler):
 
 class DeleteComment(CommentHandler):
 
+    def send_response(self, status_code, message=''):
+        self.response.set_status(status_code)
+        self.response.headers["Content-Type"] = "application/json"
+        if message:
+            self.response.out.write(json.dumps(message)) 
+
     def delete(self, post_id):
-        # Harvest requirements.
         blog = Blog.get_by_id(int(post_id))
         comment = Comment.get_by_id(int(self.request.get("id")))
         cookie_val = self.request.cookies.get("user_id")
-        # Check if all req for deleting a comment has been met.
-        if(self.is_valid(blog,comment,cookie_val)):
-            comment.delete()  
-            self.response.set_status(200)
-            self.response.headers["Content-Type"] = "application/json"
-            self.response.out.write(json.dumps({"success":"The comment has "
-                                                "been deleted successfully."}))
-        # If not satisfied, find out what needs to be re-done.
-        else:
-            # Check if blog exists under the retrieved value 'post_id'.
-            if(not self.blog_exists(blog)):
-                self.response.set_status(404)
-                self.response.headers["Content-Type"] = "application/json"
-                self.response.out.write(json.dumps({"error": "Invalid. The blog "
-                                                    "page does not exist."}))
-            # Check if comment exists under the harvested comment id.
-            elif(not self.comment_exists(comment)):
-                self.response.set_status(400)
-                self.response.headers["Content-Type"] = "application/json"
-                self.response.out.write(json.dumps({"error": "Invalid. The "
-                                                    "comment does not exist."}))
-            # Check if user has logged in.
-            elif(not self.is_signed_in(cookie_val)):
-                self.response.set_status(401)
-                self.response.headers["Content-Type"] = "application/json"
-                self.response.out.write(json.dumps({"error": "Invalid. Must be "
-                                                    "signed in to edit "
-                                                    "comment."}))
-            # Check if user is authorized to delete comment.
-            elif(not self.is_author(cookie_val, comment)):
-                self.response.set_status(403)
-                self.response.headers["Content-Type"] = "application/json"
-                self.response.out.write(json.dumps({"error":"Invalid. Must be "
-                                                    "the creator of the "
-                                                    "comment to edit."}))
 
-    def is_valid(self, blog, comment, cookie_val):
-        # Check if blog with post_id is non-empty.
-        if(not self.blog_exists(blog)):
-            return False
-        # Check if comment with comment_id is non-empty. 
-        elif(not self.comment_exists(comment)):
-            return False
-        # Check if user has logged in.
-        elif(not self.is_signed_in(cookie_val)):
-            return False
-        # Check if user has authority to apply changes to the comment.
-        elif(not self.is_author(cookie_val, comment)):
-            return False
-        return True   
+        if not self.blog_exists(blog):
+            message = {"error": "Invalid. The blog page does not exist."}
+            self.send_response(404,message)
+            return
+        if not self.comment_exists(comment):
+            message = {"error": "Invalid. The comment does not exist."}
+            self.send_response(400,message)
+            return
+        if not self.is_signed_in(cookie_val):
+            message = {"error": "Invalid. Must be signed in to edit comment."}
+            self.send_response(401,message)
+            return
+        if not self.is_author(cookie_val, comment):
+            message = {"error": "Invalid. Must be its author to edit this."}
+            self.send_response(403,message)
+            return
+
+        comment.delete()  
+
+        message = {"success": "The comment has been deleted successfully."}
+        self.send_response(200,message)
 
 
 class UpdateComment(CommentHandler):
