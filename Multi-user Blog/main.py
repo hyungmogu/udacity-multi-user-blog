@@ -198,14 +198,13 @@ class UpdateLike(LikeHandler):
 class ReadMain(Handler):
 
     def get(self):
-        # Harvest requirements.
         cookie_val = self.request.cookies.get("user_id")
-        # Query 10 most recent blog posts.
         query = Blog.gql("ORDER BY date_created DESC")
         blogs = query.fetch(limit=10)
         # Determine whether to insert 'Login' or 'Logout' button.
         if(self.is_signed_in(cookie_val)):
             self.render("mainPage.html", blogs=blogs, signed_in=True)
+        # Include 'login' button since user is not signed in.
         else:
             self.render("mainPage.html", blogs=blogs)
 
