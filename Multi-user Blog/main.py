@@ -10,65 +10,43 @@ from database import User,Blog,Comment
 #API
 class PostComment(CommentHandler):
 
+    def send_response(self, status_code, message=''):
+        self.response.set_status(status_code)
+        self.response.headers["Content-Type"] = "application/json"
+        if message:
+            self.response.out.write(json.dumps(message)) 
+
     def post(self, post_id):
-        # Harvest requirements.
         data = json.loads(self.request.body)
         cookie_val = self.request.cookies.get("user_id")
         blog = Blog.get_by_id(int(post_id))
         title = data["title"]
         content = data["content"]
-        # Check if user is allowed to post a comment.
-        if(self.is_post_valid(blog, cookie_val, content,title)):
-            # Harvest more requirements.
-            user = User.get_by_id(int(cookie_val.split("|")[0]))
-            # Store information.
-            comment = Comment(title=title, content=content, blog=blog, 
-                            author=user)
-            comment_id = (comment.put()).id()
-            # Return user back to page.
-            self.response.set_status(200)
-            self.response.out.write(json.dumps({"success":("Comment "
-                                                            "successfully "
-                                                            "added to "
-                                                            "database."), 
-                                                "id":comment_id,  
-                                                "title": title, 
-                                                "content": content, 
-                                                "author": user.username, 
-                                                "date_created":((comment.
-                                                                date_created).
-                                                                strftime("%B "
-                                                                        "%d, "
-                                                                        "%Y "
-                                                                        "%I:%M%p")
-                                                                )}))             
-        # If not, find out why, and return feed back.
-        else:
-            # Check if blog exists under the retrieved 'post_id'
-            if(not self.blog_exists(blog)):
-                self.response.set_status(404)
-            # Check if user has logged in.
-            elif(not self.is_signed_in(cookie_val)):
-                self.response.set_status(401)
-            # Check if title and content are non-empty.
-            elif(not (title and content)):
-                self.response.set_status(400)
-                self.response.headers["Content-Type"]="application/json"
-                self.response.out.write(json.dumps({"error":("Invalid. Title "
-                                                    "and texts must not be "
-                                                    "empty.")}))
+        user = User.get_by_id(int(cookie_val.split("|")[0]))
+        
+        if(not self.blog_exists(blog)): 
+            message = {"error": "Invalid. The requested page doesn't exist."}
+            self.send_response(404, message)
+            return
+        if(not self.is_signed_in(cookie_val)):
+            message = {"error": "Invalid. Only signed in User can post comments"}
+            self.send_response(401, message)
+            return
+        if(not (title and content)):
+            message = {"error": "Invalid. Title and texts must not be empty."}
+            self.send_response(400, message)
+            return
 
-    def is_post_valid(self, blog, cookie_val, content,title):
-        # Check if blog with post_id is non-empty.
-        if(not self.blog_exists(blog)):
-            return False
-        # Check if user has logged in.
-        elif(not self.is_signed_in(cookie_val)):
-            return False
-        # Check if inputs are non-empty.
-        elif(not(title and content)):
-            return False
-        return True
+        comment = Comment(title=title, content=content, blog=blog, author=user)
+        comment_id = comment.put().id()
+
+        message = {
+            "success": "Comment successfully added to database.", 
+            "id": comment_id, "title": title, "content": content, 
+            "author": user.username, 
+            "date_created": comment.date_created.strftime("%B %d %Y %I:%M%p")
+        }
+        self.send_response(200,message)
 
 
 class DeleteComment(CommentHandler):
