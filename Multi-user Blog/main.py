@@ -132,25 +132,27 @@ class UpdateComment(CommentHandler):
 
 class ValidateBeforeEdit(CommentHandler):
 
+    def send_response(self, status_code, message=''):
+        self.response.set_status(status_code)
+        self.response.headers["Content-Type"] = "application/json"
+        if message:
+            self.response.out.write(json.dumps(message)) 
+
     def get(self, post_id):
-        # Harvest requirements.
         cookie_val = self.request.cookies.get("user_id")
         comment = Comment.get_by_id(int(self.request.get("id")))
-        # Check if user has authority to edit the comment.
-        if(self.is_signed_in(cookie_val) and self.is_author(cookie_val, 
-                                                            comment)):
-            self.response.set_status(200)
-            self.response.headers["Content-Type"] = "application/json"
-            self.response.out.write(json.dumps({"success":"User is allowed to "
-                                                "edit this post."}))                    
-        # If not satisfied, return message to user.
-        else:
-            self.response.set_status(401)
-            self.response.headers["Content-Type"] = "application/json"
-            self.response.out.write(json.dumps({"error": "User is either not "
-                                                "signed in or is not "
-                                                "authorized to edit this "
-                                                "comment."}))         
+
+        if not self.is_signed_in(cookie_val):
+            message = {"error": " Invalid. User must be signed-in to edit this comment."}
+            self.send_response(401,message)
+            return
+        if not self.is_author(cookie_val,comment):
+            message = {"error": "Invalid. Only its author is allowed to edit."}
+            self.send_response(403,message)
+            return
+
+        message = {"success": "Allowed"}
+        self.send_response(200,message)
 
 
 class UpdateLike(LikeHandler):
