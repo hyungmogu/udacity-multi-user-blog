@@ -199,8 +199,10 @@ class ReadMain(Handler):
 
     def get(self):
         cookie_val = self.request.cookies.get("user_id")
+
         query = Blog.gql("ORDER BY date_created DESC")
         blogs = query.fetch(limit=10)
+        
         # Determine whether to insert 'Login' or 'Logout' button.
         if(self.is_signed_in(cookie_val)):
             self.render("mainPage.html", blogs=blogs, signed_in=True)
