@@ -40,12 +40,12 @@ class PostComment(CommentHandler):
         comment = Comment(title=title, content=content, blog=blog, author=user)
         comment_id = comment.put().id()
 
-        message = {
+        message = json.dumps({
             "success": "Comment successfully added to database.", 
             "id": comment_id, "title": title, "content": content, 
             "author": user.username, 
             "date_created": comment.date_created.strftime("%B %d %Y %I:%M%p")
-        }
+        })
         self.send_response(200,message)
 
 
@@ -81,7 +81,9 @@ class DeleteComment(CommentHandler):
 
         comment.delete()  
 
-        message = {"success": "The comment has been deleted successfully."}
+        message = json.dumps({
+            "success": "The comment has been deleted successfully."
+        })
         self.send_response(200,message)
 
 
@@ -125,7 +127,9 @@ class UpdateComment(CommentHandler):
         comment.content = new_content
         comment.put()
 
-        message = {"success": "The comment has been updated successfully."}
+        message = json.dumps({
+            "success": "The comment has been updated successfully."
+        })
         self.send_response(200,message)
         self.response.set_status(200)
 
@@ -151,7 +155,7 @@ class ValidateBeforeEdit(CommentHandler):
             self.send_response(403,message)
             return
 
-        message = {"success": "Allowed"}
+        message = json.dumps({"success": "Allowed"})
         self.send_response(200,message)
 
 
