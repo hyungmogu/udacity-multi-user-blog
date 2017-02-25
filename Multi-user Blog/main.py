@@ -1,4 +1,4 @@
- # Import standard library
+# Import standard library
 import json
 # Import related third party library
 import webapp2
@@ -25,15 +25,15 @@ class PostComment(CommentHandler):
         user = User.get_by_id(int(cookie_val.split("|")[0]))
         
         if not self.blog_exists(blog): 
-            message = {"error": "Invalid. The requested page doesn't exist."}
+            message = "Invalid. The requested page doesn't exist."
             self.send_response(404, message)
             return
         if not self.is_signed_in(cookie_val):
-            message = {"error": "Invalid. Only signed in User can post comments"}
+            message = "Invalid. Only signed in User can post comments"
             self.send_response(401, message)
             return
         if not (title and content):
-            message = {"error": "Invalid. Title and texts must not be empty."}
+            message = "Invalid. Title and texts must not be empty."
             self.send_response(400, message)
             return
 
@@ -63,19 +63,19 @@ class DeleteComment(CommentHandler):
         cookie_val = self.request.cookies.get("user_id")
 
         if not self.blog_exists(blog):
-            message = {"error": "Invalid. The blog page does not exist."}
+            message = "Invalid. The blog page does not exist."
             self.send_response(404,message)
             return
         if not self.comment_exists(comment):
-            message = {"error": "Invalid. The comment does not exist."}
+            message = "Invalid. The comment does not exist."
             self.send_response(400,message)
             return
         if not self.is_signed_in(cookie_val):
-            message = {"error": "Invalid. Must be signed in to edit comment."}
+            message = "Invalid. Must be signed in to edit comment."
             self.send_response(401,message)
             return
         if not self.is_author(cookie_val, comment):
-            message = {"error": "Invalid. Must be its author to edit this."}
+            message = "Invalid. Must be its author to edit this."
             self.send_response(403,message)
             return
 
@@ -102,22 +102,22 @@ class UpdateComment(CommentHandler):
         new_content = data["content"]
 
         if not(new_content and new_title):
-            message = {"error": "Invalid. Both title and comment must not be empty."}
+            message = "Invalid. Both title and comment must not be empty."
             self.send_response(400,message)
             return
         if not self.blog_exists(blog):
             self.send_response(404)
             return 
         if not self.comment_exists(comment):
-            message = {"error": "Invalid. The comment does not exist."}
+            message = "Invalid. The comment does not exist."
             self.send_response(400,message)
             return
         if not self.is_signed_in(cookie_val):
-            message = {"error": "Invalid. Must be signed in to edit comments."}
+            message = "Invalid. Must be signed in to edit comments."
             self.send_response(400,message)
             return
         if not self.is_author(cookie_val,comment):
-            message = {"error": "Invalid. Only its author is allowed to edit."}
+            message = "Invalid. Only its author is allowed to edit."
             self.send_response(400,message)
             return
 
@@ -143,11 +143,11 @@ class ValidateBeforeEdit(CommentHandler):
         comment = Comment.get_by_id(int(self.request.get("id")))
 
         if not self.is_signed_in(cookie_val):
-            message = {"error": " Invalid. User must be signed-in to edit this comment."}
+            message = "Invalid. User must be signed-in to edit this comment."
             self.send_response(401,message)
             return
         if not self.is_author(cookie_val,comment):
-            message = {"error": "Invalid. Only its author is allowed to edit."}
+            message = "Invalid. Only its author is allowed to edit."
             self.send_response(403,message)
             return
 
