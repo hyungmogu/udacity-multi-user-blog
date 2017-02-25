@@ -157,53 +157,37 @@ class ValidateBeforeEdit(CommentHandler):
 
 class UpdateLike(LikeHandler):
 
+    def send_response(self, status_code, message=''):
+        self.response.set_status(status_code)
+        self.response.headers["Content-Type"] = "application/json"
+        if message:
+            self.response.out.write(json.dumps(message)) 
+
     def post(self, post_id):
-        # Harvest requirements.
         cookie_val = self.request.cookies.get("user_id")
         blog = Blog.get_by_id(int(post_id))
-        # Before adding/removing likes, first check if all req is met.
-        if(self.is_valid(cookie_val, blog)):
-            # Check if user already liked the post.
-            user_id = cookie_val.split("|")[0]
-            # Remove if id already in a list.
-            if(user_id in blog.liked_by):
-                self.remove_like(blog, user_id)
-            # Add if not inside.
-            else:
-                self.add_like(blog, user_id) 
-        # If not, find out why, and return message to user.
+
+        if not self.is_signed_in(cookie_val):
+            message = {"error": "Not signed in."}
+            self.send_response(401,message)
+            return
+        if not self.blog_exists(blog):
+            message = {"error": "Post doesn't exist."}
+            self.send_response(404,message)
+            return
+        if self.is_author(cookie_val, blog):
+            message = {"error": "Post cannot be liked by creator."}
+            self.send_response(400,message)
+            return
+
+        user_id = cookie_val.split("|")[0]
+
+        # Check if user already liked the post.
+        # Remove if id already in a list.
+        if(user_id in blog.liked_by):
+            self.remove_like(blog, user_id)
         else:
-            # Check if user has logged in.
-            if(not self.is_signed_in(cookie_val)):
-                error = "Not signed in."
-                self.response.set_status(401)
-                self.response.headers["Content-Type"] = "application/json"
-                self.response.out.write(error)
-            # Check if blog exists.
-            elif(not self.blog_exists(blog)):
-                error = "Post doesn't exist."
-                self.response.set_status(404)
-                self.response.headers["Content-Type"] = "application/json"
-                self.response.out.write(error)
-                self.response
-            # Check if user is author.  Author cannot like its own post.
-            elif(self.is_author(cookie_val, blog)):
-                error = "Post cannot be liked by creator."
-                self.response.set_status(400)
-                self.response.headers["Content-Type"] = "application/json"
-                self.response.out.write(error)
-    
-    def is_valid(self, cookie_val, blog):
-        # Check if user has logged in.
-        if(not self.is_signed_in(cookie_val)):
-            return False
-        # Check if blog exists.
-        elif(not self.blog_exists(blog)):
-            return False
-        # Checks if the is author.  Author cannot like its own post.
-        elif(self.is_author(cookie_val, blog)):
-            return False
-        return True
+            self.add_like(blog, user_id) 
 
 
 # ROUTES
