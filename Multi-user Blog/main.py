@@ -214,8 +214,8 @@ class ReadMain(Handler):
 class CreateBlog(Handler):
 
     def get(self):
-        # Harvest requirements.
         cookie_val = self.request.cookies.get("user_id")
+        
         # Check if user has enough authority to create a blog post.
         # 
         # Also, determine whether to insert 'Login' or 'Logout' button.
