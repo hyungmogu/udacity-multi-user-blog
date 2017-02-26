@@ -6,8 +6,8 @@ body {margin: 0; padding: 0;}
 
 header {margin-bottom: 1em;}
 header .contents {border-bottom: solid 1px lightgray;}
-header .contents nav {text-align: right;}
-header .contents .title {text-align: center;}
+header nav {text-align: right;}
+header .title {text-align: center;}
 
-main .contents .meta span {display: block;}
-main .contents .meta .author {font-weight: bold;}
+main .meta span {display: block;}
+main .meta .author {font-weight: bold;}
