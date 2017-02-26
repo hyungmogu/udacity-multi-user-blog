@@ -416,7 +416,7 @@ class ReadWelcome(Handler):
     def get(self):
         cookie_val = self.request.cookies.get("user_id")
 
-        if not self.signed_in(cookie_val):
+        if not self.is_signed_in(cookie_val):
             self.redirect("/blog/login")
             return
 
