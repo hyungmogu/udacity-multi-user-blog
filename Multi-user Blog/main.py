@@ -257,15 +257,15 @@ class UpdateBlog(Handler):
         # Check if user is authorized to modify the blog post.
         #
         # Also, determine whether to insert login or logout button.
-        if(not blog):
+        if not blog:
             self.response.set_status(404)
             self.redirect("/blog/not_found")
             return
-        if(not self.is_signed_in(cookie_val)):
+        if not self.is_signed_in(cookie_val):
             self.response.set_status(401)
             self.redirect("/blog/login")
             return
-        if(not self.is_author(cookie_val,blog)):
+        if not self.is_author(cookie_val,blog):
             self.response.set_status(403)
             self.redirect("/blog/not_authorized")
             return
@@ -278,19 +278,19 @@ class UpdateBlog(Handler):
         cookie_val = self.request.cookies.get("user_id")
         blog = Blog.get_by_id(int(post_id))
 
-        if(not blog):
+        if not blog:
             self.response.set_status(404)
             self.redirect("/blog/not_found")
             return
-        if(not self.is_signed_in(cookie_val)):
+        if not self.is_signed_in(cookie_val):
             self.response.set_status(401)
             self.redirect("/blog/login")
             return
-        if(not self.is_author(cookie_val,blog)):
+        if not self.is_author(cookie_val,blog):
             self.response.set_status(403)
             self.redirect("/blog/not_authorized")
             return
-        if(not(title and content)):
+        if not(title and content):
             error = ("Either title or texts are empty. Please fill both in "
                      "before trying again.")
             self.render("updateBlog.html", title=title, content=content,
