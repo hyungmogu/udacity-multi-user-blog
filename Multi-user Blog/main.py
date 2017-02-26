@@ -417,15 +417,16 @@ class ReadWelcome(Handler):
         # Harvest requirements.
         cookie_val = self.request.cookies.get("user_id")
         # Check if user has already logged in.
-        if(self.is_signed_in(cookie_val)):
-            # Query user to display username in the welcome message.
-            user_id = cookie_val.split("|")[0]
-            result = User.get_by_id(int(user_id))
-            # Also, insert 'Logout' button.
-            self.render("welcome.html", user=result, signed_in=True)
+        #
         # If not logged in, redirect to login.  User shouldn't be here.
-        else:
+        if not self.signed_in(cookie_val):
             self.redirect("/blog/login")
+            return
+        # Query user to display username in the welcome message.
+        user_id = cookie_val.split("|")[0]
+        result = User.get_by_id(int(user_id))
+        # Also, insert 'Logout' button.
+        self.render("welcome.html", user=result, signed_in=True)
 
 
 class ReadLogin(LoginHandler):
