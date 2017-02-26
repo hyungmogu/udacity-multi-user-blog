@@ -370,36 +370,38 @@ class ReadSignUp(LoginHandler):
 
     def get(self):
         cookie_val = self.request.cookies.get("user_id")
-        # Empty the cookie, before proceeding to signup page
+
         if(not self.is_signed_in(cookie_val)):
+            # Empty cookie, so it can be filled correctly after signup.
             self.response.headers.add_header("Set-Cookie","user_id=;Path=/")
+            
             self.render("signUp.html", title="Sign-Up")
-        # If cookie is valid, redirect user to welcome page.
         else:
             self.redirect("/blog/welcome")
 
     def post(self):
-        # Harvest requirements.
         username  = self.request.get("username")
         password  = self.request.get("password")
         verify_pw = self.request.get("verify")
         email     = self.request.get("email")
-        # Check if inputs are filled correctly. And if errors exist, 
-        # re-render with feedback.
+
+        # Re-render page with feedback if error exists.
         errors = self.check_form_info(username,password,verify_pw,email)
         if(errors["errors_exist"]):
             self.render_front(username=username, password=password, 
                                 verify_pw=verify_pw, email=email, 
                                 errors=errors)
-        # If all is well, store newly created user to database.  And 
-        # finish by generating a cookie.  This keeps user signed in.
-        else:
-            hashed_password = self.make_pw_hash(password)
-            user_id = self.register(username,hashed_password,email)
-            cookie_val = self.make_secure_val(user_id)
-            self.response.headers.add_header("Set-Cookie",
-                                            "user_id=%s;Path=/" %cookie_val)
-            self.redirect("/blog/welcome")
+            return
+
+        # Store newly created user to database.  
+        hashed_password = self.make_pw_hash(password)
+        user_id = self.register(username,hashed_password,email)
+
+        # Generate a cookie and keep user signed in.
+        cookie_val = "user_id=%s;Path=/" % self.make_secure_val(user_id)
+        self.response.headers.add_header("Set-Cookie", cookie_val)
+
+        self.redirect("/blog/welcome")
 
     def render_front(self, title="", username="", password="", verify_pw="", 
                     email="", errors=""):
