@@ -478,8 +478,10 @@ class ReadNotFound(Handler):
         cookie_val = self.request.cookies.get("user_id")
         # Determine whether to insert 'Login' or 'Logout' button.
         if(self.is_signed_in(cookie_val)):
+            # Insert logout button.
             self.render("404.html", signed_in=True)
         else:
+            # Insert login button.
             self.render("404.html")
 
 
