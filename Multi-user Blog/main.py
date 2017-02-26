@@ -492,8 +492,10 @@ class ReadNotAuthorized(Handler):
         cookie_val = self.request.cookies.get("user_id")
         # Determine whether to insert 'Login' or 'Logout' button.
         if(self.is_signed_in(cookie_val)):
+            # Insert logoout button.
             self.render("403.html", signed_in=True)
         else:
+            # Insert login button.
             self.render("403.html")
 
 
