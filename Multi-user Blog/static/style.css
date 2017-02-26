@@ -4,10 +4,10 @@ body {margin:0px; padding: 0px;}
 
 .contents {max-width:768px; margin: 0 auto;}
 
-body header {margin-bottom: 1em;}
-body header .contents {border-bottom:solid 1px lightgray;}
-body header .contents nav {text-align:right;}
-body header .contents .title {text-align:center;}
+header {margin-bottom: 1em;}
+header .contents {border-bottom:solid 1px lightgray;}
+header .contents nav {text-align:right;}
+header .contents .title {text-align:center;}
 
-body main .contents .meta span {display: block;}
-body main .contents .meta span.author {font-weight:bold;}
+main .contents .meta span {display: block;}
+main .contents .meta span.author {font-weight:bold;}
