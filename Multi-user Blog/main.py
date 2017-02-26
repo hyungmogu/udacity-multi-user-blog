@@ -422,10 +422,10 @@ class ReadWelcome(Handler):
 
         # Query user to display username in the welcome message.
         user_id = cookie_val.split("|")[0]
-        result = User.get_by_id(int(user_id))
-        
+        user = User.get_by_id(int(user_id))
+
         # Also, insert 'Logout' button.
-        self.render("welcome.html", user=result, signed_in=True)
+        self.render("welcome.html", user=user, signed_in=True)
 
 
 class ReadLogin(LoginHandler):
