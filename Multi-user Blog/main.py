@@ -415,12 +415,15 @@ class ReadWelcome(Handler):
 
     def get(self):
         cookie_val = self.request.cookies.get("user_id")
+
         if not self.signed_in(cookie_val):
             self.redirect("/blog/login")
             return
+
         # Query user to display username in the welcome message.
         user_id = cookie_val.split("|")[0]
         result = User.get_by_id(int(user_id))
+        
         # Also, insert 'Logout' button.
         self.render("welcome.html", user=result, signed_in=True)
 
