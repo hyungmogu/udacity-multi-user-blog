@@ -308,61 +308,45 @@ class UpdateBlog(Handler):
 class DeleteBlog(Handler):
 
     def get(self, post_id):
-        # Harvest requirements.
         cookie_val = self.request.cookies.get("user_id")
         blog = Blog.get_by_id(int(post_id))
-        # Check if all req. has been met to delete a post.
-        if(self.is_valid(blog, cookie_val)):
-            # Since user is logged in, display 'Logout' button.
-            self.render("deleteBlog.html", blog=blog, signed_in=True)
-        else:
-            if(not blog):
-                self.response.set_status(404)
-                self.redirect("/blog/not_found")
-            elif(not self.is_signed_in(cookie_val)):
-                self.response.set_status(401)
-                self.redirect("/blog/login")
-            elif(not self.is_author(cookie_val, blog)):
-                self.response.set_status(403)
-                self.redirect("/blog/not_authorized")
+
+        if not blog:
+            self.response.set_status(404)
+            self.redirect("/blog/not_found")
+            return
+        if not self.is_signed_in(cookie_val):
+            self.response.set_status(401)
+            self.redirect("/blog/login")
+            return
+        if not self.is_author(cookie_val, blog):
+            self.response.set_status(403)
+            self.redirect("/blog/not_authorized")
+            return
+
+        self.render("deleteBlog.html", blog=blog, signed_in=True)
 
     def post(self, post_id):
-        # Harvest requirements.
         blog = Blog.get_by_id(int(post_id))
         cookie_val = self.request.cookies.get("user_id")
-        # Check whether all req. has been met to delete a post.  This 
-        # is double confirmation.  It is done to make sure no one is 
-        # doing it illegitimately.
-        if(self.is_valid(blog, cookie_val)):
-                blog.delete()
-                self.response.set_status(200)
-                self.redirect("/blog")
-        # If not met, find out why, and return feedback.
-        else:
-            # Check if blog exists.
-            if(not blog):
-                self.response.set_status(404)
-                self.redirect("/blog/not_found")
-            # Check if user has logged in.
-            elif(not self.is_signed_in(cookie_val)):
-                self.response.set_status(401)
-                self.redirect("/blog/login")
-            # Check if user is authorized to delete a blog post.
-            elif(not self.is_author(cookie_val, blog)):
-                self.response.set_status(403)
-                self.redirect("/blog/not_authorized")
+ 
+        if not blog:
+            self.response.set_status(404)
+            self.redirect("/blog/not_found")
+            return
+        if not self.is_signed_in(cookie_val):
+            self.response.set_status(401)
+            self.redirect("/blog/login")
+            return
+        if not self.is_author(cookie_val, blog):
+            self.response.set_status(403)
+            self.redirect("/blog/not_authorized")
+            return
 
-    def is_valid(self, blog, cookie_val):
-        # Check if blog exists.
-        if(not blog):
-            return False
-        # Check if user has logged in.
-        elif(not self.is_signed_in(cookie_val)):
-            return False
-        # Check if user is authorized to delete blog post.
-        elif(not self.is_author(cookie_val, blog)):
-            return False
-        return True
+        blog.delete()
+
+        self.response.set_status(200)
+        self.redirect("/blog")
 
 
 class ReadBlog(Handler):
