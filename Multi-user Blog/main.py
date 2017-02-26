@@ -290,7 +290,7 @@ class UpdateBlog(Handler):
             self.response.set_status(403)
             self.redirect("/blog/not_authorized")
             return
-        if not(title and content):
+        if not title and content:
             error = ("Either title or texts are empty. Please fill both in "
                      "before trying again.")
             self.render("updateBlog.html", title=title, content=content,
@@ -299,7 +299,7 @@ class UpdateBlog(Handler):
 
         blog.title = title
         blog.content = content
-        blog_id = (blog.put()).id()
+        blog_id = blog.put().id()
 
         self.response.set_status(200)
         self.redirect("/blog/%s" % blog_id)
