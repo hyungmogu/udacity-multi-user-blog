@@ -14,9 +14,9 @@
 			<div class="form-group" id="sign-up-username">
 				<input type="text" name="username" value="{{username}}" placeholder="Username">
 				{%if errors%}
-					{%if errors['username_empty']%}
+					{%if errors["username_empty"]%}
 					<span class="error">Username field is empty</span>
-					{%elif errors['username_exists']%}
+					{%elif errors["username_exists"]%}
 					<span class="error">Username already exists</span>
 					{%endif%}
 				{%endif%}
@@ -24,9 +24,9 @@
 			<div class="form-group" id="sign-up-password">
 				<input type="password" name="password" value="{{password}}" placeholder="Password">
 				{%if errors%}
-					{%if errors['password_empty']%}
+					{%if errors["password_empty"]%}
 					<span class="error">Password field is empty</span>
-					{%elif errors['password_mismatch']%}
+					{%elif errors["password_mismatch"]%}
 					<span class="error">Password and verify password mismatch</span>
 					{%endif%}
 				{%endif%}
@@ -34,7 +34,7 @@
 			<div class="form-group" id="sign-up-verify-pw">
 				<input type="password" name="verify" value="{{verify_pw}}" placeholder="Verify Password">
 				{%if errors%}
-					{%if errors['verify_pw_empty']%}
+					{%if errors["verify_pw_empty"]%}
 					<span class="error">Verify password field is empty</span>
 					{%endif%}
 				{%endif%}
@@ -42,7 +42,7 @@
 			<div class="form-group" id="sign-up-email">
 				<input type="email" name="email" value="{{email}}" placeholder="Email">
 				{%if errors%}
-					{%if errors['email_empty']%}
+					{%if errors["email_empty"]%}
 					<span class="error">Email field is empty</span>
 					{%endif%}
 				{%endif%}

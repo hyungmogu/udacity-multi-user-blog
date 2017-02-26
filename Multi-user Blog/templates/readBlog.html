@@ -21,7 +21,7 @@
 		<h2 class="title">{{blog.title}}</h2>
 		<div class="meta">
 			<span class="author">{{blog.author.username}}</span>
-			<span class="date-created">{{blog.date_created.strftime('%B %d, %Y %I:%M%p')}}</span>
+			<span class="date-created">{{blog.date_created.strftime("%B %d, %Y %I:%M%p")}}</span>
 			<span id="number-of-likes">Likes: {{blog.number_of_likes}}</span>
 		</div>
 		<div class="options">
@@ -47,29 +47,29 @@
 			<div class="header">
 				{%if signed_in and comments%}
 					<h2 class="title">Share your Knowledge with Us!</h2>
-					<form action='/blog/{{blog.key().id()}}/comment/new' method="POST" enctype="multipart/form-data" id='new-comment-form'>
-						<div class='form-group'>
-							<input type='text' placeholder='title' name='title'>
+					<form action="/blog/{{blog.key().id()}}/comment/new" method="POST" enctype="multipart/form-data" id="new-comment-form">
+						<div class="form-group">
+							<input type="text" placeholder="title" name="title">
 						</div>
-						<div class='form-group'>
-							<textarea name='texts' placeholder='Write your comments here.'></textarea>
+						<div class="form-group">
+							<textarea name="texts" placeholder="Write your comments here."></textarea>
 						</div>
 					</form>
 					<button class="create">Submit</button>
 				{%elif signed_in and not comments%}
 					<h2 class="title">Be the first person to post a comment!</h2>
-					<form action='/blog/{{blog.key().id()}}/comment/new' method="POST" enctype="multipart/form-data" id='new-comment-form'>
-						<div class='form-group'>
-							<input type='text' placeholder='title' name='title'>
+					<form action="/blog/{{blog.key().id()}}/comment/new" method="POST" enctype="multipart/form-data" id="new-comment-form">
+						<div class="form-group">
+							<input type="text" placeholder="title" name="title">
 						</div>
-						<div class='form-group'>
-							<textarea name='texts' placeholder='Write your comments here.'></textarea>
+						<div class="form-group">
+							<textarea name="texts" placeholder="Write your comments here."></textarea>
 						</div>
 					</form>
 					<button class="create">Submit</button>
 				{%else%}
 					<h2 class="title">You must be logged in to post comments!</h2>
-					<a href='/blog/login'>Login/Signup</a>
+					<a href="/blog/login">Login/Signup</a>
 				{%endif%}
 				<div class="result">
 				</div>
@@ -79,15 +79,15 @@
 				<ul>
 				{%set count = 0%}
 				{%for comment in comments%}
-					<li id="comment-{{count}}" class='comment'>
+					<li id="comment-{{count}}" class="comment">
 						<div class="content">
-							<h3 class='title'>{{comment.title}}</h3>
-							<div class='meta'>
-								<span class='author'>{{comment.author.username}}</span>
-								<span class='date-created'>{{comment.date_created.strftime('%B %d, %Y %I:%M%p')}}</span>
+							<h3 class="title">{{comment.title}}</h3>
+							<div class="meta">
+								<span class="author">{{comment.author.username}}</span>
+								<span class="date-created">{{comment.date_created.strftime("%B %d, %Y %I:%M%p")}}</span>
 							</div>
-							<pre class='texts'>{{comment.content}}</pre>
-							<div class='options'>
+							<pre class="texts">{{comment.content}}</pre>
+							<div class="options">
 								<button class="edit">Edit</button>
 								<button class="delete">Delete</button>
 							</div>
@@ -99,7 +99,7 @@
 				{%endfor%}
 				</ul>
 			{%endif%}
-			
+
 		</div>
 	</section>
 {%endblock%}
