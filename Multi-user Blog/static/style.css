@@ -1,13 +1,13 @@
 * {font-family: "Inconsolata",monospace;}
 a {text-decoration: none;}
-body {margin:0; padding: 0;}
+body {margin: 0; padding: 0;}
 
-.contents {max-width:768px; margin: 0 auto;}
+.contents {max-width: 768px; margin: 0 auto;}
 
 header {margin-bottom: 1em;}
-header .contents {border-bottom:solid 1px lightgray;}
-header .contents nav {text-align:right;}
-header .contents .title {text-align:center;}
+header .contents {border-bottom: solid 1px lightgray;}
+header .contents nav {text-align: right;}
+header .contents .title {text-align: center;}
 
 main .contents .meta span {display: block;}
-main .contents .meta .author {font-weight:bold;}
+main .contents .meta .author {font-weight: bold;}
