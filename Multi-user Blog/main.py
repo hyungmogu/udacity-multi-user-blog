@@ -365,12 +365,6 @@ class ReadBlog(Handler):
         else:
             self.render("readBlog.html", blog=blog, comments=comments)
 
-    def has_comments(self,comments):
-        if(comments):
-            return True
-        else:
-            return False
-
 
 class ReadSignUp(LoginHandler):
 
