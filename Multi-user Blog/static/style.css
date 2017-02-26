@@ -1,22 +1,44 @@
 /*General*/
-* {font-family: "Inconsolata",monospace;}
+* {
+	font-family: "Inconsolata",monospace;
+}
 
-a {text-decoration: none;}
+a {
+	text-decoration: none;
+}
 
-body {margin: 0; padding: 0;}
+body {
+	margin: 0; 
+	padding: 0;
+}
 
-.contents {max-width: 768px; margin: 0 auto;}
+.contents {
+	max-width: 768px; 
+	margin: 0 auto;
+}
 
 /*Header*/
-header {margin-bottom: 1em;}
+header {
+	margin-bottom: 1em;
+}
 
-header .contents {border-bottom: solid 1px lightgray;}
+header .contents {
+	border-bottom: solid 1px lightgray;
+}
 
-header nav {text-align: right;}
+header nav {
+	text-align: right;
+}
 
-header .title {text-align: center;}
+header .title {
+	text-align: center;
+}
 
 /*Main*/
-main .meta span {display: block;}
+main .meta span {
+	display: block;
+}
 
-main .meta .author {font-weight: bold;}
+main .meta .author {
+	font-weight: bold;
+}
