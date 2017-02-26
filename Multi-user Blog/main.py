@@ -414,11 +414,7 @@ class ReadSignUp(LoginHandler):
 class ReadWelcome(Handler):
 
     def get(self):
-        # Harvest requirements.
         cookie_val = self.request.cookies.get("user_id")
-        # Check if user has already logged in.
-        #
-        # If not logged in, redirect to login.  User shouldn't be here.
         if not self.signed_in(cookie_val):
             self.redirect("/blog/login")
             return
