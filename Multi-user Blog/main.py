@@ -424,7 +424,7 @@ class ReadWelcome(Handler):
         user_id = cookie_val.split("|")[0]
         user = User.get_by_id(int(user_id))
 
-        # Also, insert 'Logout' button.
+        # Render page with 'Logout' button.
         self.render("welcome.html", user=user, signed_in=True)
 
 
