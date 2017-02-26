@@ -431,45 +431,37 @@ class ReadWelcome(Handler):
 class ReadLogin(LoginHandler):
 
     def get(self):
-        # Harvest requirements.
         cookie_val = self.request.cookies.get("user_id")
-        # Check if user has logged in.
-        if(self.is_signed_in(cookie_val)):
+
+        if self.is_signed_in(cookie_val):
             self.redirect("/blog/welcome")
-        # If not logged in, continue to login page.
-        else:
-            self.render("login.html")
+            return
+
+        self.render("login.html")
 
     def post(self):
-        # Harvest requirements.
         username = self.request.get("username")
         password = self.request.get("password")      
-        # Checks whehter the inputs are correctly filled.
-        if(username and password):
-            query = User.gql("WHERE username=:username", username=username)
-            user = query.fetch(limit=1)
-            if(self.is_login_successful(username, password, user)):
-                # Create cookie and store user info if successful.  This
-                # keeps user logged-in.
-                user_id = user[0].key().id()
-                cookie_val = self.make_secure_val(user_id)
-                self.response.headers.add_header("Set-Cookie",
-                                                "user_id=%s;Path=/"
-                                                 % cookie_val)      
-                self.redirect("/blog/welcome")
-            # If incorrect, return response to user.
-            else:
-                error = ("Either username or password are incorrect. Please "
-                        "try again.")
-                self.render("login.html", error=error, username=username,
-                            password=password)
-        # If empty, return response to user.
-        else:
-            error = ("Either username or password fields are empty. Please "
-                    "fill in, and try again.")
+
+        if not username and password:
+            message = ("Either username or password fields are empty. Please "
+                       "fill in, and try again.")
             self.render("login.html", error=error, username=username, 
                         password=password)
- 
+            return
+        if not self.is_login_successful(username, password, user):
+            message = ("Either username or password are incorrect. Please "
+                       "try again.")
+            self.render("login.html", error=error, username=username,
+                        password=password)
+            return
+
+        user_id = user[0].key().id()
+        cookie_val = "user_id=%s;Path=/" % self.make_secure_val(user_id)
+        self.response.headers.add_header("Set-Cookie", cookie_val)      
+        
+        self.redirect("/blog/welcome")
+
             
 class ReadLogout(LoginHandler):
 
