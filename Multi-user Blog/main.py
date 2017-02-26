@@ -352,17 +352,16 @@ class DeleteBlog(Handler):
 class ReadBlog(Handler):
 
     def get(self, post_id):
-        # Harvest requirements.
         cookie_val = self.request.cookies.get("user_id")
         blog = Blog.get_by_id(int(post_id))
-        # Query all comments.
         comments = (Comment.all().filter("blog =", blog.key()).
                     order("-date_created"))
+
         # Determine whether to insert 'Login' or 'Logout' button.
         if(self.is_signed_in(cookie_val)):
             self.render("readBlog.html", blog=blog, signed_in=True, 
                         comments=comments)
-        # If not logged in, insert 'login' button.
+        # Insert login button
         else:
             self.render("readBlog.html", blog=blog, comments=comments)
 
