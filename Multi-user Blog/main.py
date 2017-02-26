@@ -371,10 +371,10 @@ class ReadSignUp(LoginHandler):
     def get(self):
         cookie_val = self.request.cookies.get("user_id")
 
-        if(not self.is_signed_in(cookie_val)):
+        if not self.is_signed_in(cookie_val):
             # Empty cookie, so it can be filled correctly after signup.
             self.response.headers.add_header("Set-Cookie","user_id=;Path=/")
-            
+
             self.render("signUp.html", title="Sign-Up")
         else:
             self.redirect("/blog/welcome")
@@ -387,10 +387,11 @@ class ReadSignUp(LoginHandler):
 
         # Re-render page with feedback if error exists.
         errors = self.check_form_info(username,password,verify_pw,email)
-        if(errors["errors_exist"]):
-            self.render_front(username=username, password=password, 
-                                verify_pw=verify_pw, email=email, 
-                                errors=errors)
+        if errors["errors_exist"]:
+            self.render_front(
+                username=username, password=password, verify_pw=verify_pw, 
+                email=email, errors=errors
+            )
             return
 
         # Store newly created user to database.  
@@ -404,8 +405,8 @@ class ReadSignUp(LoginHandler):
         self.redirect("/blog/welcome")
 
     def render_front(self, title="", username="", password="", verify_pw="", 
-                    email="", errors=""):
-        self.render("signUp.html",title=title, username=username, 
+                     email="", errors=""):
+        self.render("signUp.html", title=title, username=username, 
                     password=password, verify_pw=verify_pw, email=email,
                     errors=errors)
 
