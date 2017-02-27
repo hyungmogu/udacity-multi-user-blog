@@ -411,7 +411,8 @@ class ReadLogin(LoginHandler):
 
     def post(self):
         username = self.request.get("username")
-        password = self.request.get("password")      
+        password = self.request.get("password")
+        user = User.gql("WHERE username = :username",username=username)
 
         if not username and password:
             message = ("Either username or password fields are empty. Please "
