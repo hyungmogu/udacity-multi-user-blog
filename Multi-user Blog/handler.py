@@ -115,6 +115,12 @@ class Handler(webapp2.RequestHandler):
 
 class CommentHandler(Handler):
 
+    def send_response(self, status_code, message=''):
+        self.response.set_status(status_code)
+        self.response.headers["Content-Type"] = "application/json"
+        if message:
+            self.response.out.write(message)
+
     def comment_exists(self,comment):
         if(comment):
             return True
@@ -123,6 +129,12 @@ class CommentHandler(Handler):
 
 
 class LikeHandler(Handler):
+
+    def send_response(self, status_code, message=''):
+        self.response.set_status(status_code)
+        self.response.headers["Content-Type"] = "application/json"
+        if message:
+            self.response.out.write(message)
 
     def add_like(self, blog, user_id):
         blog.number_of_likes += 1

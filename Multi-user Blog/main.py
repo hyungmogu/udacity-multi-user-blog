@@ -10,12 +10,6 @@ from database import User,Blog,Comment
 #API
 class PostComment(CommentHandler):
 
-    def send_response(self, status_code, message=''):
-        self.response.set_status(status_code)
-        self.response.headers["Content-Type"] = "application/json"
-        if message:
-            self.response.out.write(message)
-
     def post(self, post_id):
         data = json.loads(self.request.body)
         cookie_val = self.request.cookies.get("user_id")
@@ -51,12 +45,6 @@ class PostComment(CommentHandler):
 
 class DeleteComment(CommentHandler):
 
-    def send_response(self, status_code, message=''):
-        self.response.set_status(status_code)
-        self.response.headers["Content-Type"] = "application/json"
-        if message:
-            self.response.out.write(message)
-
     def delete(self, post_id):
         blog = Blog.get_by_id(int(post_id))
         comment = Comment.get_by_id(int(self.request.get("id")))
@@ -88,12 +76,6 @@ class DeleteComment(CommentHandler):
 
 
 class UpdateComment(CommentHandler):
-
-    def send_response(self, status_code, message=''):
-        self.response.set_status(status_code)
-        self.response.headers["Content-Type"] = "application/json"
-        if message:
-            self.response.out.write(message)
 
     def put(self, post_id):
         data = json.loads(self.request.body)
@@ -136,12 +118,6 @@ class UpdateComment(CommentHandler):
 
 class ValidateBeforeEdit(CommentHandler):
 
-    def send_response(self, status_code, message=''):
-        self.response.set_status(status_code)
-        self.response.headers["Content-Type"] = "application/json"
-        if message:
-            self.response.out.write(message)
-
     def get(self, post_id):
         cookie_val = self.request.cookies.get("user_id")
         comment = Comment.get_by_id(int(self.request.get("id")))
@@ -160,12 +136,6 @@ class ValidateBeforeEdit(CommentHandler):
 
 
 class UpdateLike(LikeHandler):
-
-    def send_response(self, status_code, message=''):
-        self.response.set_status(status_code)
-        self.response.headers["Content-Type"] = "application/json"
-        if message:
-            self.response.out.write(message) 
 
     def post(self, post_id):
         cookie_val = self.request.cookies.get("user_id")
