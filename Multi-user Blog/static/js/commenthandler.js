@@ -19,7 +19,7 @@ function postComment(THIS,blog_id){
 		success: function(result){
 			console.log(result)
 			if(result['success']){
-				$('#comments div.header div.result').html('Comment has been added successfully.');
+				$('#comments div.header div.result').html(result['success']);
 				// Clear texts in the form
 				$('#new-comment-form input').val('');
 				$('#new-comment-form textarea').val('');
@@ -33,9 +33,9 @@ function postComment(THIS,blog_id){
 		error: function(error){
 			console.log(error)
 			if(error['status'] == 400){
-				$('#comments div.header div.result').html('Title and comment must not be empty.');
+				$('#comments div.header div.result').html(error['responseText']);
 			} else if(error['status'] == 401) {
-				$('#comments div.header div.result').html('User must be logged in to post this comment.');
+				$('#comments div.header div.result').html(error['responseText']);
 			} else if(error['status'] == 404){
 				window.location.href = '/blog/not_found';
 			};
@@ -65,7 +65,7 @@ function renderCommentEdit(THIS,blog_id){
 		},
 		error:function(error){
 			if(error['status'] == 401){
-				$('#'+$liId+' div.result').html('Invalid. Either user is not signed in, or is not the author of this comment.');
+				$('#'+$liId+' div.result').html(error['responseText']);
 			} else {
 				console.log(error);
 			};
@@ -74,7 +74,6 @@ function renderCommentEdit(THIS,blog_id){
 }
 
 function submitCommentEdit(THIS,blog_id){
-	var $ERROR_400 = 'Invalid. Both title and content must not be empty.';
 	// Harvest form data.
 	var $liId = $(THIS).closest('li').prop('id');
 	var $commentKeyId = $('#'+$liId+' input[type=hidden]').val();
@@ -107,7 +106,7 @@ function submitCommentEdit(THIS,blog_id){
 		}, 
 		error: function(error){
 			if(error['status'] == 400){
-				$('#'+$liId+' div.result').html($error_400);
+				$('#'+$liId+' div.result').html(error['responseText']);
 			} else if(error['status'] == 401) {
 				window.location.href = '/blog/not_authorized';
 			} else if(error['status'] == 404){
@@ -134,13 +133,13 @@ function deleteComment(THIS,blog_id){
 		error:function(error){
 			if(error['status']==400){
 				console.log(400);
-				$('#'+$liId+' div.result').html('Invalid. Comment is not found.');
+				$('#'+$liId+' div.result').html(error['responseText']);
 			} else if(error['status']==401){
 				console.log(401);
-				$('#'+$liId+' div.result').html('Invalid. User is not logged in.');
+				$('#'+$liId+' div.result').html(error['responseText']);
 			} else if(error['status']==403){
 				console.log(403);
-				$('#'+$liId+' div.result').html('Not allowed. User must be the author of this post.');
+				$('#'+$liId+' div.result').html(error['responseText']);
 			} else if(error['status']==404){
 				window.location.href='/blog/not_found';
 			}
