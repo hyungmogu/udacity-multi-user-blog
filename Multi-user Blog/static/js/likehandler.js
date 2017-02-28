@@ -30,9 +30,7 @@ function updateLike(blog_id){
 			url: $url,
 			dataType: 'json',
 			success: function(result){
-				if(result['error']){
-					console.log(result['error']);
-				} else {
+				if(result['success']){
 					$('#number-of-likes').html('Likes: '+result['new_count']);
 					$('#like-button').attr('data-liked','true');
 					$('#like-button').html('Liked');

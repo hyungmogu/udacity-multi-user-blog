@@ -17,7 +17,6 @@ function postComment(THIS,blog_id){
 		data: JSON.stringify({'title': $title, 'content':$content}),
 		processData: false,
 		success: function(result){
-			console.log(result)
 			if(result['success']){
 				$('#comments div.header div.result').html(result['success']);
 				// Clear texts in the form
@@ -31,7 +30,6 @@ function postComment(THIS,blog_id){
 			};
 		},
 		error: function(error){
-			console.log(error)
 			if(error['status'] == 400){
 				$('#comments div.header div.result').html(error['responseText']);
 			} else if(error['status'] == 401) {
@@ -67,7 +65,7 @@ function renderCommentEdit(THIS,blog_id){
 			if(error['status'] == 401){
 				$('#'+$liId+' div.result').html(error['responseText']);
 			} else {
-				console.log(error);
+				$('#'+$liId+' div.result').html(error['responseText']);
 			};
 		}
 	});
