@@ -18,7 +18,6 @@ function postComment(THIS,blog_id){
 		processData: false,
 		success: function(result){
 			if(result['success']){
-				$('#comments div.header div.result').html(result['success']);
 				// Clear texts in the form
 				$('#new-comment-form input').val('');
 				$('#new-comment-form textarea').val('');
@@ -27,6 +26,8 @@ function postComment(THIS,blog_id){
 				$('#comments ul').prepend('<li id="new-comment-'+$count+'" class="comment"><div class="content"><h3 class="title">'+result['title']+'</h3><div class="meta"><span class="author">'+result['author']+'</span><span class="date-created">'+result['date_created']+'</span></div><pre class="texts">'+result['content']+'</pre><div class="options"><button class="edit">Edit</button><button class="delete">Delete</button></div><input type="hidden" value="'+result['id']+'"></div><div class="result"></div></li>');
 				$('.comment button.edit').click(function(){renderCommentEdit(this);});
 				$('.comment button.delete').click(function(){deleteComment(this);});
+				// Display result
+				$('#comments div.header div.result').html(result['success']);
 			};
 		},
 		error: function(error){
@@ -98,6 +99,8 @@ function submitCommentEdit(THIS,blog_id){
 				// Remove form and re-display content.
 				$('#'+$liId+' div.content').css('display','initial');
 				$('#'+$liId+' div.edit').remove();
+				// Display result
+				$('#'+$liId+' div.result').html(result['success']);
 			};
 		}, 
 		error: function(error){
@@ -123,6 +126,7 @@ function deleteComment(THIS,blog_id){
 		dataType:'json',
 		success:function(result){
 			if(result['success']){
+				$('#comments div.header div.result').html(result['success']);
 				$('#'+$liId).remove();
 			}
 		},
