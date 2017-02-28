@@ -113,16 +113,16 @@
 		localStorage.count = 0;
 
 		$('#like-button').click(function(){
-			update_like($BLOG_ID);
+			updateLike($BLOG_ID);
 		});
 		$("#comments .header button.create").click(function(){
-			post_comment(this, $BLOG_ID)
+			postComment(this, $BLOG_ID)
 		});
 		$(".comment button.edit").click(function(){
-			render_comment_edit(this, $BLOG_ID);
+			renderCommentEdit(this, $BLOG_ID);
 		});
 		$(".comment button.delete").click(function(){
-			delete_comment(this, $BLOG_ID);
+			deleteComment(this, $BLOG_ID);
 		});
 	});
 </script>
