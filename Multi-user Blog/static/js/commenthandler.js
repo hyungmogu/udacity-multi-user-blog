@@ -115,7 +115,7 @@ function submitCommentEdit(THIS,blog_id){
 			};
 		}
 	});
-} 
+}
 
 function deleteComment(THIS,blog_id){
 	// Harvest comment id.

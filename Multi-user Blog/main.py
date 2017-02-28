@@ -136,15 +136,15 @@ class UpdateLike(LikeHandler):
         blog = Blog.get_by_id(int(post_id))
 
         if not self.is_signed_in(cookie_val):
-            message = {"error": "Not signed in."}
+            message = "Not signed in."
             self.send_response(401,message)
             return
         if not self.blog_exists(blog):
-            message = {"error": "Post doesn't exist."}
+            message = "Post doesn't exist."
             self.send_response(404,message)
             return
         if self.is_author(cookie_val, blog):
-            message = {"error": "Post cannot be liked by creator."}
+            message = "Post cannot be liked by creator."
             self.send_response(400,message)
             return
 
