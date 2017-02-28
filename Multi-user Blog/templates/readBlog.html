@@ -109,19 +109,19 @@
 <script>
 	//Like handler
 	$(document).ready(function(){
-		var $BLOG_ID = "{{blog.key().id()}}"
+		var $BLOG_ID = '{{blog.key().id()}}'
 		localStorage.count = 0;
 
 		$('#like-button').click(function(){
 			updateLike($BLOG_ID);
 		});
-		$("#comments .header button.create").click(function(){
+		$('#comments .header button.create').click(function(){
 			postComment(this, $BLOG_ID)
 		});
-		$(".comment button.edit").click(function(){
+		$('.comment button.edit').click(function(){
 			renderCommentEdit(this, $BLOG_ID);
 		});
-		$(".comment button.delete").click(function(){
+		$('.comment button.delete').click(function(){
 			deleteComment(this, $BLOG_ID);
 		});
 	});
