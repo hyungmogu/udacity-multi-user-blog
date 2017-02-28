@@ -6,8 +6,6 @@ The program uses Google App Engine, Google Datastore, Jinja2, Python, HTML5, CSS
 
 ## Dependencies
 
-*Note*: This file is compatible with the latest version of dependencies (Last checked: 02/28/2017).
-
 - python 2.7.6
 - gcloud
   - Google Cloud SDK 145.0.0
