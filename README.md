@@ -24,36 +24,31 @@ The program uses Google App Engine, Google Datastore, Jinja2, Python, HTML5, CSS
 1. Open terminal
 2. Download and install all dependencies
 3. Install git following [this instruction](https://www.atlassian.com/git/tutorials/install-git)
-4. Navigate to a directory of choice
-5. Type `git clone https://github.com/hyungmogu/udacity-multi-user-blog`; download the repository
-6. Type `cd 'udacity-multi-user-blog/'Multi-user Blog'`; get inside the project folder 
-7. Open and follow instructions in `SECRET.json`; finish setting up encryption for user id in cookie.
-8. Save file and quit
+4. Type `git clone https://github.com/hyungmogu/udacity-multi-user-blog` in a directory of choice; download the repository
+5. Open and follow instructions in `udacity-multi-user-blog/'Multi-user Blog'/SECRET.json` using any text editors; finish setting up encryption for user id in cookie.
+6. Save file and quit
 
 ### Setup (Windows)
 1. Download and install all dependencies
 2. Install git following [this instruction](https://www.atlassian.com/git/tutorials/install-git) 
 3. Open command line
-4. Navigate to a directory of choice
-5. Type `git clone https://github.com/hyungmogu/udacity-multi-user-blog`; download the repository
-6. Open gcloud sdk
-7. Navigate to the folder containing the downloaded repository
-6. Type `cd 'udacity-multi-user-blog/'Multi-user Blog'`; get inside the project folder
-7. Open and follow instructions in `SECRET.json`; finish setting up encryption for user id in cookie.
-8. Save file and quit
+4. Type `git clone https://github.com/hyungmogu/udacity-multi-user-blog` in a directory of choice; download the repository
+5. Open and follow instructions in `udacity-multi-user-blog/'Multi-user Blog'/SECRET.json` using any text editors; finish setting up encryption for user id in cookie.
+6. Save file and quit
 
 ### Running Application on Local Machine
-1. Type `dev_appserver.py app.yaml` in `Multi-user Blog` folder; activate the server
+1. Open terminal/gcloud SDK 
+2. Type `dev_appserver.py app.yaml` in `Multi-user Blog` folder; wait until gcloud sets up local server
 
 ### Stopping Local Server
-1. Press `Ctrl` + `C` in the terminal/gcloud where the server is being run
+1. Press `Ctrl` + `C` in terminal/gcloud SDK where the server is being run
 
 ### Deploying Application to Server
 1. Create project in [console.developers.google.com](https://console.developers.google.com/)
 2. Open terminal/gcloud SDK
-3. Navigate to the project folder
-2. Type `gcloud init` in `Multi-user Blog` folder; initialize the configuration with gcloud
-4. Type `gcloud app deploy app.yaml index.yaml`; finish deploying application to server
+3. Navigate to the project folder (`udacity-multi-user-blog/'Multi-user Blog'`)
+4. Type `gcloud init`; initialize the configuration with gcloud
+5. Type `gcloud app deploy app.yaml index.yaml`; finish deploying application to server
 
 ### Viewing Demo
 1. Open a web browser (Chrome is strongly suggested)
