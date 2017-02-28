@@ -41,7 +41,7 @@ function postComment(THIS,blog_id){
 			};
 		}
 	});
-};
+}
 
 function renderCommentEdit(THIS,blog_id){
 	var $liId = $(THIS).closest('li').prop('id');
@@ -71,7 +71,7 @@ function renderCommentEdit(THIS,blog_id){
 			};
 		}
 	});
-};
+}
 
 function submitCommentEdit(THIS,blog_id){
 	var $ERROR_400 = 'Invalid. Both title and content must not be empty.';
@@ -115,7 +115,7 @@ function submitCommentEdit(THIS,blog_id){
 			};
 		}
 	});
-}; 
+} 
 
 function deleteComment(THIS,blog_id){
 	// Harvest comment id.
@@ -148,4 +148,4 @@ function deleteComment(THIS,blog_id){
 
 	});
 
-};
+}
