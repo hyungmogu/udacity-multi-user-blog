@@ -33,7 +33,7 @@ The program uses Google App Engine, Google Datastore, Jinja2, Python, HTML5, CSS
 5. Type `git clone https://github.com/hyungmogu/udacity-multi-user-blog`; download the repository
 6. Open gcloud sdk
 7. Navigate to the folder containing the downloaded repository
-6. Type `cd 'udacity-multi-user-blog/'Multi-user\Blog'`; get inside the project folder
+6. Type `cd 'udacity-multi-user-blog/'Multi-user Blog'`; get inside the project folder
 
 ## Running the Application on Local Machine
 1. Type `dev_appserver.py app.yaml` in `Multi-user Blog` folder; activate the server
