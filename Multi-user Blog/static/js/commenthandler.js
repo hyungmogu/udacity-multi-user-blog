@@ -69,7 +69,7 @@ function renderCommentEdit(THIS,blog_id){
 			} else {
 				console.log(error);
 			};
-		}  
+		}
 	});
 };
 
@@ -120,7 +120,7 @@ function submitCommentEdit(THIS,blog_id){
 function deleteComment(THIS,blog_id){
 	// Harvest comment id.
 	var $liId = $(THIS).closest('li').prop('id');
-	var $commentKeyId = $('#'+$liId+' input[type=hidden]').val();		
+	var $commentKeyId = $('#'+$liId+' input[type=hidden]').val();
 	// Send AJAX DELETE request to server.
 	$.ajax({
 		url: '/blog/'+blog_id+'/comment/delete?id='+$commentKeyId,

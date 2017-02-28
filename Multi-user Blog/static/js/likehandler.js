@@ -18,7 +18,7 @@ function updateLike(blog_id){
 			},
 			error: function(error){
 				if(error['status']!=404){
-					$('#like div.result').html(error['responseText']);	 	
+					$('#like div.result').html(error['responseText']);
 				} else {
 					window.location.href = '/blog/not_found';
 				};
@@ -41,12 +41,12 @@ function updateLike(blog_id){
 			},
 			error: function(error){
 				if(error['status']!=404){
-					$('#like div.result').html(error['responseText']);	 	
+					$('#like div.result').html(error['responseText']);
 				} else {
 					window.location.href = '/blog/not_found';
 				};
 			}
-		});				
+		});	
 	}
 }; 
 
