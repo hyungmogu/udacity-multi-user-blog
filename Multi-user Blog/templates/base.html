@@ -9,7 +9,13 @@
 <body>
 	<header>
 		<div class="contents">
-			{%block navigation%}{%endblock%}
+			<nav>
+				{%if signed_in%}
+					<a href="/blog/logout">Logout</a>
+				{%else%}
+					<a href="/blog/login">Login / Sign-up</a>
+				{%endif%}
+			</nav>
 			<h1 class="title"><a href="/blog">Moe's Multi-user Blog</a></h1>
 		</div>
 	</header>

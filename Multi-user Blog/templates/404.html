@@ -2,16 +2,6 @@
 
 {%block title%}Not Found | Multi User Blog Site{%endblock%}
 
-{%block navigation%}
-	<nav>
-	{%if signed_in%}
-		<a href="/blog/logout">Logout</a>
-	{%else%}
-		<a href="/blog/login">Login / Sign-up</a>
-	{%endif%}
-	</nav>
-{%endblock%}
-
 {%block content_header%}
 	<section id="content-header" class="header">
 		<h2 class="title">(404)Not Found</h2>

@@ -8,16 +8,6 @@
 	<script src="/static/js/commenthandler.js"></script>
 {%endblock%}
 
-{%block navigation%}
-	<nav>
-	{%if signed_in%}
-		<a href="/blog/logout">Logout</a>
-	{%else%}
-		<a href="/blog/login">Login / Sign-up</a>
-	{%endif%}
-	</nav>
-{%endblock%}
-
 {%block content_header%}
 	<section id="article-header" class="header">
 		<h2 class="title">{{blog.title}}</h2>
