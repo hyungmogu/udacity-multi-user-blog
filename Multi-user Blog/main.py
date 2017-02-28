@@ -8,7 +8,7 @@ from database import User,Blog,Comment
 
 
 #API
-class PostComment(CommentHandler):
+class CommentMethods(CommentHandler):
 
     def post(self, post_id):
         data = json.loads(self.request.body)
@@ -42,9 +42,6 @@ class PostComment(CommentHandler):
         })
         self.send_response(200,message)
 
-
-class DeleteComment(CommentHandler):
-
     def delete(self, post_id):
         blog = Blog.get_by_id(int(post_id))
         comment = Comment.get_by_id(int(self.request.get("id")))
@@ -73,9 +70,6 @@ class DeleteComment(CommentHandler):
             "success": "The comment has been deleted successfully."
         })
         self.send_response(200,message)
-
-
-class UpdateComment(CommentHandler):
 
     def put(self, post_id):
         data = json.loads(self.request.body)
@@ -490,14 +484,14 @@ app = webapp2.WSGIApplication([("/blog", ReadMain), ("/blog/", ReadMain),
                                 ("/blog/logout/", ReadLogout),
                                 ("/blog/(.*\d)/like", UpdateLike),
                                 ("/blog/(.*\d)/like/", UpdateLike),
-                                ("/blog/(.*\d)/comment/new", PostComment),
-                                ("/blog/(.*\d)/comment/new/", PostComment),
+                                ("/blog/(.*\d)/comment/new", CommentMethods),
+                                ("/blog/(.*\d)/comment/new/", CommentMethods),
                                 ("/blog/(.*\d)/comment/delete", 
-                                 DeleteComment),
+                                 CommentMethods),
                                 ("/blog/(.*\d)/comment/delete/", 
-                                 DeleteComment),
-                                ("/blog/(.*\d)/comment/edit", UpdateComment),
-                                ("/blog/(.*\d)/comment/edit/", UpdateComment),
+                                 CommentMethods),
+                                ("/blog/(.*\d)/comment/edit", CommentMethods),
+                                ("/blog/(.*\d)/comment/edit/", CommentMethods),
                                 ("/blog/(.*\d)/comment/validate", 
                                  ValidateBeforeEdit),
                                 ("/blog/(.*\d)/comment/validate/", 
