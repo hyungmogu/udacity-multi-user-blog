@@ -25,8 +25,8 @@ function postComment(THIS,blog_id){
 				// Append new comment in the list of comments
 				var $count = localStorage.count;
 				$('#comments ul').prepend('<li id="new-comment-'+$count+'" class="comment"><div class="content"><h3 class="title">'+result['title']+'</h3><div class="meta"><span class="author">'+result['author']+'</span><span class="date-created">'+result['date_created']+'</span></div><pre class="texts">'+result['content']+'</pre><div class="options"><button class="edit">Edit</button><button class="delete">Delete</button></div><input type="hidden" value="'+result['id']+'"></div><div class="result"></div></li>');
-				$('.comment button.edit').click(function(){render_comment_edit(this);});
-				$('.comment button.delete').click(function(){delete_comment(this);});
+				$('.comment button.edit').click(function(){renderCommentEdit(this);});
+				$('.comment button.delete').click(function(){deleteComment(this);});
 			};
 		},
 		error: function(error){
@@ -57,7 +57,7 @@ function renderCommentEdit(THIS,blog_id){
 				$('#'+$liId+' div.content').css('display','None');
 				$('#'+$liId+' div.content').after($form);
 				$('.comment button.submit').click(function(){
-					submit_comment_edit(this);
+					submitCommentEdit(this);
 				});
 	 		};
 		},
@@ -82,7 +82,6 @@ function submitCommentEdit(THIS,blog_id){
 		$('#'+$liId+' div.result').html($error_400);
 		return false;
 	};
-	console.log({'title': $newTitle, 'content':$newContent, 'id':$commentKeyId});
 	// If all is well, send data to server.
 	$.ajax({
 		url:'/blog/'+blog_id+'/comment/edit',
@@ -93,7 +92,6 @@ function submitCommentEdit(THIS,blog_id){
 		processData: false,
 		success: function(result){
 			if(result['success']){
-				console.log('This comment has been edited successfully.');
 				// Replace the comment with new title and content.
 				$('#'+$liId+' h3.title').html($newTitle);
 				$('#'+$liId+' div.texts').html($newContent);
@@ -130,13 +128,10 @@ function deleteComment(THIS,blog_id){
 		},
 		error:function(error){
 			if(error['status']==400){
-				console.log(400);
 				$('#'+$liId+' div.result').html(error['responseText']);
 			} else if(error['status']==401){
-				console.log(401);
 				$('#'+$liId+' div.result').html(error['responseText']);
 			} else if(error['status']==403){
-				console.log(403);
 				$('#'+$liId+' div.result').html(error['responseText']);
 			} else if(error['status']==404){
 				window.location.href='/blog/not_found';
