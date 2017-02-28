@@ -1,4 +1,4 @@
-function update_like(blog_id){
+function updateLike(blog_id){
 	// process callback using response received from server
 	// that way, the number of lines will decrease by half.
 	var $liked = ($('#like-button').attr('data-liked') == 'true');

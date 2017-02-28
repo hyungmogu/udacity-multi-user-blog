@@ -1,6 +1,6 @@
 // Comment Handlers
 // Edit Handler
-function post_comment(THIS,blog_id){
+function postComment(THIS,blog_id){
 	var $title = $("#new-comment-form input[name=title]").val();
 	var $content = $("#new-comment-form textarea[name=texts]").val();
 	// Check if submitting title and contents are non-empty.
@@ -43,7 +43,7 @@ function post_comment(THIS,blog_id){
 	});
 };
 
-function render_comment_edit(THIS,blog_id){
+function renderCommentEdit(THIS,blog_id){
 	var $li_id = $(THIS).closest("li").prop("id");
 	var $title = $('#'+$li_id+" h3.title").html();
 	var $content = $('#'+$li_id+" div.texts").html();
@@ -73,7 +73,7 @@ function render_comment_edit(THIS,blog_id){
 	});
 };
 
-function submit_comment_edit(THIS,blog_id){
+function submitCommentEdit(THIS,blog_id){
 	var $error_400 = "Invalid. Both title and content must not be empty.";
 	// Harvest form data.
 	var $li_id = $(THIS).closest("li").prop("id");
@@ -117,7 +117,7 @@ function submit_comment_edit(THIS,blog_id){
 	});
 }; 
 
-function delete_comment(THIS,blog_id){
+function deleteComment(THIS,blog_id){
 	// Harvest comment id.
 	var $li_id = $(THIS).closest("li").prop("id");
 	var $comment_key_id = $("#"+$li_id+" input[type=hidden]").val();		
