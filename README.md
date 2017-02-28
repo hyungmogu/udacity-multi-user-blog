@@ -6,8 +6,6 @@ The program uses Google App Engine, Google Datastore, Jinja2, Python, HTML5, CSS
 
 ## Dependencies
 
-*Note*: This file is compatible with the latest version of dependencies (Last checked: 02/28/2017).
-
 - python 2.7.6
 - gcloud
   - Google Cloud SDK 145.0.0
@@ -50,10 +48,18 @@ The program uses Google App Engine, Google Datastore, Jinja2, Python, HTML5, CSS
 ### Stopping Local Server
 1. Press `Ctrl` + `C` in the terminal/gcloud where the server is being run
 
+### Deploying Application to Server
+1. Create project in [console.developers.google.com](https://console.developers.google.com/)
+2. Open terminal/gcloud SDK
+3. Navigate to the project folder
+2. Type `gcloud init` in `Multi-user Blog` folder; initialize the configuration with gcloud
+4. Type `gcloud app deploy app.yaml index.yaml`; finish deploying application to server
+
 ### Viewing Demo
 1. Open a web browser (Chrome is strongly suggested)
 2. Type `https://udacity-multiuser-blog-4.appspot.com/blog` in the address bar
   - For those of who are running the app on local machine, type `http://localhost:8080/blog/` instead
+  - For those of who've deployed the app, type `http://<GCLOUD_PROJECDT_NAME>.appspot.com/blog` instead
 
 
 
