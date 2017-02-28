@@ -44,20 +44,20 @@ function postComment(THIS,blog_id){
 };
 
 function renderCommentEdit(THIS,blog_id){
-	var $li_id = $(THIS).closest("li").prop("id");
-	var $title = $('#'+$li_id+" h3.title").html();
-	var $content = $('#'+$li_id+" div.texts").html();
-	var $comment_key_id = $("#"+$li_id+" input[type=hidden]").val();
+	var $liId = $(THIS).closest("li").prop("id");
+	var $title = $('#'+$liId+" h3.title").html();
+	var $content = $('#'+$liId+" div.texts").html();
+	var $commentKeyId = $("#"+$liId+" input[type=hidden]").val();
 	// Validate user
-	var $url = "/blog/"+blog_id+"/comment/validate?id="+$comment_key_id;
+	var $url = "/blog/"+blog_id+"/comment/validate?id="+$commentKeyId;
 	$.ajax({
 		url: $url,
 		type: "GET",
 		success:function(result){
 			if(result["success"]){
 				var $form = "<div class='edit'><form action=''><div class='form-group'><input type='text' placeholder='title' name='title' value='"+$title+"'></div><div class='form-group'><textarea name='texts' placeholder='Write your comments here.'>"+$content+"</textarea></div></form><button class='submit'>Submit</button></div>";
-				$("#"+$li_id+" div.content").css("display","None");
-				$("#"+$li_id+" div.content").after($form);
+				$("#"+$liId+" div.content").css("display","None");
+				$("#"+$liId+" div.content").after($form);
 				$(".comment button.submit").click(function(){
 					submit_comment_edit(this);
 				});  
@@ -65,7 +65,7 @@ function renderCommentEdit(THIS,blog_id){
 		},
 		error:function(error){
 			if(error["status"] == 401){
-				$("#"+$li_id+" div.result").html("Invalid. Either user is not signed in, or is not the author of this comment.");
+				$("#"+$liId+" div.result").html("Invalid. Either user is not signed in, or is not the author of this comment.");
 			} else {
 				console.log(error);
 			};
@@ -76,38 +76,38 @@ function renderCommentEdit(THIS,blog_id){
 function submitCommentEdit(THIS,blog_id){
 	var $error_400 = "Invalid. Both title and content must not be empty.";
 	// Harvest form data.
-	var $li_id = $(THIS).closest("li").prop("id");
-	var $comment_key_id = $("#"+$li_id+" input[type=hidden]").val();
-	var $new_title = $("#"+$li_id+" input[name=title]").val();
-	var $new_content = $("#"+$li_id+" textarea[name=texts]").val();
+	var $liId = $(THIS).closest("li").prop("id");
+	var $commentKeyId = $("#"+$liId+" input[type=hidden]").val();
+	var $newTitle = $("#"+$liId+" input[name=title]").val();
+	var $newContent = $("#"+$liId+" textarea[name=texts]").val();
 	// Check if submitting title and contents are non-empty.
-	if(!($new_title.length > 0 && $new_content.length>0)){
-		$("#"+$li_id+" div.result").html($error_400);
+	if(!($newTitle.length > 0 && $newContent.length>0)){
+		$("#"+$liId+" div.result").html($error_400);
 		return false;
 	};
-	console.log({"title": $new_title, "content":$new_content, "id":$comment_key_id});
+	console.log({"title": $newTitle, "content":$newContent, "id":$commentKeyId});
 	// If all is well, send data to server.
 	$.ajax({
 		url:"/blog/"+blog_id+"/comment/edit",
 		type: "PUT",
 		contentType:"application/json",
 		dataType: 'json',
-		data: JSON.stringify({"title": $new_title, "content":$new_content, "id":$comment_key_id}),
+		data: JSON.stringify({"title": $newTitle, "content":$newContent, "id":$commentKeyId}),
 		processData: false,
 		success: function(result){
 			if(result["success"]){
 				console.log("This comment has been edited successfully.");
 				// Replace the comment with new title and content.
-				$("#"+$li_id+" h3.title").html($new_title);
-				$("#"+$li_id+" div.texts").html($new_content);
+				$("#"+$liId+" h3.title").html($newTitle);
+				$("#"+$liId+" div.texts").html($newContent);
 				// Remove form and re-display content.
-				$("#"+$li_id+" div.content").css("display","initial");
-				$("#"+$li_id+" div.edit").remove();
+				$("#"+$liId+" div.content").css("display","initial");
+				$("#"+$liId+" div.edit").remove();
 			};
 		}, 
 		error: function(error){
 			if(error["status"] == 400){
-				$("#"+$li_id+" div.result").html($error_400);
+				$("#"+$liId+" div.result").html($error_400);
 			} else if(error["status"] == 401) {
 				window.location.href = "/blog/not_authorized";
 			} else if(error["status"] == 404){
@@ -119,28 +119,28 @@ function submitCommentEdit(THIS,blog_id){
 
 function deleteComment(THIS,blog_id){
 	// Harvest comment id.
-	var $li_id = $(THIS).closest("li").prop("id");
-	var $comment_key_id = $("#"+$li_id+" input[type=hidden]").val();		
+	var $liId = $(THIS).closest("li").prop("id");
+	var $commentKeyId = $("#"+$liId+" input[type=hidden]").val();		
 	// Send AJAX DELETE request to server.
 	$.ajax({
-		url: "/blog/"+blog_id+"/comment/delete?id="+$comment_key_id,
+		url: "/blog/"+blog_id+"/comment/delete?id="+$commentKeyId,
 		type: "DELETE",
 		dataType:'json',
 		success:function(result){
 			if(result["success"]){
-				$("#"+$li_id).remove();
+				$("#"+$liId).remove();
 			}
 		},
 		error:function(error){
 			if(error["status"]==400){
 				console.log(400);
-				$("#"+$li_id+" div.result").html("Invalid. Comment is not found.");
+				$("#"+$liId+" div.result").html("Invalid. Comment is not found.");
 			} else if(error["status"]==401){
 				console.log(401);
-				$("#"+$li_id+" div.result").html("Invalid. User is not logged in.");
+				$("#"+$liId+" div.result").html("Invalid. User is not logged in.");
 			} else if(error["status"]==403){
 				console.log(403);
-				$("#"+$li_id+" div.result").html("Not allowed. User must be the author of this post.");
+				$("#"+$liId+" div.result").html("Not allowed. User must be the author of this post.");
 			} else if(error["status"]==404){
 				window.location.href="/blog/not_found";
 			}
