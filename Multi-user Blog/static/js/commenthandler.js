@@ -45,7 +45,7 @@ function postComment(THIS,blog_id){
 function renderCommentEdit(THIS,blog_id){
 	var $liId = $(THIS).closest('li').prop('id');
 	var $title = $('#'+$liId+' h3.title').html();
-	var $content = $('#'+$liId+' div.texts').html();
+	var $content = $('#'+$liId+' pre.texts').html();
 	var $commentKeyId = $('#'+$liId+' input[type=hidden]').val();
 	// Validate user
 	var $url = '/blog/'+blog_id+'/comment/validate?id='+$commentKeyId;
@@ -95,7 +95,7 @@ function submitCommentEdit(THIS,blog_id){
 			if(result['success']){
 				// Replace the comment with new title and content.
 				$('#'+$liId+' h3.title').html($newTitle);
-				$('#'+$liId+' div.texts').html($newContent);
+				$('#'+$liId+' pre.texts').html($newContent);
 				// Remove form and re-display content.
 				$('#'+$liId+' div.content').css('display','initial');
 				$('#'+$liId+' div.edit').remove();
