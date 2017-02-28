@@ -17,7 +17,9 @@ The program uses Google App Engine, Google Datastore, Jinja2, Python, HTML5, CSS
   - gsutil 4.22
   - gsutil-nix 4.18
 
-## Setup (Linux / Mac OS X)
+## Getting Started
+
+### Setup (Linux / Mac OS X)
 1. Open terminal
 2. Download and install all dependencies
 3. Install git following [this instruction](https://www.atlassian.com/git/tutorials/install-git)
@@ -25,7 +27,7 @@ The program uses Google App Engine, Google Datastore, Jinja2, Python, HTML5, CSS
 5. Type `git clone https://github.com/hyungmogu/udacity-multi-user-blog`; download the repository
 6. Type `cd 'udacity-multi-user-blog/'Multi-user Blog'`; get inside the project folder 
 
-## Setup (Windows)
+### Setup (Windows)
 1. Download and install all dependencies
 2. Install git following [this instruction](https://www.atlassian.com/git/tutorials/install-git) 
 3. Open command line
@@ -35,13 +37,13 @@ The program uses Google App Engine, Google Datastore, Jinja2, Python, HTML5, CSS
 7. Navigate to the folder containing the downloaded repository
 6. Type `cd 'udacity-multi-user-blog/'Multi-user Blog'`; get inside the project folder
 
-## Running the Application on Local Machine
+### Running the Application on Local Machine
 1. Type `dev_appserver.py app.yaml` in `Multi-user Blog` folder; activate the server
 
-## Stopping Local Server
+### Stopping Local Server
 1. Press `Ctrl` + `C` in the terminal/gcloud where the server is being run
 
-## Viewing Demo
+### Viewing Demo
 1. Open a web browser (Chrome is strongly suggested)
 2. Type `https://udacity-multiuser-blog-4.appspot.com/blog` in the address bar
   - For those of who are running the app on local machine, type `http://localhost:8080/blog/` instead
