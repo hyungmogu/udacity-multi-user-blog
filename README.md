@@ -4,25 +4,49 @@
 
 The program uses Google App Engine, Google Datastore, Jinja2, Python, HTML5, CSS3, Javscript and jQuery. 
 
-## Downloading the Program
-- The following steps are for individuals who wishes to view the code.
-- For those of who are interested in seeing the program only, skip to `Viewing the Program`
+## Dependencies
+- python 2.7.6
+- gcloud
+  - Google Cloud SDK 145.0.0
+  - app-engine-python 1.9.50
+  - bq 2.0.24
+  - bq-nix 2.0.24
+  - core 2017.02.21
+  - core-nix 2016.11.07
+  - gcloud-deps 2017.02.21
+  - gsutil 4.22
+  - gsutil-nix 4.18
 
-### Windows
-1. Install [git bash](https://git-scm.com/downloads) 
-2. Open git bash
-3. Navigate to a directory of choice. 
-4. Type `https://github.com/hyungmogu/udacity-multi-user-blog`; download the repository
+## Getting Started
 
-### Linux / Mac OS X
-2. Open terminal
-2. Install [git](https://help.ubuntu.com/lts/serverguide/git.html)
-3. Navigate to a directory of choice
-4. Type `https://github.com/hyungmogu/udacity-multi-user-blog`; download the repository
+### Setup (Linux / Mac OS X)
+1. Open terminal
+2. Download and install all dependencies
+3. Install git following [this instruction](https://www.atlassian.com/git/tutorials/install-git)
+4. Navigate to a directory of choice
+5. Type `git clone https://github.com/hyungmogu/udacity-multi-user-blog`; download the repository
+6. Type `cd 'udacity-multi-user-blog/'Multi-user Blog'`; get inside the project folder 
 
-## Viewing the Program
-5. Open a web browser (Chrome is strongly suggested)
-6. Type `https://udacity-multiuser-blog-4.appspot.com/blog`
+### Setup (Windows)
+1. Download and install all dependencies
+2. Install git following [this instruction](https://www.atlassian.com/git/tutorials/install-git) 
+3. Open command line
+4. Navigate to a directory of choice
+5. Type `git clone https://github.com/hyungmogu/udacity-multi-user-blog`; download the repository
+6. Open gcloud sdk
+7. Navigate to the folder containing the downloaded repository
+6. Type `cd 'udacity-multi-user-blog/'Multi-user Blog'`; get inside the project folder
+
+### Running the Application on Local Machine
+1. Type `dev_appserver.py app.yaml` in `Multi-user Blog` folder; activate the server
+
+### Stopping Local Server
+1. Press `Ctrl` + `C` in the terminal/gcloud where the server is being run
+
+### Viewing Demo
+1. Open a web browser (Chrome is strongly suggested)
+2. Type `https://udacity-multiuser-blog-4.appspot.com/blog` in the address bar
+  - For those of who are running the app on local machine, type `http://localhost:8080/blog/` instead
 
 
 
