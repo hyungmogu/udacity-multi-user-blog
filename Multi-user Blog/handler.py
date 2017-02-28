@@ -14,7 +14,7 @@ from database import User,Blog,Comment
 template_dir = os.path.join(os.path.dirname(__file__),'templates')
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
                                 autoescape=True)
-SECRET = json.loads(open("secret.json","r").read())["secret"]
+SECRET = json.loads(open("SECRET.json","r").read())["secret"]
 
 
 # HANDLERS
