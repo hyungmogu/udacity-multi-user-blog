@@ -1,6 +1,7 @@
 // Comment Handlers
 // Edit Handler
 function postComment(THIS,blog_id){
+
 	var $title = $('#new-comment-form input[name=title]').val();
 	var $content = $('#new-comment-form textarea[name=texts]').val();
 	// Check if submitting title and contents are non-empty.
@@ -24,8 +25,8 @@ function postComment(THIS,blog_id){
 				// Append new comment in the list of comments
 				var $count = localStorage.count;
 				$('#comments ul').prepend('<li id="new-comment-'+$count+'" class="comment"><div class="content"><h3 class="title">'+result['title']+'</h3><div class="meta"><span class="author">'+result['author']+'</span><span class="date-created">'+result['date_created']+'</span></div><pre class="texts">'+result['content']+'</pre><div class="options"><button class="edit">Edit</button><button class="delete">Delete</button></div><input type="hidden" value="'+result['id']+'"></div><div class="result"></div></li>');
-				$('.comment button.edit').click(function(){renderCommentEdit(this);});
-				$('.comment button.delete').click(function(){deleteComment(this);});
+				$('.comment button.edit').click(function(){renderCommentEdit(this, blog_id);});
+				$('.comment button.delete').click(function(){deleteComment(this, blog_id);});
 				// Display result
 				$('#comments div.header div.result').html(result['success']);
 			};
@@ -58,7 +59,7 @@ function renderCommentEdit(THIS,blog_id){
 				$('#'+$liId+' div.content').css('display','None');
 				$('#'+$liId+' div.content').after($form);
 				$('.comment button.submit').click(function(){
-					submitCommentEdit(this);
+					submitCommentEdit(this,blog_id);
 				});
 	 		};
 		},
