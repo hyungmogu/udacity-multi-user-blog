@@ -74,7 +74,7 @@ function renderCommentEdit(THIS,blog_id){
 };
 
 function submitCommentEdit(THIS,blog_id){
-	var $error_400 = 'Invalid. Both title and content must not be empty.';
+	var $ERROR_400 = 'Invalid. Both title and content must not be empty.';
 	// Harvest form data.
 	var $liId = $(THIS).closest('li').prop('id');
 	var $commentKeyId = $('#'+$liId+' input[type=hidden]').val();
