@@ -46,7 +46,7 @@ function updateLike(blog_id){
 					window.location.href = '/blog/not_found';
 				};
 			}
-		});	
+		});
 	}
-}; 
+}
 

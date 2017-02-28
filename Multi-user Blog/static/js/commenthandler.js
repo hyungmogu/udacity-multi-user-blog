@@ -29,7 +29,7 @@ function postComment(THIS,blog_id){
 				$('.comment button.edit').click(function(){render_comment_edit(this);});
 				$('.comment button.delete').click(function(){delete_comment(this);});
 			};
-		}, 
+		},
 		error: function(error){
 			console.log(error)
 			if(error['status'] == 400){
@@ -60,7 +60,7 @@ function renderCommentEdit(THIS,blog_id){
 				$('#'+$liId+' div.content').after($form);
 				$('.comment button.submit').click(function(){
 					submit_comment_edit(this);
-				});  
+				});
 	 		};
 		},
 		error:function(error){
