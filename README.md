@@ -53,23 +53,23 @@ The program uses Google App Engine, Google Datastore, Jinja2, Python, HTML5, CSS
 ### Running Application on Local Server
 1. Open terminal (For Linux & OS X users)/gcloud SDK (For Windows users) 
 2. Navigate to the project folder (`udacity-multi-user-blog/'Multi-user Blog'`)
-3. Type `dev_appserver.py app.yaml`
+3. Type `dev_appserver.py app.yaml`; upload the application to server
 
 ### Stopping Local Server
 1. Press `Ctrl` + `C` in terminal/gcloud SDK where the server is being run
 
-### Deploying Application to Server
+### Deploying Application to gcloud Server
 1. Create project in [console.developers.google.com](https://console.developers.google.com/)
 2. Open terminal/gcloud SDK
 3. Navigate to the project folder (`udacity-multi-user-blog/'Multi-user Blog'`)
 4. Type `gcloud init`; initialize the configuration with gcloud
-5. Type `gcloud app deploy app.yaml index.yaml`
+5. Type `gcloud app deploy app.yaml index.yaml`; upload the application to server
 
 ### Viewing Demo
 1. Open a web browser (Chrome is strongly suggested)
 2. Type `https://udacity-multiuser-blog-4.appspot.com/blog` in the address bar
-  - For those of who are running the app on local server, type `http://localhost:8080/blog/` instead
-  - For those of who've deployed the app, type `http://<GCLOUD_PROJECDT_NAME>.appspot.com/blog` instead
+  - Type `http://localhost:8080/blog/` instead for those of who are running the app on local server 
+  - Type `http://<GCLOUD_PROJECDT_NAME>.appspot.com/blog` instead for those of who deployed the app to gcloud
 
 
 
