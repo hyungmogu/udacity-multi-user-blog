@@ -25,7 +25,7 @@ The program uses Google App Engine, Google Datastore, Jinja2, Python, HTML5, CSS
 2. Download and install all dependencies
 3. Install git following [this instruction](https://www.atlassian.com/git/tutorials/install-git)
 4. Type `git clone https://github.com/hyungmogu/udacity-multi-user-blog` in a directory of choice; download the repository
-5. Open and follow instructions in `udacity-multi-user-blog/'Multi-user Blog'/SECRET.json` using any text editors; finish setting up encryption for user id in cookie.
+5. Open and follow instructions in `udacity-multi-user-blog/'Multi-user Blog'/SECRET.json` using any text editors
 6. Save file and quit
 
 ### Setup (Windows)
@@ -33,7 +33,7 @@ The program uses Google App Engine, Google Datastore, Jinja2, Python, HTML5, CSS
 2. Install git following [this instruction](https://www.atlassian.com/git/tutorials/install-git) 
 3. Open command line
 4. Type `git clone https://github.com/hyungmogu/udacity-multi-user-blog` in a directory of choice; download the repository
-5. Open and follow instructions in `udacity-multi-user-blog/'Multi-user Blog'/SECRET.json` using any text editors; finish setting up encryption for user id in cookie.
+5. Open and follow instructions in `udacity-multi-user-blog/'Multi-user Blog'/SECRET.json` using any text editors
 6. Save file and quit
 
 ### Running Application on Local Machine
