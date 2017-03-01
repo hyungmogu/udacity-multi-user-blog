@@ -42,7 +42,7 @@ The program uses Google App Engine, Google Datastore, Jinja2, Python, HTML5, CSS
 2. Install git bash following [this instruction](https://www.atlassian.com/git/tutorials/install-git) 
 3. Open git bash
 4. Navigate to a directory of choice
-5. Type `git clone https://github.com/hyungmogu/udacity-multi-user-blog` in a directory of choice; download the repository
+5. Type `git clone https://github.com/hyungmogu/udacity-multi-user-blog`; download the repository
 6. Type `cd udacity-multi-user-blog/'Multi-user Blog'`; enter the project folder
 7. Type `vim SECRET.json`; modify the document
   - Instruction is contained inside
