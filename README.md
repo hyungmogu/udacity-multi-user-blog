@@ -65,7 +65,7 @@ The program uses Google App Engine, Google Datastore, Jinja2, Python, HTML5, CSS
 4. Type `gcloud init`; initialize the configuration with gcloud
 5. Type `gcloud app deploy app.yaml index.yaml`; upload the application to server
 
-### Viewing Demo
+## Viewing Demo
 1. Open a web browser (Chrome is strongly suggested)
 2. Type `https://udacity-multiuser-blog-4.appspot.com/blog` in the address bar
   - Type `http://localhost:8080/blog/` instead for those of who are running the app on local server 
