@@ -23,22 +23,37 @@ The program uses Google App Engine, Google Datastore, Jinja2, Python, HTML5, CSS
 ### Setup (Linux / Mac OS X)
 1. Open terminal
 2. Download and install all dependencies
+  - For Google Cloud SDK, follow [this instruction](https://cloud.google.com/sdk/downloads#versioned)
+  - For python, it is included in the OS
 3. Install git following [this instruction](https://www.atlassian.com/git/tutorials/install-git)
-4. Type `git clone https://github.com/hyungmogu/udacity-multi-user-blog` in a directory of choice; download the repository
-5. Open and follow instructions in `udacity-multi-user-blog/'Multi-user Blog'/SECRET.json` using any text editors
-6. Save file and quit
+4. Navigate to a directory of choice
+5. Type `git clone https://github.com/hyungmogu/udacity-multi-user-blog`; download the repository
+6. Type `cd udacity-multi-user-blog/'Multi-user Blog'`; enter the project folder
+7. Type `vim SECRET.json`; modify the document
+  - Instruction is contained inside
+  - Document can be modified by pressing `i`
+8. Type `:w` after pressing `esc`; save file
+9. Type `:q`; quit
 
 ### Setup (Windows)
 1. Download and install all dependencies
-2. Install git following [this instruction](https://www.atlassian.com/git/tutorials/install-git) 
-3. Open command line
-4. Type `git clone https://github.com/hyungmogu/udacity-multi-user-blog` in a directory of choice; download the repository
-5. Open and follow instructions in `udacity-multi-user-blog/'Multi-user Blog'/SECRET.json` using any text editors
-6. Save file and quit
+  - For Google Cloud SDK, follow [this instruction](https://cloud.google.com/sdk/downloads#versioned)
+  - For python, follow [this instruction](https://www.python.org/downloads/)
+2. Install git bash following [this instruction](https://www.atlassian.com/git/tutorials/install-git) 
+3. Open git bash
+4. Navigate to a directory of choice
+5. Type `git clone https://github.com/hyungmogu/udacity-multi-user-blog` in a directory of choice; download the repository
+6. Type `cd udacity-multi-user-blog/'Multi-user Blog'`; enter the project folder
+7. Type `vim SECRET.json`; modify the document
+  - Instruction is contained inside
+  - Document can be modified by pressing `i`
+8. Type `:w` after pressing `esc`; save file
+9. Type `:q`; quit
 
-### Running Application on Local Machine
-1. Open terminal/gcloud SDK 
-2. Type `dev_appserver.py app.yaml` in `Multi-user Blog` folder; wait until gcloud sets up local server
+### Running Application on Local Server
+1. Open terminal (For Linux & OS X users)/gcloud SDK (For Windows users) 
+2. Navigate to the project folder (`udacity-multi-user-blog/'Multi-user Blog'`)
+3. Type `dev_appserver.py app.yaml`
 
 ### Stopping Local Server
 1. Press `Ctrl` + `C` in terminal/gcloud SDK where the server is being run
@@ -48,12 +63,12 @@ The program uses Google App Engine, Google Datastore, Jinja2, Python, HTML5, CSS
 2. Open terminal/gcloud SDK
 3. Navigate to the project folder (`udacity-multi-user-blog/'Multi-user Blog'`)
 4. Type `gcloud init`; initialize the configuration with gcloud
-5. Type `gcloud app deploy app.yaml index.yaml`; finish deploying application to server
+5. Type `gcloud app deploy app.yaml index.yaml`
 
 ### Viewing Demo
 1. Open a web browser (Chrome is strongly suggested)
 2. Type `https://udacity-multiuser-blog-4.appspot.com/blog` in the address bar
-  - For those of who are running the app on local machine, type `http://localhost:8080/blog/` instead
+  - For those of who are running the app on local server, type `http://localhost:8080/blog/` instead
   - For those of who've deployed the app, type `http://<GCLOUD_PROJECDT_NAME>.appspot.com/blog` instead
 
 
