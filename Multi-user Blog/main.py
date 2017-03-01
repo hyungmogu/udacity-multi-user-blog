@@ -411,13 +411,13 @@ class ReadLogin(LoginHandler):
         if not username and password:
             message = ("Either username or password fields are empty. Please "
                        "fill in, and try again.")
-            self.render("login.html", error=error, username=username, 
+            self.render("login.html", error=message, username=username, 
                         password=password)
             return
         if not self.is_login_successful(username, password, user):
             message = ("Either username or password are incorrect. Please "
                        "try again.")
-            self.render("login.html", error=error, username=username,
+            self.render("login.html", error=message, username=username,
                         password=password)
             return
 
