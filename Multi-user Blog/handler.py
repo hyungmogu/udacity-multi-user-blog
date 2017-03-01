@@ -175,7 +175,10 @@ class LoginHandler(Handler):
         # Then, check if password match.
         # If passwords don't match, it's incorrect and False is returned.
         if(user):
-            stored_hashed_password,salt = (user[0].password).split(",")
+            try:
+                stored_hashed_password,salt = (user[0].password).split(",")
+            except:
+                return False
             hashed_password = hmac.new(str(salt), str(password),
                                         hashlib.sha256).hexdigest()
             if(stored_hashed_password == hashed_password):
