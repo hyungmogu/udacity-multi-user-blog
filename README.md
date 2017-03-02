@@ -1,4 +1,4 @@
-# udacity-multi-user-blog
+# Udacity FSND 3rd Project: Multi-user Blog
 
 'Multi-user Blog' is the final project for the course 'Intro to Backend'. Here, the registered users can post blogs and comments, and as well as upvoting a blog of their choice. Basically, it is a scaled-down, primitive version of Reddit.
 
