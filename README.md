@@ -1,5 +1,7 @@
 # Udacity FSND 3rd Project: Multi-user Blog
 
+Note: This is Udacity Evaluated Assignment
+
 'Multi-user Blog' is the final project for the course 'Intro to Backend'. Here, the registered users can post blogs and comments, and as well as upvoting a blog of their choice. Basically, it is a scaled-down, primitive version of Reddit.
 
 The program uses Google App Engine, Google Datastore, Jinja2, Python, HTML5, CSS3, Javscript and jQuery. 
@@ -27,7 +29,7 @@ The program uses Google App Engine, Google Datastore, Jinja2, Python, HTML5, CSS
   - For python, it is included in the OS
 3. Install git following [this instruction](https://www.atlassian.com/git/tutorials/install-git)
 4. Navigate to a directory of choice
-5. Type `git clone https://github.com/hyungmogu/udacity-multi-user-blog`; download the repository
+5. Type `git clone https://github.com/hyungmogu/multi-user-blog`; download the repository
 6. Type `cd udacity-multi-user-blog/'Multi-user Blog'`; enter the project folder
 7. Type `vim SECRET.json`; modify the document
   - Instruction is contained inside
@@ -42,7 +44,7 @@ The program uses Google App Engine, Google Datastore, Jinja2, Python, HTML5, CSS
 2. Install git bash following [this instruction](https://www.atlassian.com/git/tutorials/install-git) 
 3. Open git bash
 4. Navigate to a directory of choice
-5. Type `git clone https://github.com/hyungmogu/udacity-multi-user-blog`; download the repository
+5. Type `git clone https://github.com/hyungmogu/multi-user-blog`; download the repository
 6. Type `cd udacity-multi-user-blog/'Multi-user Blog'`; enter the project folder
 7. Type `vim SECRET.json`; modify the document
   - Instruction is contained inside
@@ -52,7 +54,7 @@ The program uses Google App Engine, Google Datastore, Jinja2, Python, HTML5, CSS
 
 ### Running Application on Local Server
 1. Open terminal (For Linux & OS X users)/gcloud SDK (For Windows users) 
-2. Navigate to the project folder (`udacity-multi-user-blog/'Multi-user Blog'`)
+2. Navigate to the project folder (`multi-user-blog/'Multi-user Blog'`)
 3. Type `dev_appserver.py app.yaml`; upload the application to server
 
 ### Stopping Local Server
@@ -61,7 +63,7 @@ The program uses Google App Engine, Google Datastore, Jinja2, Python, HTML5, CSS
 ### Deploying Application to gcloud Server
 1. Create project in [console.developers.google.com](https://console.developers.google.com/)
 2. Open terminal/gcloud SDK
-3. Navigate to the project folder (`udacity-multi-user-blog/'Multi-user Blog'`)
+3. Navigate to `multi-user-blog/'Multi-user Blog'`
 4. Type `gcloud init`; initialize the configuration with gcloud
 5. Type `gcloud app deploy app.yaml index.yaml`; upload the application to server
 
